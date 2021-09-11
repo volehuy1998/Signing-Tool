@@ -3,6 +3,9 @@
 #include <tchar.h>
 #include <cryptuiapi.h>
 
+// copy from
+// https://cpp.hotexamples.com/examples/-/-/CryptUIDlgSelectCertificateFromStore/cpp-cryptuidlgselectcertificatefromstore-function-examples.html
+
 int _tmain(int argc, _TCHAR* argv[])
 {
 	//--------------------------------------------------------------------
