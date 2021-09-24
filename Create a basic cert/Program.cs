@@ -50,8 +50,8 @@ namespace Create_a_basic_cert
             cGenerator.SetSerialNumber(BigInteger.ProbablePrime(120, new Random()));
             cGenerator.SetSubjectDN(new X509Name("CN=" + "some.machine.domain.tld"));
             cGenerator.SetIssuerDN(new X509Name("CN=" + "issuer's name"));
-            cGenerator.SetNotBefore(DateTime.Now);
-            cGenerator.SetNotAfter(DateTime.Now.Add(new TimeSpan(365, 0, 0, 0))); // Expire in 1 year
+            cGenerator.SetNotBefore(DateTime.UtcNow);
+            cGenerator.SetNotAfter(DateTime.UtcNow.Add(new TimeSpan(365, 0, 0, 0))); // Expire in 1 year
             cGenerator.SetSignatureAlgorithm(HashType.SHA256withRSA.ToString()); // See the Appendix Below for info on the hash types supported by Bouncy Castle C#
             cGenerator.SetPublicKey(kp.Public); // Only the public key should be used here!
 
