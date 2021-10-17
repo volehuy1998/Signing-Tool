@@ -23,10 +23,9 @@ namespace CMS
 		private static string input = @"D:\Phim\Người anh họ độc ác.mp4";
         private static string output = @"signed.cms";
         private static int bufferSize = 1024 * 8; //8KB
-        protected static byte[] SignWithSystem(string inputFile, AsymmetricKeyParameter privateKey, Org.BouncyCastle.X509.X509Certificate cert, Org.BouncyCastle.X509.X509Certificate[] chain)
+        protected static void SignWithSystem(string inputFile, AsymmetricKeyParameter privateKey, Org.BouncyCastle.X509.X509Certificate cert, Org.BouncyCastle.X509.X509Certificate[] chain)
         //protected static byte[] SignWithSystem(string inputFile, AsymmetricKeyParameter privateKey, Org.BouncyCastle.X509.X509Certificate cert, Org.BouncyCastle.X509.X509Certificate[] chain)
         {
-            byte[] signedData = null;
             var generator = new CmsSignedDataStreamGenerator();
 
             // Add signing key
@@ -42,16 +41,18 @@ namespace CMS
             var certStore = X509StoreFactory.Create("CERTIFICATE/COLLECTION", storeParams);
             generator.AddCertificates(certStore);
 
-            using (FileStream fs = new FileStream(input, FileMode.Open, FileAccess.ReadWrite))
-            using (FileStream outStr = new FileStream(output, FileMode.CreateNew, FileAccess.ReadWrite))
+            using (MemoryStream signed = new MemoryStream())
+            using (MemoryStream unsigned = new MemoryStream())
             {
-                CmsSignedDataParser parser = new CmsSignedDataParser(fs);
-                CmsTypedStream signedContent = parser.GetSignedContent();
-                bool encapsulate = (signedContent != null);
-                Stream contentOut = generator.Open(outStr, parser.SignedContentType.Id, encapsulate);
-            }
+                Stream signing = generator.Open(signed, true);
+                unsigned.CopyTo(signing);
 
-            return signedData;
+                using (FileStream fileStream = new FileStream(output, FileMode.OpenOrCreate, FileAccess.ReadWrite))
+                {
+                    signed.Position = 0;
+                    signed.CopyTo(fileStream);
+                }
+            }
         }
 
         public static bool Verify(byte[] signedData)
@@ -114,15 +115,13 @@ namespace CMS
                 //var caCert = ReadCertFromFile(@"C:\Temp\CA.cer");
                 Org.BouncyCastle.X509.X509Certificate[] certChain = null;// new X509Certificate[] { caCert };
 
-                var signedData = SignWithSystem(
+                SignWithSystem(
                   //Guid.NewGuid().ToByteArray(), // Any old data for sake of example
                   input,
                   key,
                   signerCert,
                   certChain);
-
-                File.WriteAllBytes(output, signedData);
-                
+                                
                 bool result = Verify(File.ReadAllBytes(output));
 
                 Console.WriteLine(result);
