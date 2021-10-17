@@ -20,10 +20,10 @@ namespace CMS
         private static string pfxFile = @"C:\Users\voleh\OneDrive\Chữ ký số\Võ Lê Huy.pfx";
         private static string pwd = "Xiangyu98@";
         private static string inputFile = @"D:\Phim\Người anh họ độc ác.mp4";
-        private static string outputFile = @"signed-non-stream.cms";
-        protected static byte[] SignWithSystem(byte[] m, AsymmetricKeyParameter privateKey, Org.BouncyCastle.X509.X509Certificate cert, Org.BouncyCastle.X509.X509Certificate[] chain)
+        private static string outputFile = @"signed-stream.cms";
+        protected static void SignWithSystem(string inFile, AsymmetricKeyParameter privateKey, Org.BouncyCastle.X509.X509Certificate cert)
         {
-            var generator = new CmsSignedDataGenerator();
+            var generator = new CmsSignedDataStreamGenerator();
             // Add signing key
             generator.AddSigner(
               privateKey,
@@ -37,34 +37,50 @@ namespace CMS
             var certStore = X509StoreFactory.Create("CERTIFICATE/COLLECTION", storeParams);
             generator.AddCertificates(certStore);
 
-            // Generate the signature
-            var signedData = generator.Generate(
-              new CmsProcessableByteArray(m),
-              true); // encapsulate = false for detached signature
-
-            return signedData.GetEncoded();
+            using (FileStream unsigned = new FileStream(inFile, FileMode.OpenOrCreate, FileAccess.ReadWrite))
+            {
+                using (FileStream signed = new FileStream(outputFile, FileMode.OpenOrCreate, FileAccess.ReadWrite))
+                {
+                    Stream signing = generator.Open(signed, true);
+                    unsigned.CopyTo(signing);
+                }
+            }
         }
 
-        public static bool Verify(byte[] m, byte[] signedData, X509Certificate2 microsoftCert)
+        public static bool Verify(string originalFile, string signedFile, X509Certificate2 microsoftCert)
         {
             bool result = false;
 
-            CmsSignedData cmsSignedData = new CmsSignedData(signedData);
-            Org.BouncyCastle.Crypto.Digests.GeneralDigest sha256 = new Org.BouncyCastle.Crypto.Digests.Sha256Digest();  
-
-            sha256.BlockUpdate(m, 0, m.Length);
-            //IDigest hashFunc = DigestUtilities.GetDigest(CmsSignedDataGenerator.DigestSha256);
-            //hashFunc.BlockUpdate(m, 0, m.Length);
-            byte[] expectedDigest = DigestUtilities.DoFinal(sha256);
-
-            SignerInformationStore signers = cmsSignedData.GetSignerInfos();
-            ICollection c = signers.GetSigners();
-            foreach (SignerInformation signer in c)
+            try
             {
-                if (signer.Verify(DotNetUtilities.FromX509Certificate(microsoftCert)))
+                byte[] signedData = File.ReadAllBytes(signedFile);
+                byte[] originalData = File.ReadAllBytes(originalFile);
+                CmsSignedData cmsSignedData = null;
+                Org.BouncyCastle.Crypto.Digests.GeneralDigest sha256 = new Org.BouncyCastle.Crypto.Digests.Sha256Digest();  
+
+                if (signedFile != null && signedFile.Length > 0)
                 {
-                    result = expectedDigest.SequenceEqual(signer.GetContentDigest());
+                    cmsSignedData = new CmsSignedData(signedData);
                 }
+
+                sha256.BlockUpdate(originalData, 0, originalData.Length);
+                //IDigest hashFunc = DigestUtilities.GetDigest(CmsSignedDataGenerator.DigestSha256);
+                //hashFunc.BlockUpdate(m, 0, m.Length);
+                byte[] expectedDigest = DigestUtilities.DoFinal(sha256);
+
+                SignerInformationStore signers = cmsSignedData.GetSignerInfos();
+                ICollection c = signers.GetSigners();
+                foreach (SignerInformation signer in c)
+                {
+                    if (signer.Verify(DotNetUtilities.FromX509Certificate(microsoftCert)))
+                    {
+                        result = expectedDigest.SequenceEqual(signer.GetContentDigest());
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
             }
 
             return result;
@@ -93,25 +109,15 @@ namespace CMS
             try
             {
                 // Load end certificate and signing key
-                AsymmetricKeyParameter key;
-                var signerCert = ReadCertFromFile(pfxFile, pwd, out key);
+                AsymmetricKeyParameter privateKey;
+                var signerCert = ReadCertFromFile(pfxFile, pwd, out privateKey);
 
-                // Read CA cert
-                //var caCert = ReadCertFromFile(@"C:\Temp\CA.cer");
-                Org.BouncyCastle.X509.X509Certificate[] certChain = null;// new X509Certificate[] { caCert };
-
-                var signedData = SignWithSystem(
-                  originalData,
-                  key,
-                  signerCert,
-                  certChain);
-
-                // save signed
-                File.WriteAllBytes(outputFile, signedData);
+                // signed and save to file
+                SignWithSystem(inputFile, privateKey, signerCert);
                 // get MS cert from store
                 X509Certificate2 microsoftCert = GetCertFromMicrosoftStore();
                 // verify 
-                bool result = Verify(originalData, File.ReadAllBytes(outputFile), microsoftCert);
+                bool result = Verify(originalFile: inputFile, signedFile: outputFile, microsoftCert);
 
                 Console.WriteLine(result);
             }
