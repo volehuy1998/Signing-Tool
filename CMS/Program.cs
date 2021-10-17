@@ -20,10 +20,12 @@ namespace CMS
         private static string pfxFile = @"C:\Users\voleh\OneDrive\Chữ ký số\Võ Lê Huy.pfx";
         private static string pwd = "Xiangyu98@";
         private static string inputFile = @"D:\Phim\Người anh họ độc ác.mp4";
-        private static string outputFile = @"signed-stream.cms";
+        private static string outputFile = @"signed-non-stream.cms";
         protected static void SignWithSystem(string inFile, AsymmetricKeyParameter privateKey, Org.BouncyCastle.X509.X509Certificate cert)
         {
-            var generator = new CmsSignedDataStreamGenerator();
+            byte[] originalData = File.ReadAllBytes(inFile);
+
+            var generator = new CmsSignedDataGenerator();
             // Add signing key
             generator.AddSigner(
               privateKey,
@@ -37,14 +39,12 @@ namespace CMS
             var certStore = X509StoreFactory.Create("CERTIFICATE/COLLECTION", storeParams);
             generator.AddCertificates(certStore);
 
-            using (FileStream unsigned = new FileStream(inFile, FileMode.OpenOrCreate, FileAccess.ReadWrite))
-            {
-                using (FileStream signed = new FileStream(outputFile, FileMode.OpenOrCreate, FileAccess.ReadWrite))
-                {
-                    Stream signing = generator.Open(signed, true);
-                    unsigned.CopyTo(signing);
-                }
-            }
+            var signedData = generator.Generate(
+              new CmsProcessableByteArray(originalData),
+              true); // encapsulate = false for detached signature
+
+            // save
+            File.WriteAllBytes(outputFile, signedData.GetEncoded());
         }
 
         public static bool Verify(string originalFile, string signedFile, X509Certificate2 microsoftCert)
