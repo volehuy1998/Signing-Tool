@@ -41,17 +41,11 @@ namespace CMS
             var certStore = X509StoreFactory.Create("CERTIFICATE/COLLECTION", storeParams);
             generator.AddCertificates(certStore);
 
-            using (MemoryStream signed = new MemoryStream())
-            using (MemoryStream unsigned = new MemoryStream())
+            using (FileStream signed = new FileStream(output, FileMode.OpenOrCreate, FileAccess.ReadWrite))
+            using (FileStream unsigned = new FileStream(inputFile, FileMode.OpenOrCreate, FileAccess.ReadWrite))
             {
-                Stream signing = generator.Open(signed, true);
+                Stream signing = generator.Open(signed, false);
                 unsigned.CopyTo(signing);
-
-                using (FileStream fileStream = new FileStream(output, FileMode.OpenOrCreate, FileAccess.ReadWrite))
-                {
-                    signed.Position = 0;
-                    signed.CopyTo(fileStream);
-                }
             }
         }
 
