@@ -19,6 +19,8 @@ namespace CMS
     {
         private static string pfxFile = @"C:\Users\voleh\OneDrive\Chữ ký số\Võ Lê Huy.pfx";
         private static string pwd = "Xiangyu98@";
+        private static string inputFile = @"D:\Phim\Người anh họ độc ác.mp4";
+        private static string outputFile = @"signed-non-stream.cms";
         protected static byte[] SignWithSystem(byte[] m, AsymmetricKeyParameter privateKey, Org.BouncyCastle.X509.X509Certificate cert, Org.BouncyCastle.X509.X509Certificate[] chain)
         {
             var generator = new CmsSignedDataGenerator();
@@ -80,8 +82,7 @@ namespace CMS
 
         static void Main(string[] args)
         {
-            byte[] fakeData = Encoding.ASCII.GetBytes("huy");
-
+            byte[] originalData = File.ReadAllBytes(inputFile);
             try
             {
                 // Load end certificate and signing key
@@ -93,15 +94,16 @@ namespace CMS
                 Org.BouncyCastle.X509.X509Certificate[] certChain = null;// new X509Certificate[] { caCert };
 
                 var signedData = SignWithSystem(
-                  //Guid.NewGuid().ToByteArray(), // Any old data for sake of example
-                  fakeData,
+                  originalData,
                   key,
                   signerCert,
                   certChain);
 
-                File.WriteAllBytes("Signature.data", signedData);
-                
-                bool result = Verify(fakeData, File.ReadAllBytes("Signature.data"));
+                // save signed
+                File.WriteAllBytes(outputFile, signedData);
+
+                // verify 
+                bool result = Verify(originalData, File.ReadAllBytes(outputFile));
 
                 Console.WriteLine(result);
             }
