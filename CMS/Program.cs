@@ -45,40 +45,47 @@ namespace CMS
             return signedData.GetEncoded();
         }
 
-        public static bool Verify(byte[] m, byte[] signedData)
+        public static bool Verify(byte[] m, byte[] signedData, X509Certificate2 microsoftCert)
         {
             bool result = false;
 
             CmsSignedData cmsSignedData = new CmsSignedData(signedData);
+            Org.BouncyCastle.Crypto.Digests.GeneralDigest sha256 = new Org.BouncyCastle.Crypto.Digests.Sha256Digest();  
+
+            sha256.BlockUpdate(m, 0, m.Length);
+            //IDigest hashFunc = DigestUtilities.GetDigest(CmsSignedDataGenerator.DigestSha256);
+            //hashFunc.BlockUpdate(m, 0, m.Length);
+            byte[] expectedDigest = DigestUtilities.DoFinal(sha256);
+
+            SignerInformationStore signers = cmsSignedData.GetSignerInfos();
+            ICollection c = signers.GetSigners();
+            foreach (SignerInformation signer in c)
+            {
+                if (signer.Verify(DotNetUtilities.FromX509Certificate(microsoftCert)))
+                {
+                    result = expectedDigest.SequenceEqual(signer.GetContentDigest());
+                }
+            }
+
+            return result;
+        }
+
+        public static X509Certificate2 GetCertFromMicrosoftStore()
+        {
+            X509Certificate2 microsoftCert = null;
+
             X509Store store = new X509Store("MY", StoreLocation.CurrentUser);
             store.Open(OpenFlags.ReadOnly | OpenFlags.OpenExistingOnly);
             X509Certificate2Collection collection = store.Certificates;
             X509Certificate2Collection certs = X509Certificate2UI.SelectFromCollection(collection, "Select", "Select a certificate to sign", X509SelectionFlag.MultiSelection);
             if (certs != null && certs.Count >= 1)
             {
-                X509Certificate2 microsoftCert = certs[0];
-
-                Org.BouncyCastle.Crypto.Digests.GeneralDigest sha256 = new Org.BouncyCastle.Crypto.Digests.Sha256Digest();  
-
-                sha256.BlockUpdate(m, 0, m.Length);
-                //IDigest hashFunc = DigestUtilities.GetDigest(CmsSignedDataGenerator.DigestSha256);
-                //hashFunc.BlockUpdate(m, 0, m.Length);
-                byte[] expectedDigest = DigestUtilities.DoFinal(sha256);
-
-                SignerInformationStore signers = cmsSignedData.GetSignerInfos();
-                ICollection c = signers.GetSigners();
-                foreach (SignerInformation signer in c)
-                {
-                    if (signer.Verify(DotNetUtilities.FromX509Certificate(microsoftCert)))
-                    {
-                        result = expectedDigest.SequenceEqual(signer.GetContentDigest());
-                    }
-                }
-
+                microsoftCert = certs[0];
             }
 
-            return result;
+            return microsoftCert;
         }
+
 
         static void Main(string[] args)
         {
@@ -101,9 +108,10 @@ namespace CMS
 
                 // save signed
                 File.WriteAllBytes(outputFile, signedData);
-
+                // get MS cert from store
+                X509Certificate2 microsoftCert = GetCertFromMicrosoftStore();
                 // verify 
-                bool result = Verify(originalData, File.ReadAllBytes(outputFile));
+                bool result = Verify(originalData, File.ReadAllBytes(outputFile), microsoftCert);
 
                 Console.WriteLine(result);
             }
