@@ -12,6 +12,7 @@ using System.Text;
 using System.Collections;
 using Org.BouncyCastle.Security;
 using System.Security.Cryptography.X509Certificates;
+using Org.BouncyCastle.Utilities.IO;
 
 namespace CMS
 {
@@ -19,9 +20,15 @@ namespace CMS
     {
         private static string pfxFile = @"C:\Users\voleh\OneDrive\Chữ ký số\Võ Lê Huy.pfx";
         private static string pwd = "Xiangyu98@";
-        protected static byte[] SignWithSystem(byte[] m, AsymmetricKeyParameter privateKey, Org.BouncyCastle.X509.X509Certificate cert, Org.BouncyCastle.X509.X509Certificate[] chain)
+		private static string input = @"D:\Phim\Người anh họ độc ác.mp4";
+        private static string output = @"signed.cms";
+        private static int bufferSize = 1024 * 8; //8KB
+        protected static byte[] SignWithSystem(string inputFile, AsymmetricKeyParameter privateKey, Org.BouncyCastle.X509.X509Certificate cert, Org.BouncyCastle.X509.X509Certificate[] chain)
+        //protected static byte[] SignWithSystem(string inputFile, AsymmetricKeyParameter privateKey, Org.BouncyCastle.X509.X509Certificate cert, Org.BouncyCastle.X509.X509Certificate[] chain)
         {
-            var generator = new CmsSignedDataGenerator();
+            byte[] signedData = null;
+            var generator = new CmsSignedDataStreamGenerator();
+
             // Add signing key
             generator.AddSigner(
               privateKey,
@@ -35,15 +42,19 @@ namespace CMS
             var certStore = X509StoreFactory.Create("CERTIFICATE/COLLECTION", storeParams);
             generator.AddCertificates(certStore);
 
-            // Generate the signature
-            var signedData = generator.Generate(
-              new CmsProcessableByteArray(m),
-              true); // encapsulate = false for detached signature
+            using (FileStream fs = new FileStream(input, FileMode.Open, FileAccess.ReadWrite))
+            using (FileStream outStr = new FileStream(output, FileMode.CreateNew, FileAccess.ReadWrite))
+            {
+                CmsSignedDataParser parser = new CmsSignedDataParser(fs);
+                CmsTypedStream signedContent = parser.GetSignedContent();
+                bool encapsulate = (signedContent != null);
+                Stream contentOut = generator.Open(outStr, parser.SignedContentType.Id, encapsulate);
+            }
 
-            return signedData.GetEncoded();
+            return signedData;
         }
 
-        public static bool Verify(byte[] m, byte[] signedData)
+        public static bool Verify(byte[] signedData)
         {
             bool result = false;
 
@@ -56,12 +67,23 @@ namespace CMS
             {
                 X509Certificate2 microsoftCert = certs[0];
 
-                Org.BouncyCastle.Crypto.Digests.GeneralDigest sha256 = new Org.BouncyCastle.Crypto.Digests.Sha256Digest();  
+                Org.BouncyCastle.Crypto.Digests.GeneralDigest sha256 = new Org.BouncyCastle.Crypto.Digests.Sha256Digest();
+                using (FileStream fs = new FileStream(input, FileMode.Open, FileAccess.Read))
+                {
+                    byte[] buf = new byte[bufferSize];
+                    int n = 0;
+                    while ((n = fs.Read(buf, 0, buf.Length)) > 0)
+                    {
+                        sha256.BlockUpdate(buf, 0, n);
+                    }
+                }
 
-                sha256.BlockUpdate(m, 0, m.Length);
+                byte[] expectedDigest = new byte[sha256.GetDigestSize()];
+                sha256.DoFinal(expectedDigest, 0);
+
                 //IDigest hashFunc = DigestUtilities.GetDigest(CmsSignedDataGenerator.DigestSha256);
                 //hashFunc.BlockUpdate(m, 0, m.Length);
-                byte[] expectedDigest = DigestUtilities.DoFinal(sha256);
+                //byte[] expectedDigest = DigestUtilities.DoFinal(sha256);
 
                 SignerInformationStore signers = cmsSignedData.GetSignerInfos();
                 ICollection c = signers.GetSigners();
@@ -94,14 +116,14 @@ namespace CMS
 
                 var signedData = SignWithSystem(
                   //Guid.NewGuid().ToByteArray(), // Any old data for sake of example
-                  fakeData,
+                  input,
                   key,
                   signerCert,
                   certChain);
 
-                File.WriteAllBytes("Signature.data", signedData);
+                File.WriteAllBytes(output, signedData);
                 
-                bool result = Verify(fakeData, File.ReadAllBytes("Signature.data"));
+                bool result = Verify(File.ReadAllBytes(output));
 
                 Console.WriteLine(result);
             }
