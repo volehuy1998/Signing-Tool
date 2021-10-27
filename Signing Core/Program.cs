@@ -13,9 +13,6 @@ using Org.BouncyCastle.Cms;
 using Org.BouncyCastle.X509;
 using Org.BouncyCastle.Security;
 using System.Collections;
-using Org.BouncyCastle.Crypto.Engines;
-using Org.BouncyCastle.Crypto.Modes;
-using Org.BouncyCastle.Asn1.X509;
 
 namespace Signing_Core
 {
