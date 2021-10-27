@@ -109,26 +109,29 @@ namespace Signing_Core
 
         public static void BouncyCastle_SignCMS(string originalFile, string signedFile)
         {
+            AsymmetricKeyParameter privateKey = null;
+            X509Certificate bouncycastle_cert = null;
             var pkcs12Store = new Pkcs12Store();
+
             using (var keyStream = new FileStream(pfxFile, FileMode.Open, FileAccess.Read))
             {
                 var inputKeyStore = new Pkcs12Store();
                 inputKeyStore.Load(keyStream, pwd.ToCharArray());
                 var keyAlias = inputKeyStore.Aliases.Cast<string>().FirstOrDefault(n => inputKeyStore.IsKeyEntry(n));
-                AsymmetricKeyParameter priKey = inputKeyStore.GetKey(keyAlias).Key;
-                X509Certificate bcCert = inputKeyStore.GetCertificate(keyAlias).Certificate;
+                privateKey = inputKeyStore.GetKey(keyAlias).Key;
+                bouncycastle_cert = inputKeyStore.GetCertificate(keyAlias).Certificate;
 
                 CmsSignedDataStreamGenerator gen = new CmsSignedDataStreamGenerator();
-                gen.AddSigner(privateKey: priKey, cert: bcCert, CmsSignedDataGenerator.DigestSha256);
+                gen.AddSigner(privateKey: privateKey, cert: bouncycastle_cert, CmsSignedDataGenerator.DigestSha256);
 
-                MemoryStream bOut = new MemoryStream();
-                Stream signing = gen.Open(bOut, true);
+                MemoryStream signedStream = new MemoryStream();
+                Stream signingStream = gen.Open(signedStream, true);
                 using (FileStream originDataStream = new FileStream(originalFile, FileMode.OpenOrCreate))
                 {
-                    originDataStream.CopyTo(signing);
+                    originDataStream.CopyTo(signingStream);
                 }
-                signing.Close();
-                File.WriteAllBytes(signedFile, bOut.ToArray());
+                signingStream.Close();
+                File.WriteAllBytes(signedFile, signedStream.ToArray());
             }
         }
 
@@ -141,7 +144,7 @@ namespace Signing_Core
                 byte[] digestFromReceivedData = new byte[32];
                 byte[] signedData = null;
                 System.Security.Cryptography.X509Certificates.X509Certificate2 microsoftCert = null;// GetMicrosoftCert();
-                X509Certificate bcCert = null;// DotNetUtilities.FromX509Certificate(microsoftCert);
+                X509Certificate bouncycastle_cert = null;// DotNetUtilities.FromX509Certificate(microsoftCert);
                 AsymmetricKeyParameter publicKey = null;// bcCert.GetPublicKey();
 
                 signedData = File.ReadAllBytes(signedDataFile);
@@ -151,9 +154,9 @@ namespace Signing_Core
                 foreach (SignerInformation signer in c)
                 {
                     microsoftCert = GetMicrosoftCert();
-                    bcCert = DotNetUtilities.FromX509Certificate(microsoftCert);
-                    publicKey = bcCert.GetPublicKey();
-                    if (signer.Verify(bcCert))
+                    bouncycastle_cert = DotNetUtilities.FromX509Certificate(microsoftCert);
+                    publicKey = bouncycastle_cert.GetPublicKey();
+                    if (signer.Verify(bouncycastle_cert))
                     //if (signer.Verify(publicKey))
                     {
                         // decrypt signature ok
@@ -203,11 +206,11 @@ namespace Signing_Core
         {
             CmsEnvelopedDataStreamGenerator cmsEnvelopedDataStreamGenerator = new CmsEnvelopedDataStreamGenerator();
             System.Security.Cryptography.X509Certificates.X509Certificate2 microsoftCert = GetMicrosoftCert();
-            X509Certificate bcCert = DotNetUtilities.FromX509Certificate(microsoftCert);
+            X509Certificate bouncycastle_cert = DotNetUtilities.FromX509Certificate(microsoftCert);
             MemoryStream encryptedStream = new MemoryStream();
             Stream encryptingStream = null;
 
-            cmsEnvelopedDataStreamGenerator.AddKeyTransRecipient(bcCert);
+            cmsEnvelopedDataStreamGenerator.AddKeyTransRecipient(bouncycastle_cert);
             encryptingStream = cmsEnvelopedDataStreamGenerator.Open(encryptedStream, CmsEnvelopedDataGenerator.Aes128Cbc);
             using (FileStream originDataStream = new FileStream(path: rawFilePath, mode: FileMode.OpenOrCreate))
             {
@@ -219,19 +222,20 @@ namespace Signing_Core
 
         public static void BouncyCastle_DecryptCMS(string cipherFilePath, string decryptedFilePath)
         {
+            CmsEnvelopedData cmsCipherData = null;
+            AsymmetricKeyParameter privateKey = null;
+
             using (var pfxStream = new FileStream(pfxFile, FileMode.Open, FileAccess.Read))
             {
-                var inputKeyStore = new Pkcs12Store();
+                Pkcs12Store inputKeyStore = new Pkcs12Store();
                 inputKeyStore.Load(pfxStream, pwd.ToCharArray());
-                var keyAlias = inputKeyStore.Aliases.Cast<string>().FirstOrDefault(n => inputKeyStore.IsKeyEntry(n));
-                AsymmetricKeyParameter priKey = inputKeyStore.GetKey(keyAlias).Key;
-
-                CmsEnvelopedData cmsEnvelopedData = null;
+                string keyAlias = inputKeyStore.Aliases.Cast<string>().FirstOrDefault(n => inputKeyStore.IsKeyEntry(n));
+                privateKey = inputKeyStore.GetKey(keyAlias).Key;
 
                 using (FileStream cipherFileStream = new FileStream(cipherFilePath, mode: FileMode.Open))
                 {
-                    cmsEnvelopedData = new CmsEnvelopedData(cipherFileStream);
-                    RecipientInformationStore recipientInformationStore = cmsEnvelopedData.GetRecipientInfos();
+                    cmsCipherData = new CmsEnvelopedData(cipherFileStream);
+                    RecipientInformationStore recipientInformationStore = cmsCipherData.GetRecipientInfos();
                     RecipientID recipientID = new RecipientID()
                     {
                         SerialNumber = inputKeyStore.GetCertificate(keyAlias).Certificate.SerialNumber,
@@ -239,12 +243,12 @@ namespace Signing_Core
                     };
 
                     RecipientInformation recipientInformation = recipientInformationStore.GetFirstRecipient(recipientID);
-                    CmsTypedStream cmsTypedStream = recipientInformation.GetContentStream(priKey);
+                    CmsTypedStream decryptingStream = recipientInformation.GetContentStream(privateKey);
 
                     using (FileStream decryptedStream = new FileStream(decryptedFilePath, mode: FileMode.OpenOrCreate))
                     {
-                        cmsTypedStream.ContentStream.CopyTo(decryptedStream);
-                        cmsTypedStream.ContentStream.Close();
+                        decryptingStream.ContentStream.CopyTo(decryptedStream);
+                        decryptingStream.ContentStream.Close();
                     }
                 }
             }
