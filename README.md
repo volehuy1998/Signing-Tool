@@ -9,3 +9,7 @@ Mã số: AT131315</br>
 Lớp: AT13P</br>
 Chuyên nghành: An toàn thông tin - An toàn ứng dụng</br>
 Nơi học tập: Học viện Kỹ thuật mật mã
+### Mô tả repo
+**Project Signing Core** là nơi chứa phần lõi mật mã, sau này có thể được build thành module DLL</br>
+**Project Create a basic cert** dùng để tạo chứng thư số pfx (tiêu chuẩn PKCS12)</br>
+**Project c List personal certificates** được tạo chỉ để tìm hiểu thêm, ngôn ngữ C dùng để load chứng chỉ trong Microsoft Store loại Personal.
