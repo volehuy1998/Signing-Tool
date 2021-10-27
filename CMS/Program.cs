@@ -20,7 +20,7 @@ namespace CMS
     {
         private static string pfxFile = @"C:\Users\voleh\OneDrive\Chữ ký số\Võ Lê Huy.pfx";
         private static string pwd = "Xiangyu98@";
-		private static string input = @"D:\Phim\Người anh họ độc ác.mp4";
+		    private static string input = @"D:\Phim\Người anh họ độc ác.mp4";
         private static string output = @"signed.cms";
         private static int bufferSize = 1024 * 8; //8KB
         protected static void SignWithSystem(string inputFile, AsymmetricKeyParameter privateKey, Org.BouncyCastle.X509.X509Certificate cert, Org.BouncyCastle.X509.X509Certificate[] chain)
@@ -54,6 +54,30 @@ namespace CMS
             bool result = false;
 
             CmsSignedData cmsSignedData = new CmsSignedData(signedData);
+            Org.BouncyCastle.Crypto.Digests.GeneralDigest sha256 = new Org.BouncyCastle.Crypto.Digests.Sha256Digest();  
+
+            sha256.BlockUpdate(m, 0, m.Length);
+            //IDigest hashFunc = DigestUtilities.GetDigest(CmsSignedDataGenerator.DigestSha256);
+            //hashFunc.BlockUpdate(m, 0, m.Length);
+            byte[] expectedDigest = DigestUtilities.DoFinal(sha256);
+
+            SignerInformationStore signers = cmsSignedData.GetSignerInfos();
+            ICollection c = signers.GetSigners();
+            foreach (SignerInformation signer in c)
+            {
+                if (signer.Verify(DotNetUtilities.FromX509Certificate(microsoftCert)))
+                {
+                    result = expectedDigest.SequenceEqual(signer.GetContentDigest());
+                }
+            }
+
+            return result;
+        }
+
+        public static X509Certificate2 GetCertFromMicrosoftStore()
+        {
+            X509Certificate2 microsoftCert = null;
+
             X509Store store = new X509Store("MY", StoreLocation.CurrentUser);
             store.Open(OpenFlags.ReadOnly | OpenFlags.OpenExistingOnly);
             X509Certificate2Collection collection = store.Certificates;
@@ -89,16 +113,15 @@ namespace CMS
                         result = expectedDigest.SequenceEqual(signer.GetContentDigest());
                     }
                 }
-
             }
 
-            return result;
+            return microsoftCert;
         }
+
 
         static void Main(string[] args)
         {
-            byte[] fakeData = Encoding.ASCII.GetBytes("huy");
-
+            byte[] originalData = File.ReadAllBytes(inputFile);
             try
             {
                 // Load end certificate and signing key
@@ -117,7 +140,6 @@ namespace CMS
                   certChain);
                                 
                 bool result = Verify(File.ReadAllBytes(output));
-
                 Console.WriteLine(result);
             }
             catch (Exception ex)
