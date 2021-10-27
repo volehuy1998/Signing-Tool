@@ -14,69 +14,30 @@ using Org.BouncyCastle.X509;
 using Org.BouncyCastle.Security;
 using System.Collections;
 using Org.BouncyCastle.Crypto.Engines;
+using Org.BouncyCastle.Crypto.Modes;
+using Org.BouncyCastle.Asn1.X509;
 
 namespace Signing_Core
 {
     class Program
     {
-        private static string pfxFile = @"C:\Users\voleh\OneDrive\Chữ ký số\Võ Lê Huy.pfx";
-        private static string pwd = "Xiangyu98@";
-        private static string inputFile = @"D:\Phim\Người anh họ độc ác.mp4";
-        private static string outputFile = @"signed-stream.cms";
-        private static string inputFile_fake = "data.txt";
-        private static string inputFile_fake_wrong = "wrong_data.txt";
+        private static string pfxFile = @".pfx";
+        private static string pwd = "";
+        private static string inputFile = @"Xem phim Hồn Ma và Cá Voi Tập 1-End server R.PRO.mp4";
+        private static string signedFile = @"signed-stream.cms";
+        private static string encryptedFile = @"encrypted-stream.cms";
+        private static string decryptedFile = @"decrypted-stream.cms";
 
         static void Main(string[] args)
         {
-            //try
-            //{
-            //    // Create a new CspParameters object to specify
-            //    // a key container.
-            //    CspParameters cspParams = new CspParameters();
-            //    cspParams.KeyContainerName = "XML_DSIG_RSA_KEY";
+            BouncyCastle_signCMS(inputFile, signedFile);
+            bool res = BouncyCastle_VerifyCMS(inputFile, signedFile);
 
-            //    // Create a new RSA signing key and save it in the container.
-            //    //RSACryptoServiceProvider.UseMachineKeyStore = true;
-            //    RSACryptoServiceProvider rsaKey = new RSACryptoServiceProvider(cspParams);
-            //     // Create a new XML document.
-            //     XmlDocument xmlDoc = new XmlDocument();
-
-            //    // Load an XML file into the XmlDocument object.
-            //    xmlDoc.PreserveWhitespace = true;
-            //    xmlDoc.Load("test.xml");
-
-            //    // Sign the XML document.
-            //    PureSignXml(xmlDoc, rsaKey);
-            //    //bool res = PureVerifyXml(xmlDoc, rsaKey);
-
-            //    //Console.WriteLine("XML file signed.");
-
-            //    // Save the document.
-            //    xmlDoc.Save("test_signed.xml");
-            //}
-            //catch (Exception e)
-            //{
-            //    Console.WriteLine(e.Message);
-            //}
-            File.Delete(outputFile);
-            signCMS(originalFile: inputFile_fake, outputSignatureFile: outputFile);
-            if (verifyCMS(dataFile: inputFile_fake, signedDataFile: outputFile))
-            {
-                // verify ok
-                Console.WriteLine("OK");
-            }
-            else
-            {
-                Console.WriteLine("Fail");
-            }
-
-            Console.ReadKey();
+            BouncyCastle_EncryptCMS(inputFile, encryptedFile);
+            BouncyCastle_DecryptCMS(encryptedFile, decryptedFile);
         }
 
-        // Sign an XML file.
-        // This document cannot be verified unless the verifying
-        // code has the key with which it was signed.
-        public static void PureSignXml(XmlDocument xmlDoc, RSA rsaKey)
+        public static void MicrosoftSignXml(XmlDocument xmlDoc, RSA rsaKey)
         {
             // Check arguments.
             if (xmlDoc == null)
@@ -112,9 +73,7 @@ namespace Signing_Core
             xmlDoc.DocumentElement.AppendChild(xmlDoc.ImportNode(xmlDigitalSignature, true));
         }
 
-        // Verify the signature of an XML file against an asymmetric
-        // algorithm and return the result.
-        public static Boolean PureVerifyXml(XmlDocument xmlDoc, RSA key)
+        public static Boolean MicrosoftVerifyXml(XmlDocument xmlDoc, RSA key)
         {
             // Check arguments.
             if (xmlDoc == null)
@@ -151,34 +110,7 @@ namespace Signing_Core
             return signedXml.CheckSignature(key);
         }
 
-        /*
-         public byte[] sign(byte[] data) throws Exception {
-            Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
-            KeyStore inStore = KeyStore.getInstance("PKCS12");
-            inStore.load(new FileInputStream(packageZipConfiguration.pushPackageSignerCertPath), packageZipConfiguration.pushPackageSignerCertPassword.toCharArray());
-            Key key = inStore.getKey(packageZipConfiguration.pushPackageSignerCertName, packageZipConfiguration.pushPackageSignerCertPassword.toCharArray());
-            PrivateKey privateKey = RSAPrivateKeyImpl.parseKey(new DerValue(key.getEncoded()));
-            Certificate certificate = inStore.getCertificate(packageZipConfiguration.pushPackageSignerCertName);
-            X509CertificateHolder certificateHolder = new X509CertificateHolder(certificate.getEncoded());
-            List certList = new ArrayList();
-            //Data to sign
-            CMSTypedData msg = new CMSProcessableByteArray(data);
-            //Adding the X509 Certificate
-            certList.add(certificateHolder);
-            Store certs = new JcaCertStore(certList);
-            CMSSignedDataGenerator gen = new CMSSignedDataGenerator();
-            //Initializing the the BC's Signer
-            ContentSigner sha1Signer = new JcaContentSignerBuilder("SHA1withRSA").setProvider("BC").build(privateKey);
-            gen.addSignerInfoGenerator(new JcaSignerInfoGeneratorBuilder(new JcaDigestCalculatorProviderBuilder().setProvider("BC").build()).build(sha1Signer, certificateHolder));
-            //adding the certificate
-            gen.addCertificates(certs);
-            //Getting the signed data
-            CMSSignedData sigData = gen.generate(msg, false);
-            return sigData.getEncoded();
-        }
-         */
-
-        public static void signCMS(string originalFile, string outputSignatureFile)
+        public static void BouncyCastle_signCMS(string originalFile, string signedFile)
         {
             var pkcs12Store = new Pkcs12Store();
             using (var keyStream = new FileStream(pfxFile, FileMode.Open, FileAccess.Read))
@@ -199,11 +131,11 @@ namespace Signing_Core
                     originDataStream.CopyTo(signing);
                 }
                 signing.Close();
-                File.WriteAllBytes(outputSignatureFile, bOut.ToArray());
+                File.WriteAllBytes(signedFile, bOut.ToArray());
             }
         }
 
-        public static bool verifyCMS(string dataFile, string signedDataFile)
+        public static bool BouncyCastle_VerifyCMS(string dataFile, string signedDataFile)
         {
             bool result = false;
 
@@ -268,6 +200,57 @@ namespace Signing_Core
             }
 
             return microsoftCert;
+        }
+
+        public static void BouncyCastle_EncryptCMS(string rawFilePath, string cipherFilePath)
+        {
+            CmsEnvelopedDataStreamGenerator cmsEnvelopedDataStreamGenerator = new CmsEnvelopedDataStreamGenerator();
+            System.Security.Cryptography.X509Certificates.X509Certificate2 microsoftCert = GetMicrosoftCert();
+            X509Certificate bcCert = DotNetUtilities.FromX509Certificate(microsoftCert);
+            MemoryStream encryptedStream = new MemoryStream();
+            Stream encryptingStream = null;
+
+            cmsEnvelopedDataStreamGenerator.AddKeyTransRecipient(bcCert);
+            encryptingStream = cmsEnvelopedDataStreamGenerator.Open(encryptedStream, CmsEnvelopedDataGenerator.Aes128Cbc);
+            using (FileStream originDataStream = new FileStream(path: rawFilePath, mode: FileMode.OpenOrCreate))
+            {
+                originDataStream.CopyTo(encryptingStream);
+            }
+            encryptingStream.Close();
+            File.WriteAllBytes(path: cipherFilePath, encryptedStream.ToArray());
+        }
+
+        public static void BouncyCastle_DecryptCMS(string cipherFilePath, string decryptedFilePath)
+        {
+            using (var pfxStream = new FileStream(pfxFile, FileMode.Open, FileAccess.Read))
+            {
+                var inputKeyStore = new Pkcs12Store();
+                inputKeyStore.Load(pfxStream, pwd.ToCharArray());
+                var keyAlias = inputKeyStore.Aliases.Cast<string>().FirstOrDefault(n => inputKeyStore.IsKeyEntry(n));
+                AsymmetricKeyParameter priKey = inputKeyStore.GetKey(keyAlias).Key;
+
+                CmsEnvelopedData cmsEnvelopedData = null;
+
+                using (FileStream cipherFileStream = new FileStream(cipherFilePath, mode: FileMode.Open))
+                {
+                    cmsEnvelopedData = new CmsEnvelopedData(cipherFileStream);
+                    RecipientInformationStore recipientInformationStore = cmsEnvelopedData.GetRecipientInfos();
+                    RecipientID recipientID = new RecipientID()
+                    {
+                        SerialNumber = inputKeyStore.GetCertificate(keyAlias).Certificate.SerialNumber,
+                        Issuer = inputKeyStore.GetCertificate(keyAlias).Certificate.IssuerDN
+                    };
+
+                    RecipientInformation recipientInformation = recipientInformationStore.GetFirstRecipient(recipientID);
+                    CmsTypedStream cmsTypedStream = recipientInformation.GetContentStream(priKey);
+
+                    using (FileStream decryptedStream = new FileStream(decryptedFilePath, mode: FileMode.OpenOrCreate))
+                    {
+                        cmsTypedStream.ContentStream.CopyTo(decryptedStream);
+                        cmsTypedStream.ContentStream.Close();
+                    }
+                }
+            }
         }
     }
 }
