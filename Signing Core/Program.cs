@@ -27,14 +27,14 @@ namespace Signing_Core
 
         static void Main(string[] args)
         {
-            BouncyCastle_signCMS(inputFile, signedFile);
+            BouncyCastle_SignCMS(inputFile, signedFile);
             bool res = BouncyCastle_VerifyCMS(inputFile, signedFile);
 
             BouncyCastle_EncryptCMS(inputFile, encryptedFile);
             BouncyCastle_DecryptCMS(encryptedFile, decryptedFile);
         }
 
-        public static void MicrosoftSignXml(XmlDocument xmlDoc, RSA rsaKey)
+        public static void Microsoft_SignXml(XmlDocument xmlDoc, RSA rsaKey)
         {
             // Check arguments.
             if (xmlDoc == null)
@@ -70,7 +70,7 @@ namespace Signing_Core
             xmlDoc.DocumentElement.AppendChild(xmlDoc.ImportNode(xmlDigitalSignature, true));
         }
 
-        public static Boolean MicrosoftVerifyXml(XmlDocument xmlDoc, RSA key)
+        public static Boolean Microsoft_VerifyXml(XmlDocument xmlDoc, RSA key)
         {
             // Check arguments.
             if (xmlDoc == null)
@@ -107,7 +107,7 @@ namespace Signing_Core
             return signedXml.CheckSignature(key);
         }
 
-        public static void BouncyCastle_signCMS(string originalFile, string signedFile)
+        public static void BouncyCastle_SignCMS(string originalFile, string signedFile)
         {
             var pkcs12Store = new Pkcs12Store();
             using (var keyStream = new FileStream(pfxFile, FileMode.Open, FileAccess.Read))
