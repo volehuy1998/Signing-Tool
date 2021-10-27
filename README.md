@@ -8,7 +8,9 @@ Họ tên: Võ Lê Huy</br>
 Mã số: AT131315</br>
 Lớp: AT13P</br>
 Chuyên nghành: An toàn thông tin - An toàn ứng dụng</br>
-Nơi học tập: Học viện Kỹ thuật mật mã
+Nơi học tập: Học viện Kỹ thuật mật mã</br>
+Sđt: (+84)343391748 hay 0343391748</br>
+Email: volehuy.doantotnghiep@gmail.com
 ### Mô tả repo
 **Project Signing Core** là nơi chứa phần lõi mật mã, sau này có thể được build thành module DLL</br>
 **Project Create a basic cert** dùng để tạo chứng thư số pfx (tiêu chuẩn PKCS12)</br>
