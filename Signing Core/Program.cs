@@ -34,7 +34,7 @@ namespace Signing_Core
             BouncyCastle_EncryptCMS(inputFile, encryptedFile);
             BouncyCastle_DecryptCMS(encryptedFile, decryptedFile);
 
-            KeyParameter aesKey = GenerateAesKey(192);
+            byte[] aesKey = GenerateAesKey(192);
             BouncyCastle_EncryptCMS_Key(inputFile, encryptedFile, aesKey);
             BouncyCastle_DecryptCMS_Key(encryptedFile, decryptedFile, aesKey);
         }
@@ -259,23 +259,24 @@ namespace Signing_Core
             }
         }
 
-        public static KeyParameter GenerateAesKey(int size)
+        public static byte[] GenerateAesKey(int size)
         {
-            KeyParameter aesKey = null;
+            byte[] aesKey = null;
             CipherKeyGenerator keyGen = null;
 
             // generate aes key
             keyGen = GeneratorUtilities.GetKeyGenerator("AES");
             keyGen.Init(new KeyGenerationParameters(new SecureRandom(), size));
-            aesKey = ParameterUtilities.CreateKeyParameter("AES", keyGen.GenerateKey());
+            aesKey = keyGen.GenerateKey();
 
             return aesKey;
         }
 
-        public static void BouncyCastle_EncryptCMS_Key(string rawFilePath, string cipherFilePath, KeyParameter aesKey)
+        public static void BouncyCastle_EncryptCMS_Key(string rawFilePath, string cipherFilePath, byte[] aesKeyRaw)
         {
-            int aesKeySize = aesKey.GetKey().Length * 8;
+            KeyParameter aesKey = ParameterUtilities.CreateKeyParameter("AES", aesKeyRaw);
             byte[] kekId = new byte[] { 1, 2, 3, 4, 5 };
+            int aesKeySize = aesKeyRaw.Length * 8;
             CmsEnvelopedDataStreamGenerator cmsEnvelopedDataStreamGenerator = new CmsEnvelopedDataStreamGenerator();
             cmsEnvelopedDataStreamGenerator.AddKekRecipient($"AES{aesKeySize}", aesKey, kekId);
 
@@ -295,8 +296,10 @@ namespace Signing_Core
             }
         }
 
-        public static void BouncyCastle_DecryptCMS_Key(string cipherFilePath, string decryptedFilePath, KeyParameter aesKey)
+        public static void BouncyCastle_DecryptCMS_Key(string cipherFilePath, string decryptedFilePath, byte[] aesKeyRaw)
         {
+            KeyParameter aesKey = ParameterUtilities.CreateKeyParameter("AES", aesKeyRaw);
+
             using (FileStream cipherStream = new FileStream(cipherFilePath, FileMode.Open, FileAccess.Read))
             using (FileStream originalStream = new FileStream(inputFile, FileMode.Open, FileAccess.Read))
             using (FileStream decryptedStream = new FileStream(decryptedFilePath, FileMode.Create, FileAccess.Write))
