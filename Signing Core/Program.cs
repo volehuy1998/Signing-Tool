@@ -301,7 +301,6 @@ namespace Signing_Core
             KeyParameter aesKey = ParameterUtilities.CreateKeyParameter("AES", aesKeyRaw);
 
             using (FileStream cipherStream = new FileStream(cipherFilePath, FileMode.Open, FileAccess.Read))
-            using (FileStream originalStream = new FileStream(inputFile, FileMode.Open, FileAccess.Read))
             using (FileStream decryptedStream = new FileStream(decryptedFilePath, FileMode.Create, FileAccess.Write))
             {
                 // import cipher
