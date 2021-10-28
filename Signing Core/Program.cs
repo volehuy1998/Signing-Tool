@@ -13,6 +13,7 @@ using Org.BouncyCastle.Cms;
 using Org.BouncyCastle.X509;
 using Org.BouncyCastle.Security;
 using System.Collections;
+using Org.BouncyCastle.Crypto.Parameters;
 
 namespace Signing_Core
 {
@@ -32,6 +33,10 @@ namespace Signing_Core
 
             BouncyCastle_EncryptCMS(inputFile, encryptedFile);
             BouncyCastle_DecryptCMS(encryptedFile, decryptedFile);
+
+            KeyParameter aesKey = GenerateAesKey(192);
+            BouncyCastle_EncryptCMS_Key(inputFile, encryptedFile, aesKey);
+            BouncyCastle_DecryptCMS_Key(encryptedFile, decryptedFile, aesKey);
         }
 
         public static void Microsoft_SignXml(XmlDocument xmlDoc, RSA rsaKey)
@@ -253,5 +258,63 @@ namespace Signing_Core
                 }
             }
         }
+
+        public static KeyParameter GenerateAesKey(int size)
+        {
+            KeyParameter aesKey = null;
+            CipherKeyGenerator keyGen = null;
+
+            // generate aes key
+            keyGen = GeneratorUtilities.GetKeyGenerator("AES");
+            keyGen.Init(new KeyGenerationParameters(new SecureRandom(), size));
+            aesKey = ParameterUtilities.CreateKeyParameter("AES", keyGen.GenerateKey());
+
+            return aesKey;
+        }
+
+        public static void BouncyCastle_EncryptCMS_Key(string rawFilePath, string cipherFilePath, KeyParameter aesKey)
+        {
+            int aesKeySize = aesKey.GetKey().Length * 8;
+            byte[] kekId = new byte[] { 1, 2, 3, 4, 5 };
+            CmsEnvelopedDataStreamGenerator cmsEnvelopedDataStreamGenerator = new CmsEnvelopedDataStreamGenerator();
+            cmsEnvelopedDataStreamGenerator.AddKekRecipient($"AES{aesKeySize}", aesKey, kekId);
+
+            using (FileStream originalDataStream = new FileStream(rawFilePath, FileMode.Open, FileAccess.Read))
+            using (FileStream encryptedStream = new FileStream(cipherFilePath, FileMode.Create, FileAccess.Write))
+            {
+                // get aes mode
+                string aesModeString = null;
+                if      (aesKeySize == 128) aesModeString = CmsEnvelopedDataGenerator.Aes128Cbc;
+                else if (aesKeySize == 192) aesModeString = CmsEnvelopedDataGenerator.Aes192Cbc;
+                else if (aesKeySize == 256) aesModeString = CmsEnvelopedDataGenerator.Aes256Cbc;
+
+                // encrypt
+                Stream encryptingStream = cmsEnvelopedDataStreamGenerator.Open(encryptedStream, aesModeString);
+                originalDataStream.CopyTo(encryptingStream);
+                encryptingStream.Close();
+            }
+        }
+
+        public static void BouncyCastle_DecryptCMS_Key(string cipherFilePath, string decryptedFilePath, KeyParameter aesKey)
+        {
+            using (FileStream cipherStream = new FileStream(cipherFilePath, FileMode.Open, FileAccess.Read))
+            using (FileStream originalStream = new FileStream(inputFile, FileMode.Open, FileAccess.Read))
+            using (FileStream decryptedStream = new FileStream(decryptedFilePath, FileMode.Create, FileAccess.Write))
+            {
+                // import cipher
+                CmsEnvelopedDataParser cmsEnvelopedDataParser = new CmsEnvelopedDataParser(cipherStream);
+                RecipientInformationStore recipientInformationStore = cmsEnvelopedDataParser.GetRecipientInfos();
+
+                ICollection recipients = recipientInformationStore.GetRecipients();
+                foreach (RecipientInformation recipient in recipients)
+                {
+                    // decrypt
+                    CmsTypedStream decryptingStream = recipient.GetContentStream(aesKey);
+                    decryptingStream.ContentStream.CopyTo(decryptedStream);
+                    decryptingStream.ContentStream.Close();
+                }
+            }
+        }
+
     }
 }
