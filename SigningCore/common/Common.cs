@@ -11,8 +11,8 @@ namespace SigningCore
 {
     public class Common
     {
-        public static string PfxFile = @"C:\Users\voleh\OneDrive\Chữ ký số\Võ Lê Huy.pfx";
-        public static string PfxPwd = "Xiangyu98@";
+        public static string PfxFile = @".pfx";
+        public static string PfxPwd = "";
         public static string InputFile = @"data test/data.txt";
         public static string InputXmlFile = "data test/books.xml";
         public static string DiffXmlFile = "data test/diff.xml";
