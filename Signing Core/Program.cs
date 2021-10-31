@@ -118,7 +118,9 @@ namespace Signing_Core
             X509Certificate bouncycastle_cert = null;
             var pkcs12Store = new Pkcs12Store();
 
-            using (var keyStream = new FileStream(pfxFile, FileMode.Open, FileAccess.Read))
+            using (FileStream keyStream = new FileStream(pfxFile, FileMode.Open, FileAccess.Read))
+            using (FileStream signedStream = new FileStream(signedFile, mode: FileMode.Create, access: FileAccess.Write))
+            using (FileStream originDataStream = new FileStream(originalFile, FileMode.Open, access: FileAccess.Read))
             {
                 var inputKeyStore = new Pkcs12Store();
                 inputKeyStore.Load(keyStream, pwd.ToCharArray());
@@ -127,20 +129,18 @@ namespace Signing_Core
                 bouncycastle_cert = inputKeyStore.GetCertificate(keyAlias).Certificate;
 
                 CmsSignedDataStreamGenerator gen = new CmsSignedDataStreamGenerator();
+                // add one signer
                 gen.AddSigner(privateKey: privateKey, cert: bouncycastle_cert, CmsSignedDataGenerator.DigestSha256);
 
-                MemoryStream signedStream = new MemoryStream();
-                Stream signingStream = gen.Open(signedStream);
-                using (FileStream originDataStream = new FileStream(originalFile, FileMode.OpenOrCreate))
+                using (Stream signingStream = gen.Open(signedStream))
                 {
+                    // sign
                     originDataStream.CopyTo(signingStream);
                 }
-                signingStream.Close();
-                File.WriteAllBytes(signedFile, signedStream.ToArray());
             }
         }
 
-        public static bool BouncyCastle_VerifyCMS(string dataFile, string signatureFile)
+        public static bool BouncyCastle_VerifyCMS(string dataFile, string signedFile)
         {
             bool result = false;
 
@@ -158,16 +158,15 @@ namespace Signing_Core
                     dataStream.Close();
                 }
 
-                using (FileStream sigStream = new FileStream(signatureFile, mode: FileMode.Open, access: FileAccess.Read))
+                using (FileStream sigStream = new FileStream(signedFile, mode: FileMode.Open, access: FileAccess.Read))
+                using (FileStream dataStream = new FileStream(dataFile, mode: FileMode.Open, access: FileAccess.Read))
                 {
                     CmsTypedStream cmsDataTypedStream = null;
                     CmsSignedDataParser cmsSignedDataParser = null;
-                    using (FileStream dataStream = new FileStream(dataFile, mode: FileMode.Open, access: FileAccess.Read))
-                    {
-                        cmsDataTypedStream = new CmsTypedStream(dataStream);
-                        cmsSignedDataParser = new CmsSignedDataParser(cmsDataTypedStream, sigStream);
-                        cmsSignedDataParser.GetSignedContent().Drain();
-                    }
+
+                    cmsDataTypedStream = new CmsTypedStream(dataStream);
+                    cmsSignedDataParser = new CmsSignedDataParser(cmsDataTypedStream, sigStream);
+                    cmsSignedDataParser.GetSignedContent().Drain();
 
                     SignerInformationStore signerInfos = cmsSignedDataParser.GetSignerInfos();
                     if (signerInfos != null && signerInfos.Count > 0)
