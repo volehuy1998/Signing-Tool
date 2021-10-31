@@ -338,7 +338,7 @@ namespace Signing_Core
             }
         }
 
-        public static void Microsoft_EncryptXML_Sym(XmlDocument Doc, List<string> ElementNames, SymmetricAlgorithm Key)
+        public static void Microsoft_EncryptXML_Sym(XmlDocument Doc, List<string> ElementNames, SymmetricAlgorithm symAlgo)
         {
             EncryptedXml xmlEncryptor = new EncryptedXml();
             List<Tuple<XmlElement, EncryptedData>> targetReplace = new List<Tuple<XmlElement, EncryptedData>>();
@@ -353,34 +353,10 @@ namespace Signing_Core
                     foreach (XmlNode xmlNode in xmlNodeList)
                     {
                         XmlElement elementToEncrypt = xmlNode as XmlElement;
-                        if (elementToEncrypt != null)
+                        EncryptedData encryptDataElem = Helper.EncryptXmlElement(xmlEncryptor, elementToEncrypt, symAlgo);
+                        if (encryptDataElem != null)
                         {
-                            // target element ok
-
-                            // encrypt
-                            byte[] encryptedElement = xmlEncryptor.EncryptData(elementToEncrypt, Key, false);
-
-                            if (Key is Aes)
-                            {
-                                // aes algo ok
-
-                                string algo = Helper.GetXmlAlgoEncrypt(Key);
-
-                                EncryptedData encryptDataElem = new EncryptedData();
-                                encryptDataElem.Type = EncryptedXml.XmlEncElementUrl;
-                                encryptDataElem.EncryptionMethod = new EncryptionMethod(algo);
-                                encryptDataElem.CipherData.CipherValue = Encoding.UTF8.GetBytes(Convert.ToBase64String(encryptedElement));
-
-                                targetReplace.Add(Tuple.Create(elementToEncrypt, encryptDataElem));
-                            }
-                            else
-                            {
-                                // incorrect aes algo
-                            }
-                        }
-                        else
-                        {
-                            // incorrect type xml elem
+                            targetReplace.Add(Tuple.Create(elementToEncrypt, encryptDataElem));
                         }
                     }
 
@@ -411,22 +387,10 @@ namespace Signing_Core
                 foreach (XmlElement xmlElement in xmlNodeList)
                 {
                     XmlElement encryptedElement = xmlElement as XmlElement;
-                    if (encryptedElement != null)
+                    byte[] decryptedData = Helper.DecryptXmlElement(xmlEncryptor, encryptedElement, Alg);
+                    if (decryptedData != null && decryptedData.Length > 0)
                     {
-                        // correct type xml element
-
-                        EncryptedData encryptedDataElem = new EncryptedData();
-                        encryptedDataElem.LoadXml(encryptedElement);
-                        encryptedDataElem.CipherData.CipherValue = Convert.FromBase64String(Encoding.UTF8.GetString(encryptedDataElem.CipherData.CipherValue));
-
-                        // decrypt
-                        byte[] decryptedData = xmlEncryptor.DecryptData(encryptedDataElem, Alg);
-
                         targetReplace.Add(Tuple.Create(encryptedElement, decryptedData));
-                    }
-                    else
-                    {
-                        // incorrect type xml elem
                     }
                 }
 

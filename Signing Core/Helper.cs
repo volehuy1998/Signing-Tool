@@ -7,6 +7,7 @@ using System.Security.Cryptography;
 using System.Security.Cryptography.Xml;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml;
 
 namespace Signing_Core
 {
@@ -59,5 +60,64 @@ namespace Signing_Core
 
             return res;
         }
+
+        public static EncryptedData EncryptXmlElement(EncryptedXml xmlEncryptor, XmlElement elementToEncrypt, SymmetricAlgorithm symAlgo)
+        {
+            EncryptedData encryptedDataElem = null;
+
+            if (elementToEncrypt != null && !string.IsNullOrWhiteSpace(elementToEncrypt.InnerText))
+            {
+                // target element ok
+
+                // encrypt
+                byte[] encryptedElement = xmlEncryptor.EncryptData(elementToEncrypt, symAlgo, false);
+
+                if (symAlgo is Aes)
+                {
+                    // aes algo ok
+
+                    string algo = GetXmlAlgoEncrypt(symAlgo);
+
+                    encryptedDataElem = new EncryptedData();
+                    encryptedDataElem.Type = EncryptedXml.XmlEncElementUrl;
+                    encryptedDataElem.EncryptionMethod = new EncryptionMethod(algo);
+                    encryptedDataElem.CipherData.CipherValue = Encoding.UTF8.GetBytes(Convert.ToBase64String(encryptedElement));
+                }
+                else
+                {
+                    // incorrect aes algo
+                }
+            }
+            else
+            {
+                // incorrect type xml elem
+            }
+
+            return encryptedDataElem;
+        }
+
+        public static byte[] DecryptXmlElement(EncryptedXml xmlEncryptor, XmlElement elementToDecrypt, SymmetricAlgorithm symAlgo)
+        {
+            byte[] decryptedData = null;
+
+            if (elementToDecrypt != null && !string.IsNullOrWhiteSpace(elementToDecrypt.InnerText))
+            {
+                // correct type xml element
+
+                EncryptedData encryptedDataElem = new EncryptedData();
+                encryptedDataElem.LoadXml(elementToDecrypt);
+                encryptedDataElem.CipherData.CipherValue = Convert.FromBase64String(Encoding.UTF8.GetString(encryptedDataElem.CipherData.CipherValue));
+
+                // decrypt
+                decryptedData = xmlEncryptor.DecryptData(encryptedDataElem, symAlgo);
+            }
+            else
+            {
+                // incorrect type xml elem
+            }
+
+            return decryptedData;
+        }
+
     }
 }
