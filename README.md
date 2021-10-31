@@ -12,7 +12,8 @@ Nơi học tập: Học viện Kỹ thuật mật mã</br>
 Sđt: (+84)343391748 hay 0343391748</br>
 Email: volehuy.doantotnghiep@gmail.com
 ### Mô tả repo
-**Project Signing Core** là nơi chứa phần lõi mật mã, sau này có thể được build thành module DLL</br>
+**Project SigningCore** là nơi chứa phần lõi mật mã, được build thành module DLL</br>
+**Project SigningCoreTest** là nơi thực hiện test</br>
 **Project Create a basic cert** dùng để tạo chứng thư số pfx (tiêu chuẩn PKCS12)</br>
 **Project c List personal certificates** được tạo chỉ để tìm hiểu thêm, ngôn ngữ C++ dùng để load chứng chỉ trong Microsoft Store loại Personal.
 ### Thư viện được sử dụng
