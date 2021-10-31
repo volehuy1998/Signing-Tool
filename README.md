@@ -17,5 +17,5 @@ Email: volehuy.doantotnghiep@gmail.com
 **Project Create a basic cert** dùng để tạo chứng thư số pfx (tiêu chuẩn PKCS12)</br>
 **Project c List personal certificates** được tạo chỉ để tìm hiểu thêm, ngôn ngữ C++ dùng để load chứng chỉ trong Microsoft Store loại Personal.
 ### Thư viện được sử dụng
-Bouncy Castle - Thư viện ngoài hệ thống v1.9.0 dành cho ngôn ngữ C#</br>
+Portable Bouncy Castle - Thư viện ngoài hệ thống v1.9.0 dành cho ngôn ngữ C#</br>
 windows và cryptuiapi - Thư viện hệ thống microsoft dành cho ngôn ngữ C++
