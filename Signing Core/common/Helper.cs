@@ -1,7 +1,11 @@
-﻿using Org.BouncyCastle.Crypto;
+﻿using Microsoft.XmlDiffPatch;
+using Org.BouncyCastle.Crypto;
+using Org.BouncyCastle.Pkcs;
 using Org.BouncyCastle.Security;
+using Org.BouncyCastle.Utilities;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Security.Cryptography.Xml;
@@ -9,7 +13,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
 
-namespace Signing_Core
+namespace Core
 {
     public class Helper
     {
@@ -119,5 +123,65 @@ namespace Signing_Core
             return decryptedData;
         }
 
+        public static Pkcs12Store GetPkcs12Store(string pfxPath, string pwd)
+        {
+            Pkcs12Store pkcs12Store = null;
+
+            using (FileStream keyStream = new FileStream(pfxPath, FileMode.Open, FileAccess.Read))
+            {
+                pkcs12Store = new Pkcs12Store();
+                pkcs12Store.Load(keyStream, pwd.ToCharArray());
+            }
+
+            return pkcs12Store;
+        }
+
+        public static string GetAliasFromPkcs12Store(Pkcs12Store pkcs12Store)
+        {
+            string alias = pkcs12Store.Aliases.Cast<string>().FirstOrDefault(p => pkcs12Store.IsKeyEntry(p));
+
+            return alias;
+        }
+
+        public static bool CompareFiles(string file1, string file2)
+        {
+            bool result = false;
+            byte[] expectedMd5 = null;
+            byte[] digestMd5 = null;
+
+            using (var md5 = System.Security.Cryptography.MD5.Create())
+            {
+                using (var rawDataStream = File.OpenRead(file1))
+                {
+                    expectedMd5 = md5.ComputeHash(rawDataStream);
+                }
+            }
+
+            using (var md5 = System.Security.Cryptography.MD5.Create())
+            {
+                using (var decryptedStream = File.OpenRead(file2))
+                {
+                    digestMd5 = md5.ComputeHash(decryptedStream);
+                }
+            }
+
+            result = Arrays.AreEqual(expectedMd5, digestMd5);
+
+            return result;
+        }
+
+        public static bool GenerateDiffGram(string originalFile, string finalFile)
+        {
+            bool result = false;
+
+            XmlWriterSettings settings = new XmlWriterSettings() { Indent = true };
+            using (XmlWriter diff = XmlWriter.Create(Common.DiffXmlFile, settings))
+            {
+                XmlDiff xmldiff = new XmlDiff(XmlDiffOptions.IgnoreComments | XmlDiffOptions.IgnoreWhitespace);
+                result = xmldiff.Compare(originalFile, finalFile, false, diff);
+            }
+
+            return result;
+        }
     }
 }
