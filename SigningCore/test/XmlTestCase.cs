@@ -11,7 +11,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
 
-namespace Core.test
+namespace SigningCore.test
 {
     public class XmlTestCase : AbstractTestCase
     {
@@ -39,7 +39,7 @@ namespace Core.test
                 string alias = Helper.GetAliasFromPkcs12Store(pkcs12Store);
                 AsymmetricKeyEntry keyEntry = pkcs12Store.GetKey(alias);
                 privateKey = DotNetUtilities.ToRSA(keyEntry.Key as RsaPrivateCrtKeyParameters);
-                signedXml = Core.Xml.Microsoft_SignXml(inputXmlDoc, privateKey);
+                signedXml = SigningCore.Xml.Microsoft_SignXml(inputXmlDoc, privateKey);
                 signedXml.Save(Common.SignedXmlFile);
 
                 // verify
@@ -47,7 +47,7 @@ namespace Core.test
                 publickey = microsoftCert.PublicKey.Key as RSA;
                 signedXml = new XmlDocument();
                 signedXml.Load(Common.SignedXmlFile);
-                result = Core.Xml.Microsoft_VerifyXml(signedXml, publickey);
+                result = SigningCore.Xml.Microsoft_VerifyXml(signedXml, publickey);
             }
             catch (Exception ex)
             {
@@ -74,13 +74,13 @@ namespace Core.test
                     // encrypt
                     inputXmlDoc = new XmlDocument();
                     inputXmlDoc.Load(Common.InputXmlFile);
-                    encryptedXmlDoc = Core.Xml.Microsoft_EncryptXML_Sym(inputXmlDoc, new List<string>() { "author" }, aesAlg);
+                    encryptedXmlDoc = SigningCore.Xml.Microsoft_EncryptXML_Sym(inputXmlDoc, new List<string>() { "author" }, aesAlg);
                     encryptedXmlDoc.Save(Common.EncryptedXmlFile);
 
                     // decrypt
                     encryptedXmlDoc = new XmlDocument();
                     encryptedXmlDoc.Load(Common.EncryptedXmlFile);
-                    decryptedXmlDoc = Core.Xml.Microsoft_DecryptXML_Sym(encryptedXmlDoc, aesAlg);
+                    decryptedXmlDoc = SigningCore.Xml.Microsoft_DecryptXML_Sym(encryptedXmlDoc, aesAlg);
                     encryptedXmlDoc.Save(Common.DecryptedXmlFile);
 
                     result = Helper.GenerateDiffGram(Common.InputXmlFile, Common.DecryptedXmlFile);

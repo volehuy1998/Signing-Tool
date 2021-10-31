@@ -1,4 +1,4 @@
-﻿using Core;
+﻿using SigningCore;
 using Org.BouncyCastle.Cms;
 using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Crypto.Parameters;
@@ -14,7 +14,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Core
+namespace SigningCore
 {
     class Cms
     {

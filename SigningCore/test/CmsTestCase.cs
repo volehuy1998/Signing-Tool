@@ -11,9 +11,9 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Core.test
+namespace SigningCore.test
 {
-    public class CmsTesterCase : AbstractTestCase
+    public class CmsTestCase : AbstractTestCase
     {
         public override void Test()
         {
@@ -27,12 +27,12 @@ namespace Core.test
             try
             {
                 // sign
-                Core.Cms.BouncyCastle_SignCMS(Common.InputFile, Common.SignedFile, Common.PfxFile, Common.PfxPwd);
+                SigningCore.Cms.BouncyCastle_SignCMS(Common.InputFile, Common.SignedFile, Common.PfxFile, Common.PfxPwd);
 
                 // verify
                 System.Security.Cryptography.X509Certificates.X509Certificate2 microsoftCert = Helper.GetMicrosoftCert();
                 X509Certificate bouncycastleCert = DotNetUtilities.FromX509Certificate(microsoftCert);
-                result = Core.Cms.BouncyCastle_VerifyCMS(Common.InputFile, Common.SignedFile, bouncycastleCert);
+                result = SigningCore.Cms.BouncyCastle_VerifyCMS(Common.InputFile, Common.SignedFile, bouncycastleCert);
             }
             catch (Exception ex)
             {
@@ -50,8 +50,8 @@ namespace Core.test
             {
                 byte[] aesKey = Helper.GenerateAesKey(192);
 
-                Core.Cms.BouncyCastle_EncryptCMS_Sym(Common.InputFile, Common.EncryptedFile, aesKey);
-                Core.Cms.BouncyCastle_DecryptCMS_Sym(Common.EncryptedFile, Common.DecryptedFile, aesKey);
+                SigningCore.Cms.BouncyCastle_EncryptCMS_Sym(Common.InputFile, Common.EncryptedFile, aesKey);
+                SigningCore.Cms.BouncyCastle_DecryptCMS_Sym(Common.EncryptedFile, Common.DecryptedFile, aesKey);
 
                 result = Helper.CompareFiles(Common.InputFile, Common.DecryptedFile);
             }

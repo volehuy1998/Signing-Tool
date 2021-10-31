@@ -1,4 +1,5 @@
-﻿using Core.test;
+﻿using SigningCore.test;
+using SigningCore.test;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,7 +14,8 @@ namespace SigningCoreTest
         {
             Tester tester = new Tester();
             tester.Add(typeof(XmlTestCase));
-            tester.Add(typeof(CmsTesterCase));
+            tester.Add(typeof(CmsTestCase));
+            tester.Add(typeof(JsonTestCase));
 
             tester.Run();
         }

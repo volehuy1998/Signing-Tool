@@ -14,10 +14,10 @@ using Org.BouncyCastle.X509;
 using Org.BouncyCastle.Security;
 using System.Collections;
 using Org.BouncyCastle.Crypto.Parameters;
-using Core.test;
+using SigningCore.test;
 using System.Reflection;
 
-namespace Core
+namespace SigningCore
 {
     class Old
     {

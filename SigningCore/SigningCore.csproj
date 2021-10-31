@@ -59,12 +59,13 @@
   <ItemGroup>
     <Compile Include="src\Cms.cs" />
     <Compile Include="src\Xml.cs" />
-    <Compile Include="test\CmsTesterCase.cs" />
+    <Compile Include="test\CmsTestCase.cs" />
     <Compile Include="common\Common.cs" />
     <Compile Include="common\Helper.cs" />
     <Compile Include="Old.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="test\AbstractTestCase.cs" />
+    <Compile Include="test\JsonTestCase.cs" />
     <Compile Include="test\Tester.cs" />
     <Compile Include="test\XmlTestCase.cs" />
   </ItemGroup>

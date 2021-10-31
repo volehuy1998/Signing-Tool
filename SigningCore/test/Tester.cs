@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Core.test
+namespace SigningCore.test
 {
     public class Tester
     {

@@ -50,18 +50,18 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\SigningCore\SigningCore.csproj">
-      <Project>{fa96234f-765d-45b1-ae25-1bb2b9602690}</Project>
-      <Name>SigningCore</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="data test\books.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="data test\data.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\SigningCore\SigningCore.csproj">
+      <Project>{fa96234f-765d-45b1-ae25-1bb2b9602690}</Project>
+      <Name>SigningCore</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
