@@ -22,6 +22,9 @@ namespace Signing_Core
         private static string pfxFile = @".pfx";
         private static string pwd = "";
         private static string inputFile = @"Xem phim Hồn Ma và Cá Voi Tập 1-End server R.PRO.mp4";
+        private static string inputXmlFile = "data/books.xml";
+        private static string encryptedXmlFile = "data/books_enc.xml";
+        private static string decryptedXmlFile = "data/books_dec.xml";
         private static string signedFile = @"signed-stream.cms";
         private static string encryptedFile = @"encrypted-stream.cms";
         private static string decryptedFile = @"decrypted-stream.cms";
@@ -31,12 +34,26 @@ namespace Signing_Core
             BouncyCastle_SignCMS(inputFile, signedFile);
             bool res = BouncyCastle_VerifyCMS(inputFile, signedFile);
 
-            BouncyCastle_EncryptCMS(inputFile, encryptedFile);
-            BouncyCastle_DecryptCMS(encryptedFile, decryptedFile);
+            BouncyCastle_EncryptCMS_Asym(inputFile, encryptedFile);
+            BouncyCastle_DecryptCMS_Asym(encryptedFile, decryptedFile);
 
-            byte[] aesKey = GenerateAesKey(192);
+            byte[] aesKey = Helper.GenerateAesKey(192);
             BouncyCastle_EncryptCMS_Key(inputFile, encryptedFile, aesKey);
             BouncyCastle_DecryptCMS_Key(encryptedFile, decryptedFile, aesKey);
+
+            using (Aes aesAlg = Aes.Create())
+            {
+                aesAlg.Key = aesKey;
+                aesAlg.Mode = CipherMode.CBC;
+                XmlDocument inputXmlDoc = new XmlDocument();
+                inputXmlDoc.Load(inputXmlFile);
+                Microsoft_EncryptXML_Sym(inputXmlDoc, new List<string>() { "author" }, aesAlg);
+
+                XmlDocument encryptedXmlDoc = new XmlDocument();
+                encryptedXmlDoc.Load(encryptedXmlFile);
+                Microsoft_DecryptXML_Sym(encryptedXmlDoc, aesAlg);
+
+            }
         }
 
         public static void Microsoft_SignXml(XmlDocument xmlDoc, RSA rsaKey)
@@ -180,7 +197,7 @@ namespace Signing_Core
 
                             // verify one signer
                             SignerInformation signer = signers.FirstOrDefault();
-                            microsoftCert = GetMicrosoftCert();
+                            microsoftCert = Helper.GetMicrosoftCert();
                             bouncycastle_cert = DotNetUtilities.FromX509Certificate(microsoftCert);
                             publicKey = bouncycastle_cert.GetPublicKey();
 
@@ -223,30 +240,10 @@ namespace Signing_Core
             return result;
         }
 
-        public static System.Security.Cryptography.X509Certificates.X509Certificate2 GetMicrosoftCert()
-        {
-            System.Security.Cryptography.X509Certificates.X509Certificate2 microsoftCert = null;
-
-            System.Security.Cryptography.X509Certificates.X509Store store = new System.Security.Cryptography.X509Certificates.X509Store("MY", System.Security.Cryptography.X509Certificates.StoreLocation.CurrentUser);
-            store.Open(System.Security.Cryptography.X509Certificates.OpenFlags.ReadOnly | System.Security.Cryptography.X509Certificates.OpenFlags.OpenExistingOnly);
-            System.Security.Cryptography.X509Certificates.X509Certificate2Collection collection = store.Certificates;
-
-            System.Security.Cryptography.X509Certificates.X509Certificate2Collection certs = System.Security.Cryptography.X509Certificates.X509Certificate2UI.SelectFromCollection(
-                collection, "Select", "Select a certificate to sign",
-                System.Security.Cryptography.X509Certificates.X509SelectionFlag.MultiSelection);
-
-            if (certs != null && certs.Count >= 1)
-            {
-                microsoftCert = certs[0];
-            }
-
-            return microsoftCert;
-        }
-
-        public static void BouncyCastle_EncryptCMS(string rawFilePath, string cipherFilePath)
+        public static void BouncyCastle_EncryptCMS_Asym(string rawFilePath, string cipherFilePath)
         {
             CmsEnvelopedDataStreamGenerator cmsEnvelopedDataStreamGenerator = new CmsEnvelopedDataStreamGenerator();
-            System.Security.Cryptography.X509Certificates.X509Certificate2 microsoftCert = GetMicrosoftCert();
+            System.Security.Cryptography.X509Certificates.X509Certificate2 microsoftCert = Helper.GetMicrosoftCert();
             X509Certificate bouncycastle_cert = DotNetUtilities.FromX509Certificate(microsoftCert);
             MemoryStream encryptedStream = new MemoryStream();
             Stream encryptingStream = null;
@@ -261,7 +258,7 @@ namespace Signing_Core
             File.WriteAllBytes(path: cipherFilePath, encryptedStream.ToArray());
         }
 
-        public static void BouncyCastle_DecryptCMS(string cipherFilePath, string decryptedFilePath)
+        public static void BouncyCastle_DecryptCMS_Asym(string cipherFilePath, string decryptedFilePath)
         {
             CmsEnvelopedData cmsCipherData = null;
             AsymmetricKeyParameter privateKey = null;
@@ -293,19 +290,6 @@ namespace Signing_Core
                     }
                 }
             }
-        }
-
-        public static byte[] GenerateAesKey(int size)
-        {
-            byte[] aesKey = null;
-            CipherKeyGenerator keyGen = null;
-
-            // generate aes key
-            keyGen = GeneratorUtilities.GetKeyGenerator("AES");
-            keyGen.Init(new KeyGenerationParameters(new SecureRandom(), size));
-            aesKey = keyGen.GenerateKey();
-
-            return aesKey;
         }
 
         public static void BouncyCastle_EncryptCMS_Key(string rawFilePath, string cipherFilePath, byte[] aesKeyRaw)
@@ -354,5 +338,110 @@ namespace Signing_Core
             }
         }
 
+        public static void Microsoft_EncryptXML_Sym(XmlDocument Doc, List<string> ElementNames, SymmetricAlgorithm Key)
+        {
+            EncryptedXml xmlEncryptor = new EncryptedXml();
+            List<Tuple<XmlElement, EncryptedData>> targetReplace = new List<Tuple<XmlElement, EncryptedData>>();
+
+            foreach (string ElementName in ElementNames)
+            {
+                XmlNodeList xmlNodeList = Doc.GetElementsByTagName(ElementName);
+                if (xmlNodeList != null && xmlNodeList.Count > 0)
+                {
+                    // found target elem list
+
+                    foreach (XmlNode xmlNode in xmlNodeList)
+                    {
+                        XmlElement elementToEncrypt = xmlNode as XmlElement;
+                        if (elementToEncrypt != null)
+                        {
+                            // target element ok
+
+                            // encrypt
+                            byte[] encryptedElement = xmlEncryptor.EncryptData(elementToEncrypt, Key, false);
+
+                            if (Key is Aes)
+                            {
+                                // aes algo ok
+
+                                string algo = Helper.GetXmlAlgoEncrypt(Key);
+
+                                EncryptedData encryptDataElem = new EncryptedData();
+                                encryptDataElem.Type = EncryptedXml.XmlEncElementUrl;
+                                encryptDataElem.EncryptionMethod = new EncryptionMethod(algo);
+                                encryptDataElem.CipherData.CipherValue = Encoding.UTF8.GetBytes(Convert.ToBase64String(encryptedElement));
+
+                                targetReplace.Add(Tuple.Create(elementToEncrypt, encryptDataElem));
+                            }
+                            else
+                            {
+                                // incorrect aes algo
+                            }
+                        }
+                        else
+                        {
+                            // incorrect type xml elem
+                        }
+                    }
+
+                    foreach(var t in targetReplace)
+                    {
+                        // replace elem
+                        EncryptedXml.ReplaceElement(t.Item1, t.Item2, false);
+                    }
+                }
+                else
+                {
+                    // not found any node from element name
+                }
+            }
+            Doc.Save(encryptedXmlFile);
+        }
+
+        public static void Microsoft_DecryptXML_Sym(XmlDocument Doc, SymmetricAlgorithm Alg)
+        {
+            EncryptedXml xmlEncryptor = new EncryptedXml();
+            List<Tuple<XmlElement, byte[]>> targetReplace = new List<Tuple<XmlElement, byte[]>>();
+            XmlNodeList xmlNodeList = Doc.GetElementsByTagName("EncryptedData");
+
+            if (xmlNodeList != null && xmlNodeList.Count > 0)
+            {
+                // found elems
+
+                foreach (XmlElement xmlElement in xmlNodeList)
+                {
+                    XmlElement encryptedElement = xmlElement as XmlElement;
+                    if (encryptedElement != null)
+                    {
+                        // correct type xml element
+
+                        EncryptedData encryptedDataElem = new EncryptedData();
+                        encryptedDataElem.LoadXml(encryptedElement);
+                        encryptedDataElem.CipherData.CipherValue = Convert.FromBase64String(Encoding.UTF8.GetString(encryptedDataElem.CipherData.CipherValue));
+
+                        // decrypt
+                        byte[] decryptedData = xmlEncryptor.DecryptData(encryptedDataElem, Alg);
+
+                        targetReplace.Add(Tuple.Create(encryptedElement, decryptedData));
+                    }
+                    else
+                    {
+                        // incorrect type xml elem
+                    }
+                }
+
+                foreach(var t in targetReplace)
+                {
+                    // replace elem
+                    xmlEncryptor.ReplaceData(t.Item1, t.Item2);
+                }
+            }
+            else
+            {
+                // not found any elem names
+            }
+
+            Doc.Save(decryptedXmlFile);
+        }
     }
 }
