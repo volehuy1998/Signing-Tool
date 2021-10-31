@@ -6,8 +6,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{FA96234F-765D-45B1-AE25-1BB2B9602690}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>Signing_Core</RootNamespace>
-    <AssemblyName>Signing Core</AssemblyName>
+    <RootNamespace>SigningCore</RootNamespace>
+    <AssemblyName>SigningCore</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
