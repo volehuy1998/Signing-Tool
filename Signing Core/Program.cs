@@ -130,7 +130,7 @@ namespace Signing_Core
                 gen.AddSigner(privateKey: privateKey, cert: bouncycastle_cert, CmsSignedDataGenerator.DigestSha256);
 
                 MemoryStream signedStream = new MemoryStream();
-                Stream signingStream = gen.Open(signedStream, true);
+                Stream signingStream = gen.Open(signedStream);
                 using (FileStream originDataStream = new FileStream(originalFile, FileMode.OpenOrCreate))
                 {
                     originDataStream.CopyTo(signingStream);
@@ -140,42 +140,79 @@ namespace Signing_Core
             }
         }
 
-        public static bool BouncyCastle_VerifyCMS(string dataFile, string signedDataFile)
+        public static bool BouncyCastle_VerifyCMS(string dataFile, string signatureFile)
         {
             bool result = false;
 
             try
             {
-                byte[] digestFromReceivedData = new byte[32];
-                byte[] signedData = null;
+                byte[] digest = null;
                 System.Security.Cryptography.X509Certificates.X509Certificate2 microsoftCert = null;// GetMicrosoftCert();
                 X509Certificate bouncycastle_cert = null;// DotNetUtilities.FromX509Certificate(microsoftCert);
-                AsymmetricKeyParameter publicKey = null;// bcCert.GetPublicKey();
+                AsymmetricKeyParameter publicKey = null;// bouncycastle_cert.GetPublicKey();
 
-                signedData = File.ReadAllBytes(signedDataFile);
-                CmsSignedData cmsSignedData = new CmsSignedData(signedData);
-                SignerInformationStore signers = cmsSignedData.GetSignerInfos();
-                ICollection c = signers.GetSigners();
-                foreach (SignerInformation signer in c)
+                using (FileStream dataStream = new FileStream(dataFile, FileMode.Open))
                 {
-                    microsoftCert = GetMicrosoftCert();
-                    bouncycastle_cert = DotNetUtilities.FromX509Certificate(microsoftCert);
-                    publicKey = bouncycastle_cert.GetPublicKey();
-                    if (signer.Verify(bouncycastle_cert))
-                    //if (signer.Verify(publicKey))
+                    SHA256 mySHA256 = SHA256Managed.Create();
+                    digest = mySHA256.ComputeHash(dataStream);
+                    dataStream.Close();
+                }
+
+                using (FileStream sigStream = new FileStream(signatureFile, mode: FileMode.Open, access: FileAccess.Read))
+                {
+                    CmsTypedStream cmsDataTypedStream = null;
+                    CmsSignedDataParser cmsSignedDataParser = null;
+                    using (FileStream dataStream = new FileStream(dataFile, mode: FileMode.Open, access: FileAccess.Read))
                     {
-                        // decrypt signature ok
+                        cmsDataTypedStream = new CmsTypedStream(dataStream);
+                        cmsSignedDataParser = new CmsSignedDataParser(cmsDataTypedStream, sigStream);
+                        cmsSignedDataParser.GetSignedContent().Drain();
+                    }
 
-                        // get digest from signature
-                        byte[] digestFromSignature = signer.GetContentDigest();
+                    SignerInformationStore signerInfos = cmsSignedDataParser.GetSignerInfos();
+                    if (signerInfos != null && signerInfos.Count > 0)
+                    {
+                        // get signer infos ok
 
-                        // get digest from received data
-                        byte[] receivedData = File.ReadAllBytes(dataFile);
-                        Org.BouncyCastle.Crypto.Digests.GeneralDigest sha256 = new Org.BouncyCastle.Crypto.Digests.Sha256Digest();
-                        sha256.BlockUpdate(receivedData, 0, receivedData.Length);
-                        int w = sha256.DoFinal(digestFromReceivedData, 0);
+                        List<SignerInformation> signers = signerInfos.GetSigners()?.Cast<SignerInformation>()?.ToList();
+                        if (signers != null && signers.Count > 0)
+                        {
+                            // get signers ok
 
-                        result = digestFromSignature.SequenceEqual(digestFromReceivedData);
+                            // verify one signer
+                            SignerInformation signer = signers.FirstOrDefault();
+                            microsoftCert = GetMicrosoftCert();
+                            bouncycastle_cert = DotNetUtilities.FromX509Certificate(microsoftCert);
+                            publicKey = bouncycastle_cert.GetPublicKey();
+
+                            if (signer.Verify(publicKey))
+                            {
+                                // signature ok
+
+                                byte[] expectedDigest = signer.GetContentDigest();
+                                if (Org.BouncyCastle.Utilities.Arrays.AreEqual(digest, expectedDigest))
+                                {
+                                    // data ok
+                                    result = true;
+                                }
+                                else
+                                {
+                                    // fake data
+                                }
+                            }
+                            else
+                            {
+                                // decrypt signature fail
+                            }
+                        }
+                        else
+                        {
+                            // not found any signers
+                        }
+                    }
+                    else
+                    {
+                        // not found any signer infos
                     }
                 }
             }
