@@ -26,8 +26,6 @@ namespace SigningCore.test
             bool result = false;
             XmlDocument signedXml = null;
             XmlDocument inputXmlDoc = null;
-            RSA privateKey = null;
-            RSA publickey = null;
 
             try
             {
@@ -35,19 +33,13 @@ namespace SigningCore.test
                 inputXmlDoc.Load(Common.InputXmlFile);
 
                 // sign
-                Pkcs12Store pkcs12Store = Helper.GetPkcs12Store(Common.PfxFile, Common.PfxPwd);
-                string alias = Helper.GetAliasFromPkcs12Store(pkcs12Store);
-                AsymmetricKeyEntry keyEntry = pkcs12Store.GetKey(alias);
-                privateKey = DotNetUtilities.ToRSA(keyEntry.Key as RsaPrivateCrtKeyParameters);
-                signedXml = SigningCore.Xml.Microsoft_SignXml(inputXmlDoc, privateKey);
+                signedXml = SigningCore.Xml.Microsoft_SignXml(inputXmlDoc, Common.PfxFile, Common.PfxPwd);
                 signedXml.Save(Common.SignedXmlFile);
 
                 // verify
-                var microsoftCert = Helper.GetMicrosoftCert();
-                publickey = microsoftCert.PublicKey.Key as RSA;
                 signedXml = new XmlDocument();
                 signedXml.Load(Common.SignedXmlFile);
-                result = SigningCore.Xml.Microsoft_VerifyXml(signedXml, publickey);
+                result = SigningCore.Xml.Microsoft_VerifyXml(signedXml);
             }
             catch (Exception ex)
             {
