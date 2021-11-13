@@ -17,7 +17,7 @@ namespace SigningCore
 {
     public class Helper
     {
-        public static System.Security.Cryptography.X509Certificates.X509Certificate2 GetMicrosoftCert()
+        public static System.Security.Cryptography.X509Certificates.X509Certificate2 GetMicrosoftCert(Org.BouncyCastle.Math.BigInteger serialNumber = null)
         {
             System.Security.Cryptography.X509Certificates.X509Certificate2 microsoftCert = null;
 
@@ -25,13 +25,29 @@ namespace SigningCore
             store.Open(System.Security.Cryptography.X509Certificates.OpenFlags.ReadOnly | System.Security.Cryptography.X509Certificates.OpenFlags.OpenExistingOnly);
             System.Security.Cryptography.X509Certificates.X509Certificate2Collection collection = store.Certificates;
 
-            System.Security.Cryptography.X509Certificates.X509Certificate2Collection certs = System.Security.Cryptography.X509Certificates.X509Certificate2UI.SelectFromCollection(
-                collection, "Select", "Select a certificate to sign",
-                System.Security.Cryptography.X509Certificates.X509SelectionFlag.MultiSelection);
-
-            if (certs != null && certs.Count >= 1)
+            if (serialNumber == null)
             {
-                microsoftCert = certs[0];
+                collection = System.Security.Cryptography.X509Certificates.X509Certificate2UI.SelectFromCollection(
+                    collection, "Select", "Select a certificate to sign",
+                    System.Security.Cryptography.X509Certificates.X509SelectionFlag.MultiSelection);
+                if (collection == null || collection.Count < 1)
+                {
+                    throw new Exception("You canceled or not found any microsoft certificate");
+                }
+            }
+            else
+            {
+                // get microsoft cert by serial number
+                collection = collection.Find(System.Security.Cryptography.X509Certificates.X509FindType.FindBySerialNumber, serialNumber.ToString(16), true);
+                if (collection == null || collection.Count < 1)
+                {
+                    throw new Exception($"Not found any microsoft certificate by your serial number={serialNumber.ToString()}");
+                }
+            }
+
+            if (collection != null && collection.Count >= 1)
+            {
+                microsoftCert = collection[0];
             }
 
             return microsoftCert;

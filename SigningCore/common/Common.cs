@@ -15,11 +15,13 @@ namespace SigningCore
         public static string PfxPwd = "";
         public static string InputFile = @"data test/data.txt";
         public static string InputXmlFile = "data test/books.xml";
+        public static string InputJsonFile = "data test/guns.xml";
         public static string DiffXmlFile = "data test/diff.xml";
         public static string EncryptedXmlFile = "data test/books_enc.xml";
         public static string DecryptedXmlFile = "data test/books_dec.xml";
         public static string SignedXmlFile = "data test/books_signed.xml";
-        public static string SignedFile = @"data test/signed.txt";
+        public static string SignedCmsFile = @"data test/signed_cms.txt";
+        public static string SignedJwtFile = @"data test/signed_json.txt";
         public static string EncryptedFile = @"data test/encrypted.txt";
         public static string DecryptedFile = @"data test/decrypted.txt";
 
@@ -32,9 +34,9 @@ namespace SigningCore
 
         public static void Prepare()
         {
-            if (File.Exists(Common.SignedFile))
+            if (File.Exists(Common.SignedCmsFile))
             {
-                File.Delete(Common.SignedFile);
+                File.Delete(Common.SignedCmsFile);
             }
 
             if (File.Exists(Common.DecryptedFile))

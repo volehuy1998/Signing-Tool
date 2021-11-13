@@ -27,12 +27,12 @@ namespace SigningCore.test
             try
             {
                 // sign
-                SigningCore.Cms.BouncyCastle_SignCMS(Common.InputFile, Common.SignedFile, Common.PfxFile, Common.PfxPwd);
+                SigningCore.Cms.BouncyCastle_SignCMS(Common.InputFile, Common.SignedCmsFile, Common.PfxFile, Common.PfxPwd);
 
                 // verify
                 System.Security.Cryptography.X509Certificates.X509Certificate2 microsoftCert = Helper.GetMicrosoftCert();
                 X509Certificate bouncycastleCert = DotNetUtilities.FromX509Certificate(microsoftCert);
-                result = SigningCore.Cms.BouncyCastle_VerifyCMS(Common.InputFile, Common.SignedFile, bouncycastleCert);
+                result = SigningCore.Cms.BouncyCastle_VerifyCMS(Common.InputFile, Common.SignedCmsFile, bouncycastleCert);
             }
             catch (Exception ex)
             {
