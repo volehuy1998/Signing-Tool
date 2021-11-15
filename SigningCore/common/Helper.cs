@@ -17,7 +17,7 @@ namespace SigningCore
 {
     public class Helper
     {
-        public static System.Security.Cryptography.X509Certificates.X509Certificate2 GetMicrosoftCert(Org.BouncyCastle.Math.BigInteger serialNumber = null)
+        public static System.Security.Cryptography.X509Certificates.X509Certificate2 GetMicrosoftCert(string serialNumber = "")
         {
             System.Security.Cryptography.X509Certificates.X509Certificate2 microsoftCert = null;
 
@@ -25,7 +25,7 @@ namespace SigningCore
             store.Open(System.Security.Cryptography.X509Certificates.OpenFlags.ReadOnly | System.Security.Cryptography.X509Certificates.OpenFlags.OpenExistingOnly);
             System.Security.Cryptography.X509Certificates.X509Certificate2Collection collection = store.Certificates;
 
-            if (serialNumber == null)
+            if (string.IsNullOrWhiteSpace(serialNumber))
             {
                 collection = System.Security.Cryptography.X509Certificates.X509Certificate2UI.SelectFromCollection(
                     collection, "Select", "Select a certificate to sign",
@@ -38,7 +38,7 @@ namespace SigningCore
             else
             {
                 // get microsoft cert by serial number
-                collection = collection.Find(System.Security.Cryptography.X509Certificates.X509FindType.FindBySerialNumber, serialNumber.ToString(16), true);
+                collection = collection.Find(System.Security.Cryptography.X509Certificates.X509FindType.FindBySerialNumber, serialNumber, false);
                 if (collection == null || collection.Count < 1)
                 {
                     throw new Exception($"Not found any microsoft certificate by your serial number={serialNumber.ToString()}");

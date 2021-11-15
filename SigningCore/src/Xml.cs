@@ -31,7 +31,7 @@ namespace SigningCore
 
             pkcs12Store = Helper.GetPkcs12Store(pfxPath, pfxPwd);
             keyAlias = Helper.GetAliasFromPkcs12Store(pkcs12Store);
-            serialNumber = pkcs12Store.GetCertificate(keyAlias).Certificate.SerialNumber.ToString();
+            serialNumber = pkcs12Store.GetCertificate(keyAlias).Certificate.SerialNumber.ToString(16);
             AsymmetricKeyEntry keyEntry = pkcs12Store.GetKey(keyAlias);
             privateKey = DotNetUtilities.ToRSA(keyEntry.Key as RsaPrivateCrtKeyParameters);
 
@@ -66,11 +66,10 @@ namespace SigningCore
 
             // find node by serial number certificate
             XmlNode serialNumberNode = signedXmlDoc.SelectSingleNode(@"//catalog/SerialNumber");
-            Org.BouncyCastle.Math.BigInteger serialNumber = new Org.BouncyCastle.Math.BigInteger(serialNumberNode.InnerText, 10);
             // back to signed xml by remove
             serialNumberNode.ParentNode.RemoveChild(serialNumberNode);
             // get microsoft cert by serial number
-            microsoftCert = Helper.GetMicrosoftCert(serialNumber);
+            microsoftCert = Helper.GetMicrosoftCert(serialNumberNode.InnerText);
             publickey = microsoftCert.PublicKey.Key as RSA;
 
             signedXml = new SignedXml(signedXmlDoc);

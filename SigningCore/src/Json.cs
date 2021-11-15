@@ -39,7 +39,7 @@ namespace SigningCore
 
             pkcs12Store = Helper.GetPkcs12Store(pfxPath, pfxPwd);
             keyAlias = Helper.GetAliasFromPkcs12Store(pkcs12Store);
-            serialNumber = pkcs12Store.GetCertificate(keyAlias).Certificate.SerialNumber.ToString();
+            serialNumber = pkcs12Store.GetCertificate(keyAlias).Certificate.SerialNumber.ToString(16);
 
             // generate header
             header = new { alg = "RS256", typ = "JWT", serialNumber = serialNumber };
@@ -94,7 +94,7 @@ namespace SigningCore
                 ISigner verifier = null;
 
                 // find microsoft cert by serial number
-                microsoftCert = Helper.GetMicrosoftCert(new Org.BouncyCastle.Math.BigInteger(headerData["serialNumber"].ToString(), 10));
+                microsoftCert = Helper.GetMicrosoftCert(headerData["serialNumber"].ToString());
                 // convert to bouncy castle cert
                 bouncycastleCert = DotNetUtilities.FromX509Certificate(microsoftCert);
                 // get public key for verify
