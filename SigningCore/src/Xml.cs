@@ -1,6 +1,7 @@
 ﻿using Org.BouncyCastle.Crypto.Parameters;
 using Org.BouncyCastle.Pkcs;
 using Org.BouncyCastle.Security;
+using Org.BouncyCastle.X509;
 using SigningCore;
 using System;
 using System.Collections.Generic;
@@ -27,13 +28,13 @@ namespace SigningCore
             string keyAlias = string.Empty;
             string serialNumber = string.Empty;
             Pkcs12Store pkcs12Store = null;
+            X509Certificate bouncycastle_cert = null;
             RSA privateKey = null;
 
             pkcs12Store = Helper.GetPkcs12Store(pfxPath, pfxPwd);
             keyAlias = Helper.GetAliasFromPkcs12Store(pkcs12Store);
-            serialNumber = pkcs12Store.GetCertificate(keyAlias).Certificate.SerialNumber.ToString(16);
-            AsymmetricKeyEntry keyEntry = pkcs12Store.GetKey(keyAlias);
-            privateKey = DotNetUtilities.ToRSA(keyEntry.Key as RsaPrivateCrtKeyParameters);
+            bouncycastle_cert = pkcs12Store.GetCertificate(keyAlias).Certificate;
+            privateKey = DotNetUtilities.ToRSA(pkcs12Store.GetKey(keyAlias).Key as RsaPrivateCrtKeyParameters);
 
             Reference reference = new Reference();
             reference.Uri = "";
@@ -47,10 +48,22 @@ namespace SigningCore
             XmlElement xmlDigitalSignature = signedXml.GetXml();
            
             xmlDoc.DocumentElement.AppendChild(xmlDoc.ImportNode(xmlDigitalSignature, true));
-            XmlElement serialNumberElement = xmlDoc.CreateElement("SerialNumber");
-            serialNumberElement.InnerText = serialNumber.ToString();
-            xmlDoc.DocumentElement.AppendChild(serialNumberElement);
 
+            XmlElement keyInfoElement = xmlDoc.CreateElement("SignatureVerification");
+            XmlElement useElement = xmlDoc.CreateElement("use");
+            XmlElement ktyElement = xmlDoc.CreateElement("kty");
+            XmlElement exponentElement = xmlDoc.CreateElement("e");
+            XmlElement modulusElement = xmlDoc.CreateElement("n");
+            useElement.InnerText = "sig";
+            ktyElement.InnerText = "RSA";
+            exponentElement.InnerText = Convert.ToBase64String((bouncycastle_cert.GetPublicKey() as RsaKeyParameters).Exponent.ToByteArrayUnsigned());
+            modulusElement.InnerText = Convert.ToBase64String((bouncycastle_cert.GetPublicKey() as RsaKeyParameters).Modulus.ToByteArrayUnsigned());
+            keyInfoElement.AppendChild(useElement);
+            keyInfoElement.AppendChild(ktyElement);
+            keyInfoElement.AppendChild(exponentElement);
+            keyInfoElement.AppendChild(modulusElement);
+
+            xmlDoc.DocumentElement.AppendChild(keyInfoElement);
             return xmlDoc;
         }
 
@@ -60,32 +73,45 @@ namespace SigningCore
                 throw new Exception("File xml to verify null");
 
             bool result = false;
-            RSA publickey = null;
-            System.Security.Cryptography.X509Certificates.X509Certificate2 microsoftCert = null;
             SignedXml signedXml = null;
 
             // find node by serial number certificate
             XmlNode serialNumberNode = signedXmlDoc.SelectSingleNode(@"//catalog/SerialNumber");
+            XmlNode signatureVerificationNode = signedXmlDoc.SelectSingleNode(@"//catalog/SignatureVerification");
+            XmlNode useNode = signatureVerificationNode.SelectSingleNode(@"//use");
+            XmlNode ktyNode = signatureVerificationNode.SelectSingleNode(@"//kty");
+            XmlNode exponentNode = signatureVerificationNode.SelectSingleNode(@"//e");
+            XmlNode modulusNode = signatureVerificationNode.SelectSingleNode(@"//n");
+
             // back to signed xml by remove
-            serialNumberNode.ParentNode.RemoveChild(serialNumberNode);
-            // get microsoft cert by serial number
-            microsoftCert = Helper.GetMicrosoftCert(serialNumberNode.InnerText);
-            publickey = microsoftCert.PublicKey.Key as RSA;
+            signatureVerificationNode.ParentNode.RemoveChild(signatureVerificationNode);
+            if (useNode.InnerText.Equals("sig", StringComparison.OrdinalIgnoreCase))
+            {
+                RSAParameters RSAKeyInfo = new RSAParameters();
+                RSAKeyInfo.Exponent =  Convert.FromBase64String(exponentNode.InnerText);
+                RSAKeyInfo.Modulus = Convert.FromBase64String(modulusNode.InnerText);
+                RSACryptoServiceProvider rsa = new RSACryptoServiceProvider();
+                rsa.ImportParameters(RSAKeyInfo);
+                //publickey = RSA.Create(RSAKeyInfo);
+                signedXml = new SignedXml(signedXmlDoc);
 
-            signedXml = new SignedXml(signedXmlDoc);
+                XmlNodeList signatureNode = signedXmlDoc.GetElementsByTagName("Signature");
+                if (signatureNode == null || signatureNode.Count > 1)
+                    throw new Exception("No or more than one signature tag");
 
-            XmlNodeList signatureNode = signedXmlDoc.GetElementsByTagName("Signature");
-            if (signatureNode == null || signatureNode.Count > 1)
-                throw new Exception("No or more than one signature tag");
+                // found one signature
 
-            // found one signature
+                XmlElement signatureElem = signatureNode[0] as XmlElement;
+                if (signatureElem == null)
+                    throw new Exception("Signature node can not cast to element");
 
-            XmlElement signatureElem = signatureNode[0] as XmlElement;
-            if (signatureElem == null)
-                throw new Exception("Signature node can not cast to element");
-
-            signedXml.LoadXml(signatureElem);
-            result = signedXml.CheckSignature(publickey);
+                signedXml.LoadXml(signatureElem);
+                result = signedXml.CheckSignature(rsa);
+            }
+            else
+            {
+                throw new Exception("RSA key not for signature verification");
+            }
 
             return result;
         }

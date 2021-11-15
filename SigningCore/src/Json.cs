@@ -32,17 +32,24 @@ namespace SigningCore
             string payloadJwt = string.Empty;
             string signatureJwt = string.Empty;
             string keyAlias = string.Empty;
-            string serialNumber = string.Empty;
             object header = null;
-            AsymmetricKeyParameter privateKey = null;
+            RsaKeyParameters privateKey = null;
+            RsaKeyParameters publicKey = null;
             Pkcs12Store pkcs12Store = null;
 
             pkcs12Store = Helper.GetPkcs12Store(pfxPath, pfxPwd);
             keyAlias = Helper.GetAliasFromPkcs12Store(pkcs12Store);
-            serialNumber = pkcs12Store.GetCertificate(keyAlias).Certificate.SerialNumber.ToString(16);
-
+            publicKey = pkcs12Store.GetCertificate(keyAlias).Certificate.GetPublicKey() as RsaKeyParameters;
             // generate header
-            header = new { alg = "RS256", typ = "JWT", serialNumber = serialNumber };
+            header = new { 
+                alg = "RS256",
+                typ = "JWT",
+                // RFC7517
+                use = "sig",
+                kty ="RSA",
+                e = publicKey.Exponent.ToString(),
+                n = publicKey.Modulus.ToString()
+            };
 
             byte[] headerBytes = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(header, Formatting.None));
             byte[] payloadBytes = Encoding.UTF8.GetBytes(payload);
@@ -52,7 +59,7 @@ namespace SigningCore
             // data to sign
             byte[] bytesToSign = Encoding.UTF8.GetBytes(headerJwt + "." + payloadJwt);
             // extract private key
-            privateKey = pkcs12Store.GetKey(keyAlias).Key;
+            privateKey = pkcs12Store.GetKey(keyAlias).Key as RsaKeyParameters;
             // hash and encrypt
             ISigner sig = SignerUtilities.GetSigner("SHA256withRSA");
             sig.Init(true, privateKey);
@@ -80,7 +87,7 @@ namespace SigningCore
             string signatureJwt = segments[2];
             byte[] signature = Base64UrlDecode(signatureJwt);
             byte[] bytesToHash = Encoding.UTF8.GetBytes(headerJwt + '.' + payloadJwt);
-            AsymmetricKeyParameter publicKey = null;
+            RsaKeyParameters publicKey = null;
 
             string headerJson = Encoding.UTF8.GetString(Base64UrlDecode(headerJwt));
             string payloadJson = Encoding.UTF8.GetString(Base64UrlDecode(payloadJwt));
@@ -89,28 +96,28 @@ namespace SigningCore
 
             if (verifySignature)
             {
-                System.Security.Cryptography.X509Certificates.X509Certificate2 microsoftCert = null;
-                X509Certificate bouncycastleCert = null;
-                ISigner verifier = null;
-
-                // find microsoft cert by serial number
-                microsoftCert = Helper.GetMicrosoftCert(headerData["serialNumber"].ToString());
-                // convert to bouncy castle cert
-                bouncycastleCert = DotNetUtilities.FromX509Certificate(microsoftCert);
-                // get public key for verify
-                publicKey = bouncycastleCert.GetPublicKey();
-                // decrypt signature and compare with hash
-                verifier = SignerUtilities.GetSigner("SHA256withRSA");
-                verifier.Init(false, publicKey);
-                verifier.BlockUpdate(bytesToHash, 0, bytesToHash.Length);
-                if (verifier.VerifySignature(signature))
+                if (headerData["use"].ToString().Equals("sig", StringComparison.OrdinalIgnoreCase))
                 {
-                    // verify ok
+                    publicKey = new RsaKeyParameters(false,
+                        new Org.BouncyCastle.Math.BigInteger(headerData["n"].ToString()),
+                        new Org.BouncyCastle.Math.BigInteger(headerData["e"].ToString()));
+                    // decrypt signature and compare with hash
+                    ISigner verifier = SignerUtilities.GetSigner("SHA256withRSA");
+                    verifier.Init(false, publicKey);
+                    verifier.BlockUpdate(bytesToHash, 0, bytesToHash.Length);
+                    if (verifier.VerifySignature(signature))
+                    {
+                        // verify ok
+                    }
+                    else
+                    {
+                        // faked data or signature
+                        throw new Exception("Verify JWT failed with incorrect data or signature");
+                    }
                 }
                 else
                 {
-                    // faked data or signature
-                    throw new Exception("Verify JWT failed with incorrect data or signature");
+                    throw new Exception("RSA key not for signature verification");
                 }
             }
 
