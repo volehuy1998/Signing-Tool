@@ -44,7 +44,7 @@ namespace SigningCore
                 // add one signer
                 gen.AddSigner(privateKey: privateKey, cert: bouncycastle_cert, CmsSignedDataGenerator.DigestSha256);
 
-                using (Stream signingStream = gen.Open(signedStream))
+                using (Stream signingStream = gen.Open(signedStream, true))
                 {
                     // sign
                     originDataStream.CopyTo(signingStream);
@@ -52,10 +52,8 @@ namespace SigningCore
             }
         }
 
-        public static bool BouncyCastle_VerifyCMS(string dataFile, string signedFile, X509Certificate bouncycastleCert)
+        public static bool BouncyCastle_VerifyCMS(string signedFile, X509Certificate bouncycastleCert)
         {
-            if (Common.CheckString(dataFile))
-                throw new Exception("Data file to verify null");
             if (Common.CheckString(signedFile))
                 throw new Exception("Signed file to output verify null");
             if (bouncycastleCert == null)
@@ -64,21 +62,22 @@ namespace SigningCore
             bool result = false;
             byte[] digest = null;
 
-            using (FileStream dataStream = new FileStream(dataFile, FileMode.Open))
-            {
-                SHA256 mySHA256 = SHA256Managed.Create();
-                digest = mySHA256.ComputeHash(dataStream);
-                dataStream.Close();
-            }
-
             using (FileStream sigStream = new FileStream(signedFile, mode: FileMode.Open, access: FileAccess.Read))
-            using (FileStream dataStream = new FileStream(dataFile, mode: FileMode.Open, access: FileAccess.Read))
             {
                 CmsTypedStream cmsDataTypedStream = null;
                 CmsSignedDataParser cmsSignedDataParser = null;
 
-                cmsDataTypedStream = new CmsTypedStream(dataStream);
-                cmsSignedDataParser = new CmsSignedDataParser(cmsDataTypedStream, sigStream);
+                cmsSignedDataParser = new CmsSignedDataParser(File.ReadAllBytes(signedFile));
+                cmsDataTypedStream = cmsSignedDataParser.GetSignedContent();
+                using (MemoryStream memoryStream = new MemoryStream())
+                {
+                    cmsDataTypedStream.ContentStream.CopyTo(memoryStream);
+                    memoryStream.Position = 0;
+                    SHA256 mySHA256 = SHA256Managed.Create();
+                    digest = mySHA256.ComputeHash(memoryStream);
+                    memoryStream.Close();
+                }
+
                 cmsSignedDataParser.GetSignedContent().Drain();
 
                 SignerInformationStore signerInfos = cmsSignedDataParser.GetSignerInfos();

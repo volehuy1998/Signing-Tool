@@ -32,7 +32,7 @@ namespace SigningCore.test
                 // verify
                 System.Security.Cryptography.X509Certificates.X509Certificate2 microsoftCert = Helper.GetMicrosoftCert();
                 X509Certificate bouncycastleCert = DotNetUtilities.FromX509Certificate(microsoftCert);
-                result = SigningCore.Cms.BouncyCastle_VerifyCMS(Common.InputFile, Common.SignedCmsFile, bouncycastleCert);
+                result = SigningCore.Cms.BouncyCastle_VerifyCMS(Common.SignedCmsFile, bouncycastleCert);
             }
             catch (Exception ex)
             {
