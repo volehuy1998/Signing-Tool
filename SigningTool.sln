@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Create a basic cert", "Crea
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SigningCoreTest", "SigningCoreTest\SigningCoreTest.csproj", "{ACEF3893-CD29-4F71-80F8-CDCF86EF47B9}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SigningUI", "SigningUI\SigningUI.csproj", "{76D6A9D6-A123-4A9E-8837-0B7D0C64225A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -67,6 +69,18 @@ Global
 		{ACEF3893-CD29-4F71-80F8-CDCF86EF47B9}.Release|x64.Build.0 = Release|Any CPU
 		{ACEF3893-CD29-4F71-80F8-CDCF86EF47B9}.Release|x86.ActiveCfg = Release|Any CPU
 		{ACEF3893-CD29-4F71-80F8-CDCF86EF47B9}.Release|x86.Build.0 = Release|Any CPU
+		{76D6A9D6-A123-4A9E-8837-0B7D0C64225A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{76D6A9D6-A123-4A9E-8837-0B7D0C64225A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{76D6A9D6-A123-4A9E-8837-0B7D0C64225A}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{76D6A9D6-A123-4A9E-8837-0B7D0C64225A}.Debug|x64.Build.0 = Debug|Any CPU
+		{76D6A9D6-A123-4A9E-8837-0B7D0C64225A}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{76D6A9D6-A123-4A9E-8837-0B7D0C64225A}.Debug|x86.Build.0 = Debug|Any CPU
+		{76D6A9D6-A123-4A9E-8837-0B7D0C64225A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{76D6A9D6-A123-4A9E-8837-0B7D0C64225A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{76D6A9D6-A123-4A9E-8837-0B7D0C64225A}.Release|x64.ActiveCfg = Release|Any CPU
+		{76D6A9D6-A123-4A9E-8837-0B7D0C64225A}.Release|x64.Build.0 = Release|Any CPU
+		{76D6A9D6-A123-4A9E-8837-0B7D0C64225A}.Release|x86.ActiveCfg = Release|Any CPU
+		{76D6A9D6-A123-4A9E-8837-0B7D0C64225A}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
