@@ -1,13 +1,12 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
-using Org.BouncyCastle.Asn1;
-using Org.BouncyCastle.Asn1.Pkcs;
 using Org.BouncyCastle.Crypto;
+using Org.BouncyCastle.Crypto.Encodings;
+using Org.BouncyCastle.Crypto.Engines;
 using Org.BouncyCastle.Crypto.Parameters;
 using Org.BouncyCastle.Pkcs;
 using Org.BouncyCastle.Security;
-using Org.BouncyCastle.X509;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -21,6 +20,7 @@ namespace SigningCore
 {
     class Json
     {
+        public static SecureRandom seed = new SecureRandom();
         public static string Sign(string payload, string pfxPath, string pfxPwd)
         {
             if (Common.CheckString(payload))
@@ -155,6 +155,108 @@ namespace SigningCore
             return converted;
         }
 
+        public static string Encrypt(object dataObject, RsaKeyParameters publicKey)
+        {
+            if (dataObject == null)
+                throw new Exception("Payload to encrypt null");
+            if (publicKey == null)
+                throw new Exception("Public key to encrypt secret key null");
+
+            string token = string.Empty;
+            string headerToken = string.Empty;
+            // aes key and iv
+            byte[] encryptedAesKeyBytes = null;
+            byte[] encryptedAesIvBytes = null;
+            string encryptedAesKeyBase64 = string.Empty;
+            string encryptedAesIvBase64 = string.Empty;
+            // cipher
+            string encryptedPayloadToken = string.Empty;
+            object headerObject = null;
+            string encryptedPayloadJson = string.Empty;
+            IAsymmetricBlockCipher rsaOaep = null;
+            
+            // create header contain key and iv
+            AesManaged aes = new AesManaged();
+            aes.GenerateKey();
+            aes.GenerateIV();
+            rsaOaep = new OaepEncoding(new RsaEngine());
+            rsaOaep.Init(true, new ParametersWithRandom(publicKey, seed));
+            encryptedAesKeyBytes = rsaOaep.ProcessBlock(aes.Key, 0, aes.Key.Length);
+            encryptedAesIvBytes = rsaOaep.ProcessBlock(aes.IV, 0, aes.IV.Length);
+            encryptedAesKeyBase64 = Base64UrlEncode(encryptedAesKeyBytes);
+            encryptedAesIvBase64 = Base64UrlEncode(encryptedAesIvBytes);
+            headerObject = new
+            {
+                alg="RSA-OAEP",
+                enc="AES256",
+                key= encryptedAesKeyBase64,
+                iv= encryptedAesIvBase64
+            };
+            headerToken = Base64UrlEncode(Encoding.UTF8.GetBytes(JObject.FromObject(headerObject).ToString()));
+            // create cipher payload
+            JsonSerializerSettings settings = new JsonSerializerSettings()
+            {
+                Formatting = Formatting.Indented,
+                ContractResolver = new EncryptedStringPropertyResolver(aes.Key, aes.IV)
+            };
+            encryptedPayloadJson = JsonConvert.SerializeObject(dataObject, settings);
+            encryptedPayloadToken = Base64UrlEncode(Encoding.UTF8.GetBytes(encryptedPayloadJson));
+            token = headerToken + "." + encryptedPayloadToken;
+
+            return token;
+        }
+
+        public static T Decrypt<T>(string encryptedJson, RsaKeyParameters privateKey)
+        {
+            if (Common.CheckString(encryptedJson))
+                throw new Exception("Jwe to decrypt null");
+            if (privateKey == null)
+                throw new Exception("Private key to decrypt secret key null");
+
+            IAsymmetricBlockCipher rsaOaep = null;
+            //JsonSerializerSettings settings = null;
+            JObject header       = null;
+            // aes key and iv
+            byte[] aesKeyBytes = null;
+            byte[] aesIvBytes = null;
+            byte[] encryptedKey = null;
+            byte[] encryptedIv           = null;
+            string encryptedPayload       = null;
+
+            string[] segments = encryptedJson.Split('.');
+            if (segments.Length != 2)
+                throw new Exception("Can't map with system has 2 segment: header and payload");
+            // extract info: header (key, iv) and payload
+            header = JObject.Parse(Encoding.UTF8.GetString(Base64UrlDecode(segments[0])));
+            encryptedKey = Base64UrlDecode(header["key"].ToString());
+            encryptedIv = Base64UrlDecode(header["iv"].ToString());
+            encryptedPayload = Encoding.UTF8.GetString(Base64UrlDecode(segments[1]));
+            // check header alg
+            if (!header["alg"].ToString().Equals("RSA-OAEP", StringComparison.OrdinalIgnoreCase))
+            {
+                throw new Exception("Not found head algo: RSA-OAEP");
+            }
+            // check header encrypt mode
+            if (!header["enc"].ToString().Equals("AES256", StringComparison.OrdinalIgnoreCase))
+            {
+                throw new Exception("Not found head encypt: AES256");
+            }
+            // decrypt to get symmetric key
+            rsaOaep = new OaepEncoding(new RsaEngine());
+            rsaOaep.Init(false, new ParametersWithRandom(privateKey, seed));
+            rsaOaep.Init(false, privateKey);
+            aesKeyBytes = rsaOaep.ProcessBlock(encryptedKey, 0, encryptedKey.Length);
+            aesIvBytes = rsaOaep.ProcessBlock(encryptedIv, 0, encryptedIv.Length);
+            // decrypt json
+            JsonSerializerSettings settings = new JsonSerializerSettings()
+            {
+                Formatting = Formatting.Indented,
+                ContractResolver = new EncryptedStringPropertyResolver(aesKeyBytes, aesIvBytes)
+            };
+
+            return JsonConvert.DeserializeObject<T>(encryptedPayload, settings);
+        }
+
     }
 
     // copy from https://stackoverflow.com/questions/29196809/how-can-i-encrypt-selected-properties-when-serializing-my-objects
@@ -166,17 +268,20 @@ namespace SigningCore
     public class EncryptedStringPropertyResolver : DefaultContractResolver
     {
         private byte[] encryptionKeyBytes;
+        private byte[] ivBytes;
 
-        public EncryptedStringPropertyResolver(string encryptionKey)
+        public EncryptedStringPropertyResolver(byte[] secretKeyBytes, byte[] ivBytes)
         {
-            if (encryptionKey == null)
+            if (secretKeyBytes == null)
                 throw new ArgumentNullException("encryptionKey");
 
+            //this.encryptionKeyBytes = secretKeyBytes;
+            this.ivBytes = ivBytes;
             // Hash the key to ensure it is exactly 256 bits long, as required by AES-256
             using (SHA256Managed sha = new SHA256Managed())
             {
                 this.encryptionKeyBytes =
-                    sha.ComputeHash(Encoding.UTF8.GetBytes(encryptionKey));
+                    sha.ComputeHash(secretKeyBytes);
             }
         }
 
@@ -192,7 +297,7 @@ namespace SigningCore
                 if (pi != null && pi.GetCustomAttribute(typeof(JsonEncryptAttribute), true) != null)
                 {
                     prop.ValueProvider =
-                        new EncryptedStringValueProvider(pi, encryptionKeyBytes);
+                        new EncryptedStringValueProvider(pi, encryptionKeyBytes, ivBytes);
                 }
             }
 
@@ -203,11 +308,13 @@ namespace SigningCore
         {
             PropertyInfo targetProperty;
             private byte[] encryptionKey;
+            private byte[] iv;
 
-            public EncryptedStringValueProvider(PropertyInfo targetProperty, byte[] encryptionKey)
+            public EncryptedStringValueProvider(PropertyInfo targetProperty, byte[] encryptionKey, byte[] iv)
             {
                 this.targetProperty = targetProperty;
                 this.encryptionKey = encryptionKey;
+                this.iv = iv;
             }
 
             // GetValue is called by Json.Net during serialization.
@@ -217,16 +324,11 @@ namespace SigningCore
             {
                 string value = (string)targetProperty.GetValue(target);
                 byte[] buffer = Encoding.UTF8.GetBytes(value);
-
                 using (MemoryStream inputStream = new MemoryStream(buffer, false))
                 using (MemoryStream outputStream = new MemoryStream())
-                using (AesManaged aes = new AesManaged { Key = encryptionKey })
+                using (AesManaged aes = new AesManaged { Key = encryptionKey, IV = iv })
                 {
-                    byte[] iv = aes.IV;  // first access generates a new IV
-                    outputStream.Write(iv, 0, iv.Length);
-                    outputStream.Flush();
-
-                    ICryptoTransform encryptor = aes.CreateEncryptor(encryptionKey, iv);
+                    ICryptoTransform encryptor = aes.CreateEncryptor(aes.Key, aes.IV);
                     using (CryptoStream cryptoStream = new CryptoStream(outputStream, encryptor, CryptoStreamMode.Write))
                     {
                         inputStream.CopyTo(cryptoStream);
@@ -245,16 +347,9 @@ namespace SigningCore
 
                 using (MemoryStream inputStream = new MemoryStream(buffer, false))
                 using (MemoryStream outputStream = new MemoryStream())
-                using (AesManaged aes = new AesManaged { Key = encryptionKey })
+                using (AesManaged aes = new AesManaged { Key = encryptionKey, IV = iv })
                 {
-                    byte[] iv = new byte[16];
-                    int bytesRead = inputStream.Read(iv, 0, 16);
-                    if (bytesRead < 16)
-                    {
-                        throw new CryptographicException("IV is missing or invalid.");
-                    }
-
-                    ICryptoTransform decryptor = aes.CreateDecryptor(encryptionKey, iv);
+                    ICryptoTransform decryptor = aes.CreateDecryptor(aes.Key, aes.IV);
                     using (CryptoStream cryptoStream = new CryptoStream(inputStream, decryptor, CryptoStreamMode.Read))
                     {
                         cryptoStream.CopyTo(outputStream);
