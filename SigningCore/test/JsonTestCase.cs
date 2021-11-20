@@ -99,6 +99,22 @@ namespace SigningCore.test
                 // decrypt
                 privateKey = pkcs12Store.GetKey(keyAlias).Key as RsaKeyParameters;
                 decryptedUser = Json.Decrypt<UserInfo>(jwe, privateKey);
+                if (!user.UserName.Equals(decryptedUser.UserName))
+                {
+                    throw new Exception($"Json decrypt fail with expected username is {user.UserName} but actual is {decryptedUser.UserName}");
+                }
+                else if (!user.UserPassword.Equals(decryptedUser.UserPassword))
+                {
+                    throw new Exception($"Json decrypt fail with expected pwd is {user.UserPassword} but actual is {decryptedUser.UserPassword}");
+                }
+                else if (!user.FavoriteColor.Equals(decryptedUser.FavoriteColor))
+                {
+                    throw new Exception($"Json decrypt fail with expected color is {user.FavoriteColor} but actual is {decryptedUser.FavoriteColor}");
+                }
+                else if (!user.CreditCardNumber.Equals(decryptedUser.CreditCardNumber))
+                {
+                    throw new Exception($"Json decrypt fail with expected credit-card is {user.CreditCardNumber} but actual is {decryptedUser.CreditCardNumber}");
+                }
                 result = true;
             }
             catch (Exception ex)
