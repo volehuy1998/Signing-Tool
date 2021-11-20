@@ -244,7 +244,7 @@ namespace SigningCore
             // decrypt to get symmetric key
             rsaOaep = new OaepEncoding(new RsaEngine());
             rsaOaep.Init(false, new ParametersWithRandom(privateKey, seed));
-            rsaOaep.Init(false, privateKey);
+            //rsaOaep.Init(false, privateKey);
             aesKeyBytes = rsaOaep.ProcessBlock(encryptedKey, 0, encryptedKey.Length);
             aesIvBytes = rsaOaep.ProcessBlock(encryptedIv, 0, encryptedIv.Length);
             // decrypt json
