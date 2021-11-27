@@ -137,35 +137,35 @@ namespace SigningUI
                 }
                 else if (ToolBoxHelper.CompareString(action, "sign") && ToolBoxHelper.CompareString(mode, "xml"))
                 {
-
+                    throw new Exception($"{this.modeValueLabel.Text} {this.actionValueLabel.Text} didn't support yet, please try CMS");
                 }
                 else if (ToolBoxHelper.CompareString(action, "verify") && ToolBoxHelper.CompareString(mode, "xml"))
                 {
-
+                    throw new Exception($"{this.modeValueLabel.Text} {this.actionValueLabel.Text} didn't support yet, please try CMS");
                 }
                 else if (ToolBoxHelper.CompareString(action, "encrypt") && ToolBoxHelper.CompareString(mode, "xml"))
                 {
-
+                    throw new Exception($"{this.modeValueLabel.Text} {this.actionValueLabel.Text} didn't support yet, please try CMS");
                 }
                 else if (ToolBoxHelper.CompareString(action, "decrypt") && ToolBoxHelper.CompareString(mode, "xml"))
                 {
-
+                    throw new Exception($"{this.modeValueLabel.Text} {this.actionValueLabel.Text} didn't support yet, please try CMS");
                 }
                 else if (ToolBoxHelper.CompareString(action, "sign") && ToolBoxHelper.CompareString(mode, "json"))
                 {
-
+                    throw new Exception($"{this.modeValueLabel.Text} {this.actionValueLabel.Text} didn't support yet, please try CMS");
                 }
                 else if (ToolBoxHelper.CompareString(action, "verify") && ToolBoxHelper.CompareString(mode, "json"))
                 {
-
+                    throw new Exception($"{this.modeValueLabel.Text} {this.actionValueLabel.Text} didn't support yet, please try CMS");
                 }
                 else if (ToolBoxHelper.CompareString(action, "encrypt") && ToolBoxHelper.CompareString(mode, "json"))
                 {
-
+                    throw new Exception($"{this.modeValueLabel.Text} {this.actionValueLabel.Text} didn't support yet, please try CMS");
                 }
                 else if (ToolBoxHelper.CompareString(action, "decrypt") && ToolBoxHelper.CompareString(mode, "json"))
                 {
-
+                    throw new Exception($"{this.modeValueLabel.Text} {this.actionValueLabel.Text} didn't support yet, please try CMS");
                 }
             }
             catch (Exception ex)
