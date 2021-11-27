@@ -85,7 +85,7 @@ namespace SigningUI.help
             return input.Equals(expect, StringComparison.OrdinalIgnoreCase);
         }
 
-        public static bool CheckValidInputMainForm(string outputFolder, string inputFiles)
+        public static bool CheckValidInputMainForm(string inputFiles)
         {
             return !string.IsNullOrWhiteSpace(inputFiles);
         }

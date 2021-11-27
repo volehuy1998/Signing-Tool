@@ -109,7 +109,7 @@ namespace SigningUI
         {
             try
             {
-                if (!ToolBoxHelper.CheckValidInputMainForm(this.outputFolderTextbox.Text, this.inputFileTextBox.Text))
+                if (!ToolBoxHelper.CheckValidInputMainForm(this.inputFileTextBox.Text))
                 {
                     throw new Exception("Please fill all");
                 }
