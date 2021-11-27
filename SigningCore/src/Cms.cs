@@ -16,7 +16,7 @@ using System.Threading.Tasks;
 
 namespace SigningCore
 {
-    class Cms
+    public class Cms
     {
         public static void BouncyCastle_SignCMS(string originalFile, string signedFile, string pfxPath, string pfxPassword)
         {

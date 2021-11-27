@@ -33,6 +33,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="BouncyCastle.Crypto, Version=1.9.0.0, Culture=neutral, PublicKeyToken=0e99375e54769942, processorArchitecture=MSIL">
+      <HintPath>..\packages\Portable.BouncyCastle.1.9.0\lib\net40\BouncyCastle.Crypto.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -46,16 +49,125 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="form\CmsDecryptForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="form\CmsDecryptForm.Designer.cs">
+      <DependentUpon>CmsDecryptForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="form\CmsEncryptForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="form\CmsEncryptForm.Designer.cs">
+      <DependentUpon>CmsEncryptForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="form\CmsSignForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="form\CmsSignForm.Designer.cs">
+      <DependentUpon>CmsSignForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="form\CmsVerifyForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="form\CmsVerifyForm.Designer.cs">
+      <DependentUpon>CmsVerifyForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="form\JsonDecryptForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="form\JsonDecryptForm.Designer.cs">
+      <DependentUpon>JsonDecryptForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="form\JsonEncryptForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="form\JsonEncryptForm.Designer.cs">
+      <DependentUpon>JsonEncryptForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="form\JsonSignForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="form\JsonSignForm.Designer.cs">
+      <DependentUpon>JsonSignForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="form\JsonVerifyForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="form\JsonVerifyForm.Designer.cs">
+      <DependentUpon>JsonVerifyForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="form\MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="form\MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="form\XmlDecryptForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="form\XmlDecryptForm.Designer.cs">
+      <DependentUpon>XmlDecryptForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="form\XmlEncryptForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="form\XmlEncryptForm.Designer.cs">
+      <DependentUpon>XmlEncryptForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="form\XmlSignForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="form\XmlSignForm.Designer.cs">
+      <DependentUpon>XmlSignForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="form\XmlVerifyForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="form\XmlVerifyForm.Designer.cs">
+      <DependentUpon>XmlVerifyForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="help\ToolBoxHelper.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="form\CmsDecryptForm.resx">
+      <DependentUpon>CmsDecryptForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="form\CmsEncryptForm.resx">
+      <DependentUpon>CmsEncryptForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="form\CmsSignForm.resx">
+      <DependentUpon>CmsSignForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="form\CmsVerifyForm.resx">
+      <DependentUpon>CmsVerifyForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="form\JsonDecryptForm.resx">
+      <DependentUpon>JsonDecryptForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="form\JsonEncryptForm.resx">
+      <DependentUpon>JsonEncryptForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="form\JsonSignForm.resx">
+      <DependentUpon>JsonSignForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="form\JsonVerifyForm.resx">
+      <DependentUpon>JsonVerifyForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="form\MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="form\XmlDecryptForm.resx">
+      <DependentUpon>XmlDecryptForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="form\XmlEncryptForm.resx">
+      <DependentUpon>XmlEncryptForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="form\XmlSignForm.resx">
+      <DependentUpon>XmlSignForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="form\XmlVerifyForm.resx">
+      <DependentUpon>XmlVerifyForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -66,6 +178,7 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -78,6 +191,15 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="assets\sign-logo.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\SigningCore\SigningCore.csproj">
+      <Project>{fa96234f-765d-45b1-ae25-1bb2b9602690}</Project>
+      <Name>SigningCore</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
