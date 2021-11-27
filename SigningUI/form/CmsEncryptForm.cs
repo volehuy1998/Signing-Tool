@@ -72,13 +72,26 @@ namespace SigningUI.form
                 gen.Init(Encoding.UTF8.GetBytes(passwordAesTextbox.Text), Encoding.UTF8.GetBytes("salt"), 4096);
                 byte[] aesKey = (gen.GenerateDerivedParameters((keySizeComboBox.SelectedItem as ComboKeySizeItem).KeySize) as KeyParameter).GetKey();
 
-                foreach (string inputFile in this.InputFiles)
+                for (int index = 0; index < this.InputFiles.Count; index++)
                 {
-                    string inputFileName = Path.GetFileNameWithoutExtension(inputFile);
-                    string inputFileExtension = Path.GetExtension(inputFile);
-                    string outputFile = Path.Combine(this.outputFolderTextbox.Text, $"{inputFileName}_cms_encrypted{inputFileExtension}");
-                    Directory.CreateDirectory(Path.GetDirectoryName(outputFile));
-                    SigningCore.Cms.BouncyCastle_EncryptCMS_Sym(inputFile, outputFile, aesKey);
+                    string rowResult = "NO";
+                    Color rowColor = Color.IndianRed;
+                    try
+                    {
+                        string inputFileName = Path.GetFileNameWithoutExtension(this.InputFiles[index]);
+                        string inputFileExtension = Path.GetExtension(this.InputFiles[index]);
+                        string outputFile = Path.Combine(this.outputFolderTextbox.Text, $"{inputFileName}_cms_encrypted{inputFileExtension}");
+                        Directory.CreateDirectory(Path.GetDirectoryName(outputFile));
+                        SigningCore.Cms.BouncyCastle_EncryptCMS_Sym(this.InputFiles[index], outputFile, aesKey);
+                        rowResult = "YES";
+                        rowColor = Color.LightGreen;
+                    }
+                    catch (Exception ex)
+                    {
+
+                    }
+                    this.inputFileListview.Items[index].SubItems[2].Text = rowResult;
+                    this.inputFileListview.Items[index].BackColor = rowColor;
                 }
             }
             catch (Exception ex)

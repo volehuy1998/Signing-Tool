@@ -61,6 +61,7 @@ namespace SigningUI.form
             this.passwordAesTextbox.Name = "passwordAesTextbox";
             this.passwordAesTextbox.Size = new System.Drawing.Size(351, 20);
             this.passwordAesTextbox.TabIndex = 36;
+            this.passwordAesTextbox.Text = "~Default password~";
             // 
             // passwordAesLabel
             // 
