@@ -53,6 +53,7 @@ namespace SigningUI
         {
             ToolBoxHelper.UncheckOtherToolStripMenuItems(sender as ToolStripMenuItem);
             ToolBoxHelper.ChangeActionValueLabel(sender as ToolStripMenuItem, this.actionValueLabel);
+            this.outputFolderTextbox.Text = "Verify mode don't need filled output path";
         }
 
         private void encryptToolStripMenuItem_Click(object sender, EventArgs e)
