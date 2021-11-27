@@ -32,7 +32,14 @@ namespace SigningUI
 
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            OpenFileDialog openFileDialog = new OpenFileDialog();
+            OpenFileDialog inputFileDialog = new OpenFileDialog();
+            inputFileDialog.Multiselect = true;
+            inputFileDialog.Filter = ToolBoxHelper.GetFileFilterMode(this.modeValueLabel.Text);
+            inputFileDialog.Title = $"Choose {this.modeValueLabel.Text} files to {this.actionValueLabel.Text}";
+            if (inputFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                this.inputFileTextBox.Text = string.Join(";", inputFileDialog.FileNames);
+            }
         }
 
         private void signToolStripMenuItem_Click(object sender, EventArgs e)
