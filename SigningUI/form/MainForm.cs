@@ -155,11 +155,13 @@ namespace SigningUI
                 }
                 else if (ToolBoxHelper.CompareString(action, "encrypt") && ToolBoxHelper.CompareString(mode, "xml"))
                 {
-                    throw new Exception($"{this.modeValueLabel.Text} {this.actionValueLabel.Text} didn't support yet, please try CMS");
+                    XmlEncryptForm xmlEncryptForm = new XmlEncryptForm(ToolBoxHelper.GetInputFiles(this.inputFileTextBox.Text), this.outputFolderTextbox.Text);
+                    xmlEncryptForm.ShowDialog();
                 }
                 else if (ToolBoxHelper.CompareString(action, "decrypt") && ToolBoxHelper.CompareString(mode, "xml"))
                 {
-                    throw new Exception($"{this.modeValueLabel.Text} {this.actionValueLabel.Text} didn't support yet, please try CMS");
+                    XmlDecryptForm xmlDecryptForm = new XmlDecryptForm(ToolBoxHelper.GetInputFiles(this.inputFileTextBox.Text), this.outputFolderTextbox.Text);
+                    xmlDecryptForm.ShowDialog();
                 }
                 else if (ToolBoxHelper.CompareString(action, "sign") && ToolBoxHelper.CompareString(mode, "json"))
                 {

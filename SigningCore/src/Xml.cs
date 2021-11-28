@@ -156,6 +156,11 @@ namespace SigningCore
                     // replace elem
                     EncryptedXml.ReplaceElement(t.Item1, t.Item2, false);
                 }
+
+                // Just encrypt parent for all
+                // if I handle encrypt multiple sub-tagname well, I will remove this 'break' line.
+                // Why we got exception? because encrypt parent and it's child will throw exception, i dont know how to handle
+                break;
             }
 
             return Doc;

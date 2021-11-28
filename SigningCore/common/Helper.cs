@@ -1,5 +1,8 @@
 ﻿using Microsoft.XmlDiffPatch;
 using Org.BouncyCastle.Crypto;
+using Org.BouncyCastle.Crypto.Digests;
+using Org.BouncyCastle.Crypto.Generators;
+using Org.BouncyCastle.Crypto.Parameters;
 using Org.BouncyCastle.Pkcs;
 using Org.BouncyCastle.Security;
 using Org.BouncyCastle.Utilities;
@@ -236,5 +239,13 @@ namespace SigningCore
             Array.Copy(bs, 0, padded, size - bs.Length, bs.Length);
             return padded;
         }
+
+        public static byte[] GetAesKeyByPassword(string password, int keySize)
+        {
+            Pkcs5S2ParametersGenerator gen = new Pkcs5S2ParametersGenerator(new Sha256Digest());
+            gen.Init(Encoding.UTF8.GetBytes(password), Encoding.UTF8.GetBytes("salt"), 4096);
+            return (gen.GenerateDerivedParameters(keySize) as KeyParameter).GetKey();
+        }
+
     }
 }
