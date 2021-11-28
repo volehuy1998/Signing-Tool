@@ -23,7 +23,17 @@ namespace SigningUI.form
             this.FormBorderStyle = FormBorderStyle.FixedDialog;
             this.InputFiles = inputFiles;
             this.outputFolderTextbox.Text = outputFolder;
-            this.inputFilesListBox.Items.AddRange(this.InputFiles.ToArray());
+
+            for (int id = 0; id < this.InputFiles.Count; id++)
+            {
+                ListViewItem eachRowFile = new ListViewItem((id + 1).ToString());
+                ListViewItem.ListViewSubItem fileColumn = new ListViewItem.ListViewSubItem(eachRowFile, Path.GetFileName(this.InputFiles[id]));
+                ListViewItem.ListViewSubItem resultColumn = new ListViewItem.ListViewSubItem(eachRowFile, "");
+                eachRowFile.SubItems.Add(fileColumn);
+                eachRowFile.SubItems.Add(resultColumn);
+                eachRowFile.BackColor = Color.LightGray;
+                this.inputFileListview.Items.Add(eachRowFile);
+            }
         }
 
         private void pfxButton_Click(object sender, EventArgs e)
@@ -41,13 +51,27 @@ namespace SigningUI.form
         {
             try
             {
-                foreach (string inputFile in this.InputFiles)
+                for (int index = 0; index < this.InputFiles.Count; index++)
                 {
-                    string inputFileName = Path.GetFileNameWithoutExtension(inputFile);
-                    string inputFileExtension = Path.GetExtension(inputFile);
-                    string outputFile = Path.Combine(this.outputFolderTextbox.Text, $"{inputFileName}_cms_signed{inputFileExtension}");
-                    Directory.CreateDirectory(Path.GetDirectoryName(outputFile));
-                    SigningCore.Cms.BouncyCastle_SignCMS(inputFile, outputFile, this.pfxFileTextbox.Text, this.pfxPasswordTextbox.Text);
+                    string rowResult = "NO";
+                    Color rowColor = Color.IndianRed;
+                    try
+                    {
+                        string inputFileName = Path.GetFileNameWithoutExtension(this.InputFiles[index]);
+                        string inputFileExtension = Path.GetExtension(this.InputFiles[index]);
+                        string outputFile = Path.Combine(this.outputFolderTextbox.Text, $"{inputFileName}_cms_signed{inputFileExtension}");
+                        Directory.CreateDirectory(Path.GetDirectoryName(outputFile));
+                        SigningCore.Cms.BouncyCastle_SignCMS(this.InputFiles[index], outputFile, this.pfxFileTextbox.Text, this.pfxPasswordTextbox.Text);
+                        rowResult = "Signed";
+                        rowColor = Color.LightGreen;
+                    }
+                    catch (Exception ex)
+                    {
+                        rowResult = ex.Message;
+                    }
+                    this.inputFileListview.Items[index].SubItems[2].Text = rowResult;
+                    this.inputFileListview.Items[index].BackColor = rowColor;
+                    this.inputFileListview.Items[index].ToolTipText = rowResult;
                 }
             }
             catch (Exception ex)
@@ -66,6 +90,14 @@ namespace SigningUI.form
             {
                 MessageBox.Show(ex.Message);
             }
+        }
+
+        private void inputFileListview_DoubleClick(object sender, EventArgs e)
+        {
+            ListViewItem row = this.inputFileListview.SelectedItems[0];
+            MessageBoxIcon messageBoxIcon = row.SubItems[2].Text.Equals("Signed", StringComparison.OrdinalIgnoreCase) ?
+                MessageBoxIcon.Information : MessageBoxIcon.Error;
+            MessageBox.Show(row.SubItems[2].Text, "Sign information", MessageBoxButtons.OK, messageBoxIcon);
         }
     }
 }

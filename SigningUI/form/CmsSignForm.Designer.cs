@@ -37,11 +37,14 @@ namespace SigningUI.form
             this.pfxPasswordTextbox = new System.Windows.Forms.TextBox();
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.label1 = new System.Windows.Forms.Label();
-            this.inputFilesListBox = new System.Windows.Forms.ListBox();
             this.outputFolderLabel = new System.Windows.Forms.Label();
             this.outputFolderTextbox = new System.Windows.Forms.TextBox();
             this.cmsSignButton = new System.Windows.Forms.Button();
             this.openOutputFolderButton = new System.Windows.Forms.Button();
+            this.inputFileListview = new System.Windows.Forms.ListView();
+            this.IdColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.FileColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.ResultColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.SuspendLayout();
             // 
             // pfxPasswordLabel
@@ -95,14 +98,6 @@ namespace SigningUI.form
             this.label1.TabIndex = 5;
             this.label1.Text = "Input files:";
             // 
-            // inputFilesListBox
-            // 
-            this.inputFilesListBox.FormattingEnabled = true;
-            this.inputFilesListBox.Location = new System.Drawing.Point(101, 143);
-            this.inputFilesListBox.Name = "inputFilesListBox";
-            this.inputFilesListBox.Size = new System.Drawing.Size(351, 134);
-            this.inputFilesListBox.TabIndex = 6;
-            // 
             // outputFolderLabel
             // 
             this.outputFolderLabel.AutoSize = true;
@@ -143,16 +138,50 @@ namespace SigningUI.form
             this.openOutputFolderButton.UseVisualStyleBackColor = true;
             this.openOutputFolderButton.Click += new System.EventHandler(this.openOutputFolderButton_Click);
             // 
+            // inputFileListview
+            // 
+            this.inputFileListview.Alignment = System.Windows.Forms.ListViewAlignment.Left;
+            this.inputFileListview.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.IdColumn,
+            this.FileColumn,
+            this.ResultColumn});
+            this.inputFileListview.FullRowSelect = true;
+            this.inputFileListview.HideSelection = false;
+            this.inputFileListview.Location = new System.Drawing.Point(101, 144);
+            this.inputFileListview.Name = "inputFileListview";
+            this.inputFileListview.ShowItemToolTips = true;
+            this.inputFileListview.Size = new System.Drawing.Size(351, 134);
+            this.inputFileListview.TabIndex = 20;
+            this.inputFileListview.UseCompatibleStateImageBehavior = false;
+            this.inputFileListview.View = System.Windows.Forms.View.Details;
+            this.inputFileListview.DoubleClick += new System.EventHandler(this.inputFileListview_DoubleClick);
+            // 
+            // IdColumn
+            // 
+            this.IdColumn.Text = "ID";
+            this.IdColumn.Width = 39;
+            // 
+            // FileColumn
+            // 
+            this.FileColumn.Text = "File";
+            this.FileColumn.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.FileColumn.Width = 246;
+            // 
+            // ResultColumn
+            // 
+            this.ResultColumn.Text = "Result";
+            this.ResultColumn.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
             // CmsSignForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(558, 319);
+            this.Controls.Add(this.inputFileListview);
             this.Controls.Add(this.openOutputFolderButton);
             this.Controls.Add(this.cmsSignButton);
             this.Controls.Add(this.outputFolderTextbox);
             this.Controls.Add(this.outputFolderLabel);
-            this.Controls.Add(this.inputFilesListBox);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.pfxPasswordTextbox);
             this.Controls.Add(this.pfxButton);
@@ -177,10 +206,13 @@ namespace SigningUI.form
         private System.Windows.Forms.TextBox pfxPasswordTextbox;
         private System.ComponentModel.BackgroundWorker backgroundWorker1;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.ListBox inputFilesListBox;
         private System.Windows.Forms.Label outputFolderLabel;
         private System.Windows.Forms.TextBox outputFolderTextbox;
         private System.Windows.Forms.Button cmsSignButton;
         private System.Windows.Forms.Button openOutputFolderButton;
+        private System.Windows.Forms.ListView inputFileListview;
+        private System.Windows.Forms.ColumnHeader IdColumn;
+        private System.Windows.Forms.ColumnHeader FileColumn;
+        private System.Windows.Forms.ColumnHeader ResultColumn;
     }
 }
