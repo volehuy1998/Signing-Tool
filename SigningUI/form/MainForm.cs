@@ -175,11 +175,11 @@ namespace SigningUI
                 }
                 else if (ToolBoxHelper.CompareString(action, "encrypt") && ToolBoxHelper.CompareString(mode, "json"))
                 {
-                    throw new Exception($"{this.modeValueLabel.Text} {this.actionValueLabel.Text} didn't support yet, please try CMS");
+                    throw new Exception($"{this.modeValueLabel.Text} {this.actionValueLabel.Text} didn't support yet, please try another");
                 }
                 else if (ToolBoxHelper.CompareString(action, "decrypt") && ToolBoxHelper.CompareString(mode, "json"))
                 {
-                    throw new Exception($"{this.modeValueLabel.Text} {this.actionValueLabel.Text} didn't support yet, please try CMS");
+                    throw new Exception($"{this.modeValueLabel.Text} {this.actionValueLabel.Text} didn't support yet, please try another");
                 }
             }
             catch (Exception ex)
