@@ -88,6 +88,7 @@ namespace SigningUI.form
             this.inputFileListview.TabIndex = 34;
             this.inputFileListview.UseCompatibleStateImageBehavior = false;
             this.inputFileListview.View = System.Windows.Forms.View.Details;
+            this.inputFileListview.DoubleClick += new System.EventHandler(this.inputFileListview_DoubleClick);
             // 
             // IdColumn
             // 

@@ -18,7 +18,7 @@ using System.Threading.Tasks;
 
 namespace SigningCore
 {
-    class Json
+    public class Json
     {
         public static SecureRandom seed = new SecureRandom();
         public static string Sign(string payload, string pfxPath, string pfxPwd)

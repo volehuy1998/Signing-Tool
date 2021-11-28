@@ -14,7 +14,7 @@ using System.Xml;
 
 namespace SigningCore
 {
-    class Xml
+    public class Xml
     {
         public static XmlDocument Microsoft_SignXml(XmlDocument xmlDoc, string pfxPath, string pfxPwd)
         {
@@ -30,11 +30,14 @@ namespace SigningCore
             Pkcs12Store pkcs12Store = null;
             X509Certificate bouncycastle_cert = null;
             RSA privateKey = null;
+            RSAParameters rSAParameters;
 
             pkcs12Store = Helper.GetPkcs12Store(pfxPath, pfxPwd);
             keyAlias = Helper.GetAliasFromPkcs12Store(pkcs12Store);
             bouncycastle_cert = pkcs12Store.GetCertificate(keyAlias).Certificate;
-            privateKey = DotNetUtilities.ToRSA(pkcs12Store.GetKey(keyAlias).Key as RsaPrivateCrtKeyParameters);
+            rSAParameters = Helper.ToRSAParameters(pkcs12Store.GetKey(keyAlias).Key as RsaPrivateCrtKeyParameters);
+            privateKey = RSA.Create();
+            privateKey.ImportParameters(rSAParameters);
 
             Reference reference = new Reference();
             reference.Uri = "";

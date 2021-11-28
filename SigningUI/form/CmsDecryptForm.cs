@@ -84,20 +84,30 @@ namespace SigningUI.form
                         string outputFile = Path.Combine(this.outputFolderTextbox.Text, $"{inputFileName}_cms_encrypted{inputFileExtension}");
                         Directory.CreateDirectory(Path.GetDirectoryName(outputFile));
                         SigningCore.Cms.BouncyCastle_DecryptCMS_Sym(this.EncryptedFiles[index], outputFile, aesKey);
-                        rowResult = "YES";
+                        rowResult = "Decrypted";
                         rowColor = Color.LightGreen;
                     }
                     catch (Exception ex)
                     {
+                        rowResult = ex.Message;
                     }
                     this.inputFileListview.Items[index].SubItems[2].Text = rowResult;
                     this.inputFileListview.Items[index].BackColor = rowColor;
+                    this.inputFileListview.Items[index].ToolTipText = rowResult;
                 }
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
             }
+        }
+
+        private void inputFileListview_DoubleClick(object sender, EventArgs e)
+        {
+            ListViewItem row = this.inputFileListview.SelectedItems[0];
+            MessageBoxIcon messageBoxIcon = row.SubItems[2].Text.Equals("Decrypted", StringComparison.OrdinalIgnoreCase) ?
+                MessageBoxIcon.Information : MessageBoxIcon.Error;
+            MessageBox.Show(row.SubItems[2].Text, "Decrypted information", MessageBoxButtons.OK, messageBoxIcon);
         }
     }
 }

@@ -63,21 +63,31 @@ namespace SigningUI.form
                         result = SigningCore.Cms.BouncyCastle_VerifyCMS(this.signedInputFiles[index], this.bouncycastleCert);
                         if (result)
                         {
-                            rowResult = "YES";
+                            rowResult = "Verified";
                             rowColor = Color.LightGreen;
                         }
                     }
                     catch (Exception ex)
                     {
+                        rowResult = ex.Message;
                     }
                     this.signedInputFileListview.Items[index].SubItems[2].Text = rowResult;
                     this.signedInputFileListview.Items[index].BackColor = rowColor;
+                    this.signedInputFileListview.Items[index].ToolTipText = rowResult;
                 }
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
             }
+        }
+
+        private void signedInputFileListview_DoubleClick(object sender, EventArgs e)
+        {
+            ListViewItem row = this.signedInputFileListview.SelectedItems[0];
+            MessageBoxIcon messageBoxIcon = row.SubItems[2].Text.Equals("Verified", StringComparison.OrdinalIgnoreCase) ?
+                MessageBoxIcon.Information : MessageBoxIcon.Error;
+            MessageBox.Show(row.SubItems[2].Text, "Verify information", MessageBoxButtons.OK, messageBoxIcon);
         }
     }
 }

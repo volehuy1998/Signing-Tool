@@ -74,21 +74,21 @@ namespace SigningUI
         {
             ToolBoxHelper.UncheckOtherToolStripMenuItems(sender as ToolStripMenuItem);
             ToolBoxHelper.ChangeActionValueLabel(sender as ToolStripMenuItem, this.modeValueLabel);
-
+            this.outputFolderTextbox.Text = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), this.modeValueLabel.Text, this.actionValueLabel.Text);
         }
 
         private void jSONToolStripMenuItem_Click(object sender, EventArgs e)
         {
             ToolBoxHelper.UncheckOtherToolStripMenuItems(sender as ToolStripMenuItem);
             ToolBoxHelper.ChangeActionValueLabel(sender as ToolStripMenuItem, this.modeValueLabel);
-
+            this.outputFolderTextbox.Text = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), this.modeValueLabel.Text, this.actionValueLabel.Text);
         }
 
         private void xMLToolStripMenuItem_Click(object sender, EventArgs e)
         {
             ToolBoxHelper.UncheckOtherToolStripMenuItems(sender as ToolStripMenuItem);
             ToolBoxHelper.ChangeActionValueLabel(sender as ToolStripMenuItem, this.modeValueLabel);
-
+            this.outputFolderTextbox.Text = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), this.modeValueLabel.Text, this.actionValueLabel.Text);
         }
 
         private void inputFileButton_Click(object sender, EventArgs e)
@@ -145,11 +145,13 @@ namespace SigningUI
                 }
                 else if (ToolBoxHelper.CompareString(action, "sign") && ToolBoxHelper.CompareString(mode, "xml"))
                 {
-                    throw new Exception($"{this.modeValueLabel.Text} {this.actionValueLabel.Text} didn't support yet, please try CMS");
+                    XmlSignForm xmlSignForm = new XmlSignForm(ToolBoxHelper.GetInputFiles(this.inputFileTextBox.Text), this.outputFolderTextbox.Text);
+                    xmlSignForm.ShowDialog();
                 }
                 else if (ToolBoxHelper.CompareString(action, "verify") && ToolBoxHelper.CompareString(mode, "xml"))
                 {
-                    throw new Exception($"{this.modeValueLabel.Text} {this.actionValueLabel.Text} didn't support yet, please try CMS");
+                    XmlVerifyForm xmlVerifyForm = new XmlVerifyForm(ToolBoxHelper.GetInputFiles(this.inputFileTextBox.Text));
+                    xmlVerifyForm.ShowDialog();
                 }
                 else if (ToolBoxHelper.CompareString(action, "encrypt") && ToolBoxHelper.CompareString(mode, "xml"))
                 {
@@ -161,11 +163,13 @@ namespace SigningUI
                 }
                 else if (ToolBoxHelper.CompareString(action, "sign") && ToolBoxHelper.CompareString(mode, "json"))
                 {
-                    throw new Exception($"{this.modeValueLabel.Text} {this.actionValueLabel.Text} didn't support yet, please try CMS");
+                    JsonSignForm jsonSignForm = new JsonSignForm(ToolBoxHelper.GetInputFiles(this.inputFileTextBox.Text), this.outputFolderTextbox.Text);
+                    jsonSignForm.ShowDialog();
                 }
                 else if (ToolBoxHelper.CompareString(action, "verify") && ToolBoxHelper.CompareString(mode, "json"))
                 {
-                    throw new Exception($"{this.modeValueLabel.Text} {this.actionValueLabel.Text} didn't support yet, please try CMS");
+                    JsonVerifyForm jsonVerifyForm = new JsonVerifyForm(ToolBoxHelper.GetInputFiles(this.inputFileTextBox.Text));
+                    jsonVerifyForm.ShowDialog();
                 }
                 else if (ToolBoxHelper.CompareString(action, "encrypt") && ToolBoxHelper.CompareString(mode, "json"))
                 {

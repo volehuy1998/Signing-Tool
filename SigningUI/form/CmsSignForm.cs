@@ -31,7 +31,6 @@ namespace SigningUI.form
             OpenFileDialog pfxFileDialog = new OpenFileDialog();
             pfxFileDialog.Title = "Please choose PKCS#12 file to sign";
             pfxFileDialog.Multiselect = false;
-            pfxFileDialog.Filter = ToolBoxHelper.GetFileFilterMode("cms");
             if (pfxFileDialog.ShowDialog() == DialogResult.OK)
             {
                 this.pfxFileTextbox.Text = pfxFileDialog.FileName;
@@ -46,7 +45,7 @@ namespace SigningUI.form
                 {
                     string inputFileName = Path.GetFileNameWithoutExtension(inputFile);
                     string inputFileExtension = Path.GetExtension(inputFile);
-                    string outputFile = Path.Combine(this.outputFolderTextbox.Text, $"{inputFileName}_ cms_signed{inputFileExtension}");
+                    string outputFile = Path.Combine(this.outputFolderTextbox.Text, $"{inputFileName}_cms_signed{inputFileExtension}");
                     Directory.CreateDirectory(Path.GetDirectoryName(outputFile));
                     SigningCore.Cms.BouncyCastle_SignCMS(inputFile, outputFile, this.pfxFileTextbox.Text, this.pfxPasswordTextbox.Text);
                 }

@@ -199,5 +199,42 @@ namespace SigningCore
 
             return result;
         }
+
+        /// <summary>
+        /// Copy from https://stackoverflow.com/questions/949727/bouncycastle-rsaprivatekey-to-net-rsaprivatekey
+        /// </summary>
+        /// <param name="privKey"></param>
+        /// <returns></returns>
+        public static RSAParameters ToRSAParameters(Org.BouncyCastle.Crypto.Parameters.RsaPrivateCrtKeyParameters privKey)
+        {
+            RSAParameters rp = new RSAParameters();
+            rp.Modulus = privKey.Modulus.ToByteArrayUnsigned();
+            rp.Exponent = privKey.PublicExponent.ToByteArrayUnsigned();
+            rp.P = privKey.P.ToByteArrayUnsigned();
+            rp.Q = privKey.Q.ToByteArrayUnsigned();
+            rp.D = ConvertRSAParametersField(privKey.Exponent, rp.Modulus.Length);
+            rp.DP = ConvertRSAParametersField(privKey.DP, rp.P.Length);
+            rp.DQ = ConvertRSAParametersField(privKey.DQ, rp.Q.Length);
+            rp.InverseQ = ConvertRSAParametersField(privKey.QInv, rp.Q.Length);
+            return rp;
+        }
+
+        /// <summary>
+        /// Copy from https://stackoverflow.com/questions/949727/bouncycastle-rsaprivatekey-to-net-rsaprivatekey
+        /// </summary>
+        /// <param name="n"></param>
+        /// <param name="size"></param>
+        /// <returns></returns>
+        private static byte[] ConvertRSAParametersField(Org.BouncyCastle.Math.BigInteger n, int size)
+        {
+            byte[] bs = n.ToByteArrayUnsigned();
+            if (bs.Length == size)
+                return bs;
+            if (bs.Length > size)
+                throw new ArgumentException("Specified size too small", "size");
+            byte[] padded = new byte[size];
+            Array.Copy(bs, 0, padded, size - bs.Length, bs.Length);
+            return padded;
+        }
     }
 }
