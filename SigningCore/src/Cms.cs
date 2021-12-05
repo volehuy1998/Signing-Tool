@@ -22,11 +22,11 @@ namespace SigningCore
         {
             if (Common.CheckString(originalFile))
                 throw new Exception("File to sign null");
-            if (Common.CheckString(originalFile))
+            if (Common.CheckString(signedFile))
                 throw new Exception("File to output sign null");
             if (Common.CheckString(pfxPath))
                 throw new Exception("Pfx file null");
-            if (Common.CheckString(originalFile))
+            if (Common.CheckString(pfxPassword))
                 throw new Exception("Pfx password null");
 
             AsymmetricKeyParameter privateKey = null;
