@@ -16,7 +16,7 @@ namespace SigningUI
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new MainForm());
+            Application.Run(new new_form.MainForm());
         }
     }
 }

@@ -52,6 +52,38 @@ namespace SigningCore
             }
         }
 
+        public static void BouncyCastle_SignCMS(string originalFile, string signedFile, Pkcs12Store pkcs12Store)
+        {
+            if (Common.CheckString(originalFile))
+                throw new Exception("File to sign null");
+            if (Common.CheckString(signedFile))
+                throw new Exception("File to output sign null");
+            if (pkcs12Store == null)
+                throw new Exception("PKCS#12 null to sign");
+
+            string alias = string.Empty;
+            AsymmetricKeyParameter privateKey = null;
+            X509Certificate bouncyCert = null;
+
+
+            using (FileStream signedStream = new FileStream(signedFile, mode: FileMode.Create, access: FileAccess.Write))
+            using (FileStream originDataStream = new FileStream(originalFile, FileMode.Open, access: FileAccess.Read))
+            {
+                CmsSignedDataStreamGenerator gen = new CmsSignedDataStreamGenerator();
+                // add one signer
+                alias = Helper.GetAliasFromPkcs12Store(pkcs12Store);
+                privateKey = pkcs12Store.GetKey(alias).Key;
+                bouncyCert = pkcs12Store.GetCertificate(alias).Certificate;
+                gen.AddSigner(privateKey: privateKey, cert: bouncyCert, CmsSignedDataGenerator.DigestSha256);
+
+                using (Stream signingStream = gen.Open(signedStream, true))
+                {
+                    // sign
+                    originDataStream.CopyTo(signingStream);
+                }
+            }
+        }
+
         public static bool BouncyCastle_VerifyCMS(string signedFile, X509Certificate bouncycastleCert)
         {
             if (Common.CheckString(signedFile))

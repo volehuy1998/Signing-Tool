@@ -70,6 +70,56 @@ namespace SigningCore
             return xmlDoc;
         }
 
+        public static XmlDocument Microsoft_SignXml(XmlDocument xmlDoc, Pkcs12Store pkcs12Store)
+        {
+            if (xmlDoc == null)
+                throw new Exception("File xml to sign null");
+            if (pkcs12Store == null)
+                throw new Exception("PKCS#12 to sign null");
+
+            string keyAlias = string.Empty;
+            string serialNumber = string.Empty;
+            X509Certificate bouncycastle_cert = null;
+            RSA privateKey = null;
+            RSAParameters rSAParameters;
+
+            keyAlias = Helper.GetAliasFromPkcs12Store(pkcs12Store);
+            bouncycastle_cert = pkcs12Store.GetCertificate(keyAlias).Certificate;
+            rSAParameters = Helper.ToRSAParameters(pkcs12Store.GetKey(keyAlias).Key as RsaPrivateCrtKeyParameters);
+            privateKey = RSA.Create();
+            privateKey.ImportParameters(rSAParameters);
+
+            Reference reference = new Reference();
+            reference.Uri = "";
+            reference.AddTransform(new XmlDsigEnvelopedSignatureTransform());
+
+            SignedXml signedXml = new SignedXml(xmlDoc);
+            signedXml.SigningKey = privateKey;
+            signedXml.AddReference(reference);
+            signedXml.ComputeSignature();
+
+            XmlElement xmlDigitalSignature = signedXml.GetXml();
+
+            xmlDoc.DocumentElement.AppendChild(xmlDoc.ImportNode(xmlDigitalSignature, true));
+
+            XmlElement keyInfoElement = xmlDoc.CreateElement("SignatureVerification");
+            XmlElement useElement = xmlDoc.CreateElement("use");
+            XmlElement ktyElement = xmlDoc.CreateElement("kty");
+            XmlElement exponentElement = xmlDoc.CreateElement("e");
+            XmlElement modulusElement = xmlDoc.CreateElement("n");
+            useElement.InnerText = "sig";
+            ktyElement.InnerText = "RSA";
+            exponentElement.InnerText = Convert.ToBase64String((bouncycastle_cert.GetPublicKey() as RsaKeyParameters).Exponent.ToByteArrayUnsigned());
+            modulusElement.InnerText = Convert.ToBase64String((bouncycastle_cert.GetPublicKey() as RsaKeyParameters).Modulus.ToByteArrayUnsigned());
+            keyInfoElement.AppendChild(useElement);
+            keyInfoElement.AppendChild(ktyElement);
+            keyInfoElement.AppendChild(exponentElement);
+            keyInfoElement.AppendChild(modulusElement);
+
+            xmlDoc.DocumentElement.AppendChild(keyInfoElement);
+            return xmlDoc;
+        }
+
         public static bool Microsoft_VerifyXml(XmlDocument signedXmlDoc)
         {
             if (signedXmlDoc == null)

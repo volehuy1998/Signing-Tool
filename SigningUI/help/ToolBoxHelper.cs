@@ -1,12 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static System.Windows.Forms.ListViewItem;
 
 namespace SigningUI.help
 {
+    public enum Mode
+    {
+        SIGN,
+        CRYPT
+    }
     public class ToolBoxHelper
     {
         /// <summary>
@@ -88,6 +95,67 @@ namespace SigningUI.help
         public static bool CheckValidInputMainForm(string inputFiles)
         {
             return !string.IsNullOrWhiteSpace(inputFiles);
+        }
+
+        public static void AdjustTemplateForm(Form form)
+        {
+            form.Dock = DockStyle.Fill;
+            form.TopLevel = false;
+            form.TopMost = true;
+            form.FormBorderStyle = FormBorderStyle.None;
+        }
+
+        public static void UpdateLabelData(Label label, string data)
+        {
+            string tmp = label.Text.Replace("Unknown", data);
+            int limit = 150;
+            if (tmp.Length > limit)
+            {
+                label.Text = tmp.Substring(0, limit - 3);
+                label.Text += "...";
+                ToolTip toolTip = new ToolTip();
+                toolTip.InitialDelay = 0; // instant appear
+                toolTip.ReshowDelay = 0;
+                toolTip.ShowAlways = true;
+                toolTip.SetToolTip(label, tmp);
+            }
+            else
+            {
+                label.Text = tmp;
+            }
+        }
+
+        public static ListViewItem GetListViewItemByName(ListView listview, string path)
+        {
+            foreach (ListViewItem item in listview.Items)
+            {
+                if (item.SubItems[1].Text.Equals(path, StringComparison.OrdinalIgnoreCase))
+                {
+                    return item;
+                }
+            }
+
+            return null;
+        }
+
+        public static string GetOutputFile(string outputFolder, string inputFile, Mode mode)
+        {
+            string outputFile = string.Empty;
+
+            string fileNameWithoutExten = Path.GetFileNameWithoutExtension(inputFile);
+
+            if (mode == Mode.SIGN)
+            {
+                fileNameWithoutExten += ".sig";
+            }
+            else
+            {
+                fileNameWithoutExten += ".enc";
+            }
+
+            outputFile = Path.Combine(outputFolder, fileNameWithoutExten);
+
+            return outputFile;
         }
     }
 }

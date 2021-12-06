@@ -75,6 +75,58 @@ namespace SigningCore
             return jwt;
         }
 
+        public static void Sign(string payload, string signedFile, Pkcs12Store pkcs12Store)
+        {
+            if (Common.CheckString(payload))
+                throw new Exception("Payload to sign null");
+            if (pkcs12Store == null)
+                throw new Exception("PKCS#12 file null to sign");
+
+            string jwt = string.Empty;
+            string headerJwt = string.Empty;
+            string payloadJwt = string.Empty;
+            string signatureJwt = string.Empty;
+            string keyAlias = string.Empty;
+            object header = null;
+            RsaKeyParameters privateKey = null;
+            RsaKeyParameters publicKey = null;
+
+            keyAlias = Helper.GetAliasFromPkcs12Store(pkcs12Store);
+            publicKey = pkcs12Store.GetCertificate(keyAlias).Certificate.GetPublicKey() as RsaKeyParameters;
+            // generate header
+            header = new
+            {
+                alg = "RS256",
+                typ = "JWT",
+                // RFC7517
+                use = "sig",
+                kty = "RSA",
+                e = publicKey.Exponent.ToString(),
+                n = publicKey.Modulus.ToString()
+            };
+
+            byte[] headerBytes = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(header, Formatting.None));
+            byte[] payloadBytes = Encoding.UTF8.GetBytes(payload);
+            // base64 header and payload
+            headerJwt = Base64UrlEncode(headerBytes);
+            payloadJwt = Base64UrlEncode(payloadBytes);
+            // data to sign
+            byte[] bytesToSign = Encoding.UTF8.GetBytes(headerJwt + "." + payloadJwt);
+            // extract private key
+            privateKey = pkcs12Store.GetKey(keyAlias).Key as RsaKeyParameters;
+            // hash and encrypt
+            ISigner sig = SignerUtilities.GetSigner("SHA256withRSA");
+            sig.Init(true, privateKey);
+            sig.BlockUpdate(bytesToSign, 0, bytesToSign.Length);
+            // base64 signature
+            signatureJwt = Base64UrlEncode(sig.GenerateSignature());
+            // generate jwt
+            jwt = headerJwt + "." + payloadJwt + "." + signatureJwt;
+
+            File.WriteAllText(signedFile, jwt);
+        }
+
+
         public static string Decode(string token, bool verifySignature = true)
         {
             if (Common.CheckString(token))
