@@ -104,8 +104,20 @@ namespace SigningUI.new_form
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.cmsVerifyButton = new System.Windows.Forms.Button();
+            this.cmsVerifyPfxSignatureAlgoLabel = new System.Windows.Forms.Label();
+            this.cmsVerifyPfxThumbprintLabel = new System.Windows.Forms.Label();
+            this.cmsVerifyPfxSerialNumberLabel = new System.Windows.Forms.Label();
+            this.cmsVerifyPfxExpireLabel = new System.Windows.Forms.Label();
+            this.cmsVerifyPfxValidFromLabel = new System.Windows.Forms.Label();
+            this.cmsVerifyPfxIssuerLabel = new System.Windows.Forms.Label();
+            this.cmsVerifyPfxVersionLabel = new System.Windows.Forms.Label();
+            this.cmsMicrosoftCertSelectButton = new System.Windows.Forms.Button();
+            this.cmsVerifyMicrosoftCertThumbprintTextbox = new System.Windows.Forms.TextBox();
+            this.label10 = new System.Windows.Forms.Label();
             this.tabControl.SuspendLayout();
             this.cmsSignPage.SuspendLayout();
+            this.cmsVerifyPage.SuspendLayout();
             this.xmlSignPage.SuspendLayout();
             this.jsonSignPage.SuspendLayout();
             this.menuStrip.SuspendLayout();
@@ -321,6 +333,17 @@ namespace SigningUI.new_form
             // 
             // cmsVerifyPage
             // 
+            this.cmsVerifyPage.Controls.Add(this.cmsVerifyButton);
+            this.cmsVerifyPage.Controls.Add(this.cmsVerifyPfxSignatureAlgoLabel);
+            this.cmsVerifyPage.Controls.Add(this.cmsVerifyPfxThumbprintLabel);
+            this.cmsVerifyPage.Controls.Add(this.cmsVerifyPfxSerialNumberLabel);
+            this.cmsVerifyPage.Controls.Add(this.cmsVerifyPfxExpireLabel);
+            this.cmsVerifyPage.Controls.Add(this.cmsVerifyPfxValidFromLabel);
+            this.cmsVerifyPage.Controls.Add(this.cmsVerifyPfxIssuerLabel);
+            this.cmsVerifyPage.Controls.Add(this.cmsVerifyPfxVersionLabel);
+            this.cmsVerifyPage.Controls.Add(this.cmsMicrosoftCertSelectButton);
+            this.cmsVerifyPage.Controls.Add(this.cmsVerifyMicrosoftCertThumbprintTextbox);
+            this.cmsVerifyPage.Controls.Add(this.label10);
             this.cmsVerifyPage.Location = new System.Drawing.Point(4, 22);
             this.cmsVerifyPage.Name = "cmsVerifyPage";
             this.cmsVerifyPage.Padding = new System.Windows.Forms.Padding(3);
@@ -845,26 +868,26 @@ namespace SigningUI.new_form
             // openToolStripMenuItem
             // 
             this.openToolStripMenuItem.Name = "openToolStripMenuItem";
-            this.openToolStripMenuItem.Size = new System.Drawing.Size(124, 22);
+            this.openToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.openToolStripMenuItem.Text = "Open";
             this.openToolStripMenuItem.Click += new System.EventHandler(this.openToolStripMenuItem_Click);
             // 
             // saveToolStripMenuItem
             // 
             this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
-            this.saveToolStripMenuItem.Size = new System.Drawing.Size(124, 22);
+            this.saveToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.saveToolStripMenuItem.Text = "Save";
             // 
             // saveAsToolStripMenuItem
             // 
             this.saveAsToolStripMenuItem.Name = "saveAsToolStripMenuItem";
-            this.saveAsToolStripMenuItem.Size = new System.Drawing.Size(124, 22);
+            this.saveAsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.saveAsToolStripMenuItem.Text = "Save as ...";
             // 
             // closeToolStripMenuItem
             // 
             this.closeToolStripMenuItem.Name = "closeToolStripMenuItem";
-            this.closeToolStripMenuItem.Size = new System.Drawing.Size(124, 22);
+            this.closeToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.closeToolStripMenuItem.Text = "Close";
             this.closeToolStripMenuItem.Click += new System.EventHandler(this.closeToolStripMenuItem_Click_1);
             // 
@@ -890,6 +913,106 @@ namespace SigningUI.new_form
             this.aboutToolStripMenuItem.Text = "About";
             this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
             // 
+            // cmsVerifyButton
+            // 
+            this.cmsVerifyButton.Location = new System.Drawing.Point(405, 386);
+            this.cmsVerifyButton.Name = "cmsVerifyButton";
+            this.cmsVerifyButton.Size = new System.Drawing.Size(75, 23);
+            this.cmsVerifyButton.TabIndex = 42;
+            this.cmsVerifyButton.Text = "Sign";
+            this.cmsVerifyButton.UseVisualStyleBackColor = true;
+            this.cmsVerifyButton.Click += new System.EventHandler(this.cmsVerifyButton_Click);
+            // 
+            // cmsVerifyPfxSignatureAlgoLabel
+            // 
+            this.cmsVerifyPfxSignatureAlgoLabel.AutoSize = true;
+            this.cmsVerifyPfxSignatureAlgoLabel.Location = new System.Drawing.Point(19, 195);
+            this.cmsVerifyPfxSignatureAlgoLabel.Name = "cmsVerifyPfxSignatureAlgoLabel";
+            this.cmsVerifyPfxSignatureAlgoLabel.Size = new System.Drawing.Size(164, 13);
+            this.cmsVerifyPfxSignatureAlgoLabel.TabIndex = 41;
+            this.cmsVerifyPfxSignatureAlgoLabel.Text = "Signature algorithm:      Unknown";
+            // 
+            // cmsVerifyPfxThumbprintLabel
+            // 
+            this.cmsVerifyPfxThumbprintLabel.AutoSize = true;
+            this.cmsVerifyPfxThumbprintLabel.Location = new System.Drawing.Point(56, 158);
+            this.cmsVerifyPfxThumbprintLabel.Name = "cmsVerifyPfxThumbprintLabel";
+            this.cmsVerifyPfxThumbprintLabel.Size = new System.Drawing.Size(127, 13);
+            this.cmsVerifyPfxThumbprintLabel.TabIndex = 40;
+            this.cmsVerifyPfxThumbprintLabel.Text = "Thumbprint:      Unknown";
+            // 
+            // cmsVerifyPfxSerialNumberLabel
+            // 
+            this.cmsVerifyPfxSerialNumberLabel.AutoSize = true;
+            this.cmsVerifyPfxSerialNumberLabel.Location = new System.Drawing.Point(45, 121);
+            this.cmsVerifyPfxSerialNumberLabel.Name = "cmsVerifyPfxSerialNumberLabel";
+            this.cmsVerifyPfxSerialNumberLabel.Size = new System.Drawing.Size(138, 13);
+            this.cmsVerifyPfxSerialNumberLabel.TabIndex = 39;
+            this.cmsVerifyPfxSerialNumberLabel.Text = "Serial number:      Unknown";
+            // 
+            // cmsVerifyPfxExpireLabel
+            // 
+            this.cmsVerifyPfxExpireLabel.AutoSize = true;
+            this.cmsVerifyPfxExpireLabel.Location = new System.Drawing.Point(67, 269);
+            this.cmsVerifyPfxExpireLabel.Name = "cmsVerifyPfxExpireLabel";
+            this.cmsVerifyPfxExpireLabel.Size = new System.Drawing.Size(115, 13);
+            this.cmsVerifyPfxExpireLabel.TabIndex = 38;
+            this.cmsVerifyPfxExpireLabel.Text = "Expire to:      Unknown";
+            // 
+            // cmsVerifyPfxValidFromLabel
+            // 
+            this.cmsVerifyPfxValidFromLabel.AutoSize = true;
+            this.cmsVerifyPfxValidFromLabel.Location = new System.Drawing.Point(63, 232);
+            this.cmsVerifyPfxValidFromLabel.Name = "cmsVerifyPfxValidFromLabel";
+            this.cmsVerifyPfxValidFromLabel.Size = new System.Drawing.Size(120, 13);
+            this.cmsVerifyPfxValidFromLabel.TabIndex = 37;
+            this.cmsVerifyPfxValidFromLabel.Text = "Valid from:      Unknown";
+            // 
+            // cmsVerifyPfxIssuerLabel
+            // 
+            this.cmsVerifyPfxIssuerLabel.AutoSize = true;
+            this.cmsVerifyPfxIssuerLabel.Location = new System.Drawing.Point(81, 84);
+            this.cmsVerifyPfxIssuerLabel.Name = "cmsVerifyPfxIssuerLabel";
+            this.cmsVerifyPfxIssuerLabel.Size = new System.Drawing.Size(102, 13);
+            this.cmsVerifyPfxIssuerLabel.TabIndex = 36;
+            this.cmsVerifyPfxIssuerLabel.Text = "Issuer:      Unknown";
+            // 
+            // cmsVerifyPfxVersionLabel
+            // 
+            this.cmsVerifyPfxVersionLabel.AutoSize = true;
+            this.cmsVerifyPfxVersionLabel.Location = new System.Drawing.Point(74, 47);
+            this.cmsVerifyPfxVersionLabel.Name = "cmsVerifyPfxVersionLabel";
+            this.cmsVerifyPfxVersionLabel.Size = new System.Drawing.Size(109, 13);
+            this.cmsVerifyPfxVersionLabel.TabIndex = 35;
+            this.cmsVerifyPfxVersionLabel.Text = "Version:      Unknown";
+            // 
+            // cmsMicrosoftCertSelectButton
+            // 
+            this.cmsMicrosoftCertSelectButton.Location = new System.Drawing.Point(737, 4);
+            this.cmsMicrosoftCertSelectButton.Name = "cmsMicrosoftCertSelectButton";
+            this.cmsMicrosoftCertSelectButton.Size = new System.Drawing.Size(75, 23);
+            this.cmsMicrosoftCertSelectButton.TabIndex = 30;
+            this.cmsMicrosoftCertSelectButton.Text = "Select ...";
+            this.cmsMicrosoftCertSelectButton.UseVisualStyleBackColor = true;
+            this.cmsMicrosoftCertSelectButton.Click += new System.EventHandler(this.cmsMicrosoftCertSelectButton_Click);
+            // 
+            // cmsVerifyMicrosoftCertThumbprintTextbox
+            // 
+            this.cmsVerifyMicrosoftCertThumbprintTextbox.Location = new System.Drawing.Point(135, 6);
+            this.cmsVerifyMicrosoftCertThumbprintTextbox.Name = "cmsVerifyMicrosoftCertThumbprintTextbox";
+            this.cmsVerifyMicrosoftCertThumbprintTextbox.Size = new System.Drawing.Size(596, 20);
+            this.cmsVerifyMicrosoftCertThumbprintTextbox.TabIndex = 28;
+            this.cmsVerifyMicrosoftCertThumbprintTextbox.DoubleClick += new System.EventHandler(this.cmsMicrosoftCertThumbprintTextbox_DoubleClick);
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(65, 10);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(54, 13);
+            this.label10.TabIndex = 27;
+            this.label10.Text = "Key store:";
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -905,6 +1028,8 @@ namespace SigningUI.new_form
             this.tabControl.ResumeLayout(false);
             this.cmsSignPage.ResumeLayout(false);
             this.cmsSignPage.PerformLayout();
+            this.cmsVerifyPage.ResumeLayout(false);
+            this.cmsVerifyPage.PerformLayout();
             this.xmlSignPage.ResumeLayout(false);
             this.xmlSignPage.PerformLayout();
             this.jsonSignPage.ResumeLayout(false);
@@ -992,5 +1117,16 @@ namespace SigningUI.new_form
         private System.Windows.Forms.TextBox xmlPfxFileTextbox;
         private System.Windows.Forms.Label XmlPfxPasswordLabel;
         private System.Windows.Forms.Label xmlPfxFileLabel;
+        private System.Windows.Forms.Button cmsVerifyButton;
+        private System.Windows.Forms.Label cmsVerifyPfxSignatureAlgoLabel;
+        private System.Windows.Forms.Label cmsVerifyPfxThumbprintLabel;
+        private System.Windows.Forms.Label cmsVerifyPfxSerialNumberLabel;
+        private System.Windows.Forms.Label cmsVerifyPfxExpireLabel;
+        private System.Windows.Forms.Label cmsVerifyPfxValidFromLabel;
+        private System.Windows.Forms.Label cmsVerifyPfxIssuerLabel;
+        private System.Windows.Forms.Label cmsVerifyPfxVersionLabel;
+        private System.Windows.Forms.Button cmsMicrosoftCertSelectButton;
+        private System.Windows.Forms.TextBox cmsVerifyMicrosoftCertThumbprintTextbox;
+        private System.Windows.Forms.Label label10;
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json.Linq;
 using Org.BouncyCastle.Pkcs;
+using Org.BouncyCastle.Security;
 using SigningCore;
 using SigningUI.form;
 using SigningUI.help;
@@ -24,6 +25,7 @@ namespace SigningUI.new_form
         private List<string> FilePaths { set; get; }
         private System.Security.Cryptography.X509Certificates.X509Certificate2 microsoftCert { get; set; }
         private Pkcs12Store pkcs12Store { get; set; }
+        private Org.BouncyCastle.X509.X509Certificate bouncyCert { get; set; }
         public MainForm()
         {
             InitializeComponent();
@@ -103,7 +105,27 @@ namespace SigningUI.new_form
             inputFileDialog.Title = $"Choose input files";
             if (inputFileDialog.ShowDialog() == DialogResult.OK)
             {
-                this.FilePaths = inputFileDialog.FileNames.ToList();
+                if (this.FilePaths?.Count > 0)
+                {
+                    if (MessageBox.Show(
+                    "Input view isn't empty, do you want to clear?",
+                    "",
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Question) == DialogResult.Yes)
+                    {
+                        this.FilePaths = inputFileDialog.FileNames.ToList();
+                    }
+                    else
+                    {
+                        this.FilePaths.AddRange(inputFileDialog.FileNames.ToList());
+                    }
+                }
+                else
+                {
+                    this.FilePaths = inputFileDialog.FileNames.ToList();
+                }
+                this.inputFileListview.Items.Clear();
+
                 for (int id = 0; id < this.FilePaths.Count; id++)
                 {
                     ListViewItem eachRowFile = new ListViewItem((id + 1).ToString());
@@ -244,6 +266,47 @@ namespace SigningUI.new_form
                             Mode.SIGN);
                         SigningCore.Cms.BouncyCastle_SignCMS(inputFile, outputFile, this.pkcs12Store);
                         rowResult = "Signed";
+                        rowColor = Color.LightGreen;
+                    }
+                    catch (Exception ex)
+                    {
+                        rowResult = ex.Message;
+                    }
+                    ListViewItem row = ToolBoxHelper.GetListViewItemByName(this.inputFileListview, inputFile);
+                    row.SubItems[2].Text = rowResult;
+                    row.BackColor = rowColor;
+                    row.ToolTipText = rowResult;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    ex.Message,
+                    "Sign error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+            }
+        }
+
+        private void cmsVerifyButton_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (this.FilePaths == null || this.FilePaths.Count < 1)
+                    throw new Exception("Not found any input files");
+
+                foreach (string inputFile in this.FilePaths)
+                {
+                    string rowResult = "NO";
+                    Color rowColor = Color.IndianRed;
+                    try
+                    {
+                        string outputFile = ToolBoxHelper.GetOutputFile(
+                            outputFolderTextbox.Text,
+                            inputFile,
+                            Mode.SIGN);
+                        SigningCore.Cms.BouncyCastle_VerifyCMS(inputFile, this.bouncyCert);
+                        rowResult = "Verified";
                         rowColor = Color.LightGreen;
                     }
                     catch (Exception ex)
@@ -507,6 +570,36 @@ namespace SigningUI.new_form
             }
         }
 
+        private void SetupPfxFromKeyStore()
+        {
+            try
+            {
+                this.microsoftCert = Helper.GetMicrosoftCert();
+                if (this.microsoftCert != null)
+                {
+                    // update cms pfx data
+                    ToolBoxHelper.UpdateLabelData(this.cmsVerifyPfxVersionLabel, microsoftCert.Version.ToString());
+                    ToolBoxHelper.UpdateLabelData(this.cmsVerifyPfxIssuerLabel, microsoftCert.Issuer);
+                    ToolBoxHelper.UpdateLabelData(this.cmsVerifyPfxSerialNumberLabel, microsoftCert.SerialNumber);
+                    ToolBoxHelper.UpdateLabelData(this.cmsVerifyPfxThumbprintLabel, microsoftCert.Thumbprint);
+                    ToolBoxHelper.UpdateLabelData(this.cmsVerifyPfxSignatureAlgoLabel, microsoftCert.SignatureAlgorithm.FriendlyName);
+                    ToolBoxHelper.UpdateLabelData(this.cmsVerifyPfxValidFromLabel, microsoftCert.NotBefore.ToString());
+                    ToolBoxHelper.UpdateLabelData(this.cmsVerifyPfxExpireLabel, microsoftCert.NotAfter.ToString());
+                    this.cmsVerifyMicrosoftCertThumbprintTextbox.Text = microsoftCert.Thumbprint;
+                    this.bouncyCert = DotNetUtilities.FromX509Certificate(this.microsoftCert);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                   ex.Message,
+                   "Select certificate error",
+                   MessageBoxButtons.OK,
+                   MessageBoxIcon.Error);
+            }
+        }
+
+
         #region cms hover
         private void outputFolderTextbox_MouseHover(object sender, EventArgs e)
         {
@@ -740,6 +833,16 @@ namespace SigningUI.new_form
         private void XmlPfxPasswordLabel_Click(object sender, EventArgs e)
         {
             this.SetupPfxPwd();
+        }
+
+        private void cmsMicrosoftCertThumbprintTextbox_DoubleClick(object sender, EventArgs e)
+        {
+            this.SetupPfxFromKeyStore();
+        }
+
+        private void cmsMicrosoftCertSelectButton_Click(object sender, EventArgs e)
+        {
+            this.SetupPfxFromKeyStore();
         }
     }
 }

@@ -107,21 +107,22 @@ namespace SigningUI.help
 
         public static void UpdateLabelData(Label label, string data)
         {
-            string tmp = label.Text.Replace("Unknown", data);
+            string padding = new string(' ', 6);
+            string original = label.Text.Substring(0, label.Text.IndexOf(':') + 1) + padding + data;            
             int limit = 150;
-            if (tmp.Length > limit)
+            if (original.Length > limit)
             {
-                label.Text = tmp.Substring(0, limit - 3);
+                label.Text = original.Substring(0, limit - 3);
                 label.Text += "...";
                 ToolTip toolTip = new ToolTip();
                 toolTip.InitialDelay = 0; // instant appear
                 toolTip.ReshowDelay = 0;
                 toolTip.ShowAlways = true;
-                toolTip.SetToolTip(label, tmp);
+                toolTip.SetToolTip(label, original);
             }
             else
             {
-                label.Text = tmp;
+                label.Text = original;
             }
         }
 
