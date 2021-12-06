@@ -223,6 +223,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="assets\pwd.ico" />
     <Content Include="assets\sign-logo.ico" />
   </ItemGroup>
   <ItemGroup>

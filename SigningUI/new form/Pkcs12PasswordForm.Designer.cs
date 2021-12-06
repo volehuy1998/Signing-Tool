@@ -50,6 +50,7 @@ namespace SigningUI.new_form
             this.pkcs12PasswordValueTextbox.Name = "pkcs12PasswordValueTextbox";
             this.pkcs12PasswordValueTextbox.Size = new System.Drawing.Size(157, 20);
             this.pkcs12PasswordValueTextbox.TabIndex = 1;
+            this.pkcs12PasswordValueTextbox.UseSystemPasswordChar = true;
             // 
             // enterPfxPwdButton
             // 

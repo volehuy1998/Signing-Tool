@@ -246,7 +246,7 @@ namespace SigningUI.new_form
             this.outputFolderTextbox.Name = "outputFolderTextbox";
             this.outputFolderTextbox.Size = new System.Drawing.Size(596, 20);
             this.outputFolderTextbox.TabIndex = 17;
-            this.outputFolderTextbox.Text = System.Environment.GetFolderPath(System.Environment.SpecialFolder.Desktop);
+            this.outputFolderTextbox.Text = "C:\\Users\\voleh\\Desktop";
             this.outputFolderTextbox.DoubleClick += new System.EventHandler(this.outputFolderTextbox_DoubleClick);
             this.outputFolderTextbox.MouseLeave += new System.EventHandler(this.outputFolderTextbox_MouseLeave);
             this.outputFolderTextbox.MouseHover += new System.EventHandler(this.outputFolderTextbox_MouseHover);
@@ -270,6 +270,7 @@ namespace SigningUI.new_form
             this.pfxPasswordTextbox.ReadOnly = true;
             this.pfxPasswordTextbox.Size = new System.Drawing.Size(100, 20);
             this.pfxPasswordTextbox.TabIndex = 15;
+            this.pfxPasswordTextbox.UseSystemPasswordChar = true;
             this.pfxPasswordTextbox.Click += new System.EventHandler(this.pfxPasswordTextbox_Click);
             this.pfxPasswordTextbox.MouseLeave += new System.EventHandler(this.pfxPasswordTextbox_MouseLeave);
             this.pfxPasswordTextbox.MouseHover += new System.EventHandler(this.pfxPasswordTextbox_MouseHover);
@@ -487,6 +488,7 @@ namespace SigningUI.new_form
             this.xmlPfxPasswordTextbox.ReadOnly = true;
             this.xmlPfxPasswordTextbox.Size = new System.Drawing.Size(100, 20);
             this.xmlPfxPasswordTextbox.TabIndex = 31;
+            this.xmlPfxPasswordTextbox.UseSystemPasswordChar = true;
             this.xmlPfxPasswordTextbox.DoubleClick += new System.EventHandler(this.jsonPfxPwdTextbox_Click);
             this.xmlPfxPasswordTextbox.MouseLeave += new System.EventHandler(this.xmlPfxPasswordTextbox_MouseLeave);
             this.xmlPfxPasswordTextbox.MouseHover += new System.EventHandler(this.xmlPfxPasswordTextbox_MouseHover);
@@ -704,6 +706,7 @@ namespace SigningUI.new_form
             this.jsonPfxPasswordTextbox.ReadOnly = true;
             this.jsonPfxPasswordTextbox.Size = new System.Drawing.Size(100, 20);
             this.jsonPfxPasswordTextbox.TabIndex = 31;
+            this.jsonPfxPasswordTextbox.UseSystemPasswordChar = true;
             this.jsonPfxPasswordTextbox.Click += new System.EventHandler(this.jsonPfxPwdTextbox_Click);
             this.jsonPfxPasswordTextbox.MouseLeave += new System.EventHandler(this.jsonPfxPwdTextbox_MouseLeave);
             this.jsonPfxPasswordTextbox.MouseHover += new System.EventHandler(this.jsonPfxPwdTextbox_MouseHover);
