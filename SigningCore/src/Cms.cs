@@ -99,7 +99,7 @@ namespace SigningCore
                 CmsTypedStream cmsDataTypedStream = null;
                 CmsSignedDataParser cmsSignedDataParser = null;
 
-                cmsSignedDataParser = new CmsSignedDataParser(File.ReadAllBytes(signedFile));
+                cmsSignedDataParser = new CmsSignedDataParser(sigStream);
                 cmsDataTypedStream = cmsSignedDataParser.GetSignedContent();
                 using (MemoryStream memoryStream = new MemoryStream())
                 {

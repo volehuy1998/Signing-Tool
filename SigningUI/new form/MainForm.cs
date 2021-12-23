@@ -2,6 +2,7 @@
 using Org.BouncyCastle.Pkcs;
 using Org.BouncyCastle.Security;
 using SigningCore;
+using SigningCore.test;
 using SigningUI.form;
 using SigningUI.help;
 using System;
@@ -12,10 +13,12 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
+using System.Xml.Linq;
 using static System.Windows.Forms.ListViewItem;
 
 namespace SigningUI.new_form
@@ -26,6 +29,7 @@ namespace SigningUI.new_form
         private System.Security.Cryptography.X509Certificates.X509Certificate2 microsoftCert { get; set; }
         private Pkcs12Store pkcs12Store { get; set; }
         private Org.BouncyCastle.X509.X509Certificate bouncyCert { get; set; }
+
         public MainForm()
         {
             InitializeComponent();
@@ -40,20 +44,6 @@ namespace SigningUI.new_form
             tooltip.SetToolTip(this.pfxPasswordTextbox, "Click to type PKCS#12 password");
             tooltip.SetToolTip(this.outputFolderLabel, "Click to select output folder");
             tooltip.SetToolTip(this.outputFolderTextbox, "Double click to select output folder");
-            // json sign
-            tooltip.SetToolTip(this.jsonPfxFileLabel, "Click to select PKCS#12 file");
-            tooltip.SetToolTip(this.jsonPfxFileTextbox, "Double click to select PKCS#12 file");
-            tooltip.SetToolTip(this.jsonPfxPasswordLabel, "Click to type PKCS#12 password");
-            tooltip.SetToolTip(this.jsonPfxPasswordTextbox, "Click to type PKCS#12 password");
-            tooltip.SetToolTip(this.jsonOutputFolderLabel, "Click to select output folder");
-            tooltip.SetToolTip(this.jsonOutputFolderTextbox, "Double click to select output folder");
-            // xml sign
-            tooltip.SetToolTip(this.xmlPfxFileLabel, "Click to select PKCS#12 file");
-            tooltip.SetToolTip(this.xmlPfxFileTextbox, "Double click to select PKCS#12 file");
-            tooltip.SetToolTip(this.XmlPfxPasswordLabel, "Click to type PKCS#12 password");
-            tooltip.SetToolTip(this.xmlPfxPasswordTextbox, "Click to type PKCS#12 password");
-            tooltip.SetToolTip(this.xmlOutputFolderLabel, "Click to select output folder");
-            tooltip.SetToolTip(this.xmlOutputFolderTextbox, "Double click to select output folder");
             tooltip.InitialDelay = 10;
             tooltip.ReshowDelay = 10;
             tooltip.ShowAlways = true;
@@ -174,80 +164,8 @@ namespace SigningUI.new_form
         }
         #endregion cms output folder
 
-        #region json output folder
-        private void jsonOutputFolderLabel_Click(object sender, EventArgs e)
-        {
-            FolderBrowserDialog outputFolder = new FolderBrowserDialog();
-            if (outputFolder.ShowDialog() == DialogResult.OK)
-            {
-                this.jsonOutputFolderTextbox.Text = outputFolder.SelectedPath;
-            }
-        }
-
-        private void jsonOutputFolderTextbox_DoubleClick(object sender, EventArgs e)
-        {
-            FolderBrowserDialog outputFolder = new FolderBrowserDialog();
-            if (outputFolder.ShowDialog() == DialogResult.OK)
-            {
-                this.jsonOutputFolderTextbox.Text = outputFolder.SelectedPath;
-            }
-        }
-
-        private void jsonOpenOutputFolderButton_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                Process.Start(this.jsonOutputFolderTextbox.Text);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(
-                    ex.Message,
-                    "Open output folder error",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Error);
-            }
-        }
-        #endregion json output folder
-
-        #region xml output folder
-        private void xmlOpenOutputFolderButton_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                Process.Start(this.xmlOutputFolderTextbox.Text);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(
-                    ex.Message,
-                    "Open output folder error",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Error);
-            }
-        }
-
-        private void xmlOutputFolderTextbox_DoubleClick(object sender, EventArgs e)
-        {
-            FolderBrowserDialog outputFolder = new FolderBrowserDialog();
-            if (outputFolder.ShowDialog() == DialogResult.OK)
-            {
-                this.xmlOutputFolderTextbox.Text = outputFolder.SelectedPath;
-            }
-        }
-
-        private void xmlOutputFolderLabel_Click(object sender, EventArgs e)
-        {
-            FolderBrowserDialog outputFolder = new FolderBrowserDialog();
-            if (outputFolder.ShowDialog() == DialogResult.OK)
-            {
-                this.xmlOutputFolderTextbox.Text = outputFolder.SelectedPath;
-            }
-        }
-        #endregion xml output folder
-
         #region action
-        private void cmsSignButton_Click(object sender, EventArgs e)
+        private void signButton_Click(object sender, EventArgs e)
         {
             try
             {
@@ -264,7 +182,24 @@ namespace SigningUI.new_form
                             outputFolderTextbox.Text,
                             inputFile,
                             Mode.SIGN);
-                        SigningCore.Cms.BouncyCastle_SignCMS(inputFile, outputFile, this.pkcs12Store);
+                        if (cMSToolStripMenuItem.Checked)
+                        {
+                            SigningCore.Cms.BouncyCastle_SignCMS(inputFile, outputFile, this.pkcs12Store);
+                        }
+                        else if (xMLToolStripMenuItem.Checked)
+                        {
+                            XmlDocument xmlDocument = new XmlDocument();
+                            xmlDocument.Load(inputFile);
+                            SigningCore.Xml.Microsoft_SignXml(xmlDocument, this.pkcs12Store);
+                            xmlDocument.Save(outputFile);
+                        }
+                        else if (jSONToolStripMenuItem.Checked)
+                        {
+                            JObject payloadObject = JObject.Parse(File.ReadAllText(inputFile));
+                            string jwt = SigningCore.Json.Sign(payloadObject.ToString(), outputFile, this.pkcs12Store);
+                            File.WriteAllText(outputFile, jwt);
+                        }
+
                         rowResult = "Signed";
                         rowColor = Color.LightGreen;
                     }
@@ -288,7 +223,7 @@ namespace SigningUI.new_form
             }
         }
 
-        private void cmsVerifyButton_Click(object sender, EventArgs e)
+        private void verifyButton_Click(object sender, EventArgs e)
         {
             try
             {
@@ -301,11 +236,22 @@ namespace SigningUI.new_form
                     Color rowColor = Color.IndianRed;
                     try
                     {
-                        string outputFile = ToolBoxHelper.GetOutputFile(
-                            outputFolderTextbox.Text,
-                            inputFile,
-                            Mode.SIGN);
-                        SigningCore.Cms.BouncyCastle_VerifyCMS(inputFile, this.bouncyCert);
+                        if (cMSToolStripMenuItem.Checked)
+                        {
+                            SigningCore.Cms.BouncyCastle_VerifyCMS(inputFile, this.bouncyCert);
+                        }
+                        else if (xMLToolStripMenuItem.Checked)
+                        {
+                            XmlDocument xmlDocument = new XmlDocument();
+                            xmlDocument.Load(inputFile);
+                            if (!SigningCore.Xml.Microsoft_VerifyXml(xmlDocument))
+                                throw new Exception("Verify fail because your data or signature");
+                        }
+                        else if (jSONToolStripMenuItem.Checked)
+                        {
+                            SigningCore.Json.Decode(File.ReadAllText(inputFile));
+                        }
+
                         rowResult = "Verified";
                         rowColor = Color.LightGreen;
                     }
@@ -329,90 +275,14 @@ namespace SigningUI.new_form
             }
         }
 
-        private void jsonSignButton_Click(object sender, EventArgs e)
+        private void encryptButton_Click(object sender, EventArgs e)
         {
-            try
-            {
-                if (this.FilePaths == null || this.FilePaths.Count < 1)
-                    throw new Exception("Not found any input files");
-
-                foreach (string inputFile in this.FilePaths)
-                {
-                    string rowResult = "NO";
-                    Color rowColor = Color.IndianRed;
-                    try
-                    {
-                        JObject payloadObject = JObject.Parse(File.ReadAllText(inputFile));
-                        string outputFile = ToolBoxHelper.GetOutputFile(
-                            jsonOutputFolderTextbox.Text,
-                            inputFile,
-                            Mode.SIGN);
-                        SigningCore.Json.Sign(payloadObject.ToString(), outputFile, this.pkcs12Store);
-                        rowResult = "Signed";
-                        rowColor = Color.LightGreen;
-                    }
-                    catch (Exception ex)
-                    {
-                        rowResult = ex.Message;
-                    }
-                    ListViewItem row = ToolBoxHelper.GetListViewItemByName(this.inputFileListview, inputFile);
-                    row.SubItems[2].Text = rowResult;
-                    row.BackColor = rowColor;
-                    row.ToolTipText = rowResult;
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(
-                    ex.Message,
-                    "Sign error",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Error);
-            }
+            Crypt(isEncrypt: true);
         }
 
-        private void xmlSignButton_Click(object sender, EventArgs e)
+        private void decryptButton_Click(object sender, EventArgs e)
         {
-            try
-            {
-                if (this.FilePaths == null || this.FilePaths.Count < 1)
-                    throw new Exception("Not found any input files");
-
-                foreach (string inputFile in this.FilePaths)
-                {
-                    string rowResult = "NO";
-                    Color rowColor = Color.IndianRed;
-                    try
-                    {
-                        XmlDocument xmlDocument = new XmlDocument();
-                        xmlDocument.Load(inputFile);
-                        string outputFile = ToolBoxHelper.GetOutputFile(
-                            xmlOutputFolderTextbox.Text,
-                            inputFile,
-                            Mode.SIGN);
-                        SigningCore.Xml.Microsoft_SignXml(xmlDocument, this.pkcs12Store);
-                        xmlDocument.Save(outputFile);
-                        rowResult = "Signed";
-                        rowColor = Color.LightGreen;
-                    }
-                    catch (Exception ex)
-                    {
-                        rowResult = ex.Message;
-                    }
-                    ListViewItem row = ToolBoxHelper.GetListViewItemByName(this.inputFileListview, inputFile);
-                    row.SubItems[2].Text = rowResult;
-                    row.BackColor = rowColor;
-                    row.ToolTipText = rowResult;
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(
-                    ex.Message,
-                    "Sign error",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Error);
-            }
+            Crypt(isEncrypt: false);
         }
         #endregion
 
@@ -452,16 +322,12 @@ namespace SigningUI.new_form
                 if (pfxFileDialog.ShowDialog() == DialogResult.OK)
                 {
                     this.pfxFileTextbox.Text = pfxFileDialog.FileName;
-                    this.jsonPfxFileTextbox.Text = pfxFileDialog.FileName;
-                    this.xmlPfxFileTextbox.Text = pfxFileDialog.FileName;
                     Pkcs12PasswordForm pkcs12PasswordForm = new Pkcs12PasswordForm();
                     DialogResult pkcs12PwdFormResult = pkcs12PasswordForm.ShowDialog();
                     if (pkcs12PwdFormResult == DialogResult.OK)
                     {
                         // get microsoft certificate from pfx
                         this.pfxPasswordTextbox.Text = pkcs12PasswordForm.Pkcs12Password;
-                        this.jsonPfxPasswordTextbox.Text = pkcs12PasswordForm.Pkcs12Password;
-                        this.xmlPfxPasswordTextbox.Text = pkcs12PasswordForm.Pkcs12Password;
                         microsoftCert = new System.Security.Cryptography.X509Certificates.X509Certificate2(
                             this.pfxFileTextbox.Text,
                             this.pfxPasswordTextbox.Text
@@ -474,22 +340,6 @@ namespace SigningUI.new_form
                         ToolBoxHelper.UpdateLabelData(this.pfxSignatureAlgoLabel, microsoftCert.SignatureAlgorithm.FriendlyName);
                         ToolBoxHelper.UpdateLabelData(this.pfxValidFromLabel, microsoftCert.NotBefore.ToString());
                         ToolBoxHelper.UpdateLabelData(this.pfxExpireLabel, microsoftCert.NotAfter.ToString());
-                        // update json pfx data
-                        ToolBoxHelper.UpdateLabelData(this.jsonPfxVersionLabel, microsoftCert.Version.ToString());
-                        ToolBoxHelper.UpdateLabelData(this.jsonPfxIssuerLabel, microsoftCert.Issuer);
-                        ToolBoxHelper.UpdateLabelData(this.jsonPfxSerialNumberLabel, microsoftCert.SerialNumber);
-                        ToolBoxHelper.UpdateLabelData(this.jsonPfxThumbprintLabel, microsoftCert.Thumbprint);
-                        ToolBoxHelper.UpdateLabelData(this.jsonPfxSignatureAlgoLabel, microsoftCert.SignatureAlgorithm.FriendlyName);
-                        ToolBoxHelper.UpdateLabelData(this.jsonPfxValidFromLabel, microsoftCert.NotBefore.ToString());
-                        ToolBoxHelper.UpdateLabelData(this.jsonPfxExpireLabel, microsoftCert.NotAfter.ToString());
-                        // update xml pfx data
-                        ToolBoxHelper.UpdateLabelData(this.xmlPfxVersionLabel, microsoftCert.Version.ToString());
-                        ToolBoxHelper.UpdateLabelData(this.xmlPfxIssuerLabel, microsoftCert.Issuer);
-                        ToolBoxHelper.UpdateLabelData(this.xmlPfxSerialNumberLabel, microsoftCert.SerialNumber);
-                        ToolBoxHelper.UpdateLabelData(this.xmlPfxThumbprintLabel, microsoftCert.Thumbprint);
-                        ToolBoxHelper.UpdateLabelData(this.xmlPfxSignatureAlgoLabel, microsoftCert.SignatureAlgorithm.FriendlyName);
-                        ToolBoxHelper.UpdateLabelData(this.xmlPfxValidFromLabel, microsoftCert.NotBefore.ToString());
-                        ToolBoxHelper.UpdateLabelData(this.xmlPfxExpireLabel, microsoftCert.NotAfter.ToString());
                         // get bouncy castle certificate from pfx
                         pkcs12Store = Helper.GetPkcs12Store(
                             this.pfxFileTextbox.Text,
@@ -497,8 +347,6 @@ namespace SigningUI.new_form
                     }
                 }
                 this.pfxFileTextbox.Text = pfxFileDialog.FileName;
-                this.jsonPfxFileTextbox.Text = pfxFileDialog.FileName;
-                this.xmlPfxFileTextbox.Text = pfxFileDialog.FileName;
             }
             catch (Exception ex)
             {
@@ -514,8 +362,7 @@ namespace SigningUI.new_form
         {
             try
             {
-                if (Common.CheckString(this.pfxFileTextbox.Text) &&
-                    Common.CheckString(this.jsonPfxFileTextbox.Text))
+                if (Common.CheckString(this.pfxFileTextbox.Text))
                     throw new Exception("Not found any PKCS#12 file");
 
                 Pkcs12PasswordForm pkcs12PasswordForm = new Pkcs12PasswordForm();
@@ -523,8 +370,6 @@ namespace SigningUI.new_form
                 {
                     // get microsoft certificate from pfx
                     this.pfxPasswordTextbox.Text = pkcs12PasswordForm.Pkcs12Password;
-                    this.jsonPfxPasswordTextbox.Text = pkcs12PasswordForm.Pkcs12Password;
-                    this.xmlPfxPasswordTextbox.Text = pkcs12PasswordForm.Pkcs12Password;
                     microsoftCert = new System.Security.Cryptography.X509Certificates.X509Certificate2(
                         this.pfxFileTextbox.Text,
                         this.pfxPasswordTextbox.Text
@@ -537,22 +382,6 @@ namespace SigningUI.new_form
                     ToolBoxHelper.UpdateLabelData(this.pfxSignatureAlgoLabel, microsoftCert.SignatureAlgorithm.FriendlyName);
                     ToolBoxHelper.UpdateLabelData(this.pfxValidFromLabel, microsoftCert.NotBefore.ToString());
                     ToolBoxHelper.UpdateLabelData(this.pfxExpireLabel, microsoftCert.NotAfter.ToString());
-                    // update json pfx data
-                    ToolBoxHelper.UpdateLabelData(this.jsonPfxVersionLabel, microsoftCert.Version.ToString());
-                    ToolBoxHelper.UpdateLabelData(this.jsonPfxIssuerLabel, microsoftCert.Issuer);
-                    ToolBoxHelper.UpdateLabelData(this.jsonPfxSerialNumberLabel, microsoftCert.SerialNumber);
-                    ToolBoxHelper.UpdateLabelData(this.jsonPfxThumbprintLabel, microsoftCert.Thumbprint);
-                    ToolBoxHelper.UpdateLabelData(this.jsonPfxSignatureAlgoLabel, microsoftCert.SignatureAlgorithm.FriendlyName);
-                    ToolBoxHelper.UpdateLabelData(this.jsonPfxValidFromLabel, microsoftCert.NotBefore.ToString());
-                    ToolBoxHelper.UpdateLabelData(this.jsonPfxExpireLabel, microsoftCert.NotAfter.ToString());
-                    // update xml pfx data
-                    ToolBoxHelper.UpdateLabelData(this.xmlPfxVersionLabel, microsoftCert.Version.ToString());
-                    ToolBoxHelper.UpdateLabelData(this.xmlPfxIssuerLabel, microsoftCert.Issuer);
-                    ToolBoxHelper.UpdateLabelData(this.xmlPfxSerialNumberLabel, microsoftCert.SerialNumber);
-                    ToolBoxHelper.UpdateLabelData(this.xmlPfxThumbprintLabel, microsoftCert.Thumbprint);
-                    ToolBoxHelper.UpdateLabelData(this.xmlPfxSignatureAlgoLabel, microsoftCert.SignatureAlgorithm.FriendlyName);
-                    ToolBoxHelper.UpdateLabelData(this.xmlPfxValidFromLabel, microsoftCert.NotBefore.ToString());
-                    ToolBoxHelper.UpdateLabelData(this.xmlPfxExpireLabel, microsoftCert.NotAfter.ToString());
                     // get bouncy castle certificate from pfx
                     pkcs12Store = Helper.GetPkcs12Store(
                         this.pfxFileTextbox.Text,
@@ -585,7 +414,7 @@ namespace SigningUI.new_form
                     ToolBoxHelper.UpdateLabelData(this.cmsVerifyPfxSignatureAlgoLabel, microsoftCert.SignatureAlgorithm.FriendlyName);
                     ToolBoxHelper.UpdateLabelData(this.cmsVerifyPfxValidFromLabel, microsoftCert.NotBefore.ToString());
                     ToolBoxHelper.UpdateLabelData(this.cmsVerifyPfxExpireLabel, microsoftCert.NotAfter.ToString());
-                    this.cmsVerifyMicrosoftCertThumbprintTextbox.Text = microsoftCert.Thumbprint;
+                    this.verifyMicrosoftCertThumbprintTextbox.Text = microsoftCert.Thumbprint;
                     this.bouncyCert = DotNetUtilities.FromX509Certificate(this.microsoftCert);
                 }
             }
@@ -843,6 +672,160 @@ namespace SigningUI.new_form
         private void cmsMicrosoftCertSelectButton_Click(object sender, EventArgs e)
         {
             this.SetupPfxFromKeyStore();
+        }
+
+        private void cMSToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ToolBoxHelper.UncheckOtherToolStripMenuItems(sender as ToolStripMenuItem);
+            this.verifyMicrosoftCertThumbprintTextbox.Enabled = true;
+            this.cmsMicrosoftCertSelectButton.Enabled = true;
+        }
+
+        private void xMLToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ToolBoxHelper.UncheckOtherToolStripMenuItems(sender as ToolStripMenuItem);
+            this.verifyMicrosoftCertThumbprintTextbox.Enabled = false;
+            this.cmsMicrosoftCertSelectButton.Enabled = false;
+        }
+
+        private void jSONToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ToolBoxHelper.UncheckOtherToolStripMenuItems(sender as ToolStripMenuItem);
+            this.verifyMicrosoftCertThumbprintTextbox.Enabled = false;
+            this.cmsMicrosoftCertSelectButton.Enabled = false;
+        }
+
+        private void cryptOutputButton_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                Process.Start(this.cryptOutputTextbox.Text);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    ex.Message,
+                    "Open output folder error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+            }
+        }
+
+        private void cryptOutputTextbox_DoubleClick(object sender, EventArgs e)
+        {
+            FolderBrowserDialog outputFolder = new FolderBrowserDialog();
+            if (outputFolder.ShowDialog() == DialogResult.OK)
+            {
+                this.cryptOutputTextbox.Text = outputFolder.SelectedPath;
+            }
+        }
+
+        private void Crypt(bool isEncrypt = true)
+        {
+            try
+            {
+                if (this.FilePaths == null || this.FilePaths.Count < 1)
+                    throw new Exception("Not found any input files");
+                if (keySizeComboBox.SelectedItem == null)
+                    throw new Exception("Please choose key size");
+
+                int keySize = int.Parse(keySizeComboBox.SelectedItem.ToString());
+                byte[] aesKey = Helper.GetAesKeyByPassword(passwordAesTextbox.Text, keySize);
+               
+                foreach (string inputFile in this.FilePaths)
+                {
+                    string rowResult = "NO";
+                    Color rowColor = Color.IndianRed;
+                    try
+                    {
+                        string outputFile = ToolBoxHelper.GetOutputFile(
+                               cryptOutputTextbox.Text,
+                               inputFile,
+                               Mode.CRYPT);
+                        if (cMSToolStripMenuItem.Checked)
+                        {
+                            if (isEncrypt)
+                            {
+                                SigningCore.Cms.BouncyCastle_EncryptCMS_Sym(inputFile, outputFile, aesKey);
+                                rowResult = "Encrypted";
+                            }
+                            else
+                            {
+                                outputFile = ToolBoxHelper.GetOutputFile(cryptOutputTextbox.Text, inputFile, Mode.CRYPT, false);
+                                SigningCore.Cms.BouncyCastle_DecryptCMS_Sym(inputFile, outputFile, aesKey);
+                                rowResult = "Decrypted";
+                            }
+                        }
+                        else if (xMLToolStripMenuItem.Checked)
+                        {
+                            XmlDocument xmlDocument = new XmlDocument();
+                            xmlDocument.Load(inputFile);
+                            Aes aes = Aes.Create();
+                            aes.KeySize = keySize;
+                            aes.GenerateIV();
+                            aes.Key = aesKey;
+                            aes.Mode = CipherMode.ECB;
+                            if (isEncrypt)
+                            {
+                                List<string> tagNames = new List<string>();
+                                foreach (var name in XDocument.Load(inputFile).Root.DescendantNodes().OfType<XElement>()
+                                    .Select(x => x.Name).Distinct())
+                                {
+                                    tagNames.Add(name.LocalName);
+                                }
+                                XmlDocument encryptedDoc = SigningCore.Xml.Microsoft_EncryptXML_Sym(xmlDocument, tagNames, aes);
+                                encryptedDoc.Save(outputFile);
+                                rowResult = "Encrypted";
+                            }
+                            else
+                            {
+                                outputFile = ToolBoxHelper.GetOutputFile(cryptOutputTextbox.Text, inputFile, Mode.CRYPT, false);
+                                XmlDocument decryptedDoc = SigningCore.Xml.Microsoft_DecryptXML_Sym(xmlDocument, aes);
+                                decryptedDoc.Save(outputFile);
+                                rowResult = "Decrypted";
+                            }
+                        }
+                        else if (jSONToolStripMenuItem.Checked)
+                        {
+                            throw new Exception("JSON crypt don't support yet");
+                            if (isEncrypt)
+                            {
+                                UserInfo user = new UserInfo
+                                {
+                                    UserName = "jschmoe",
+                                    UserPassword = "Hunter2",
+                                    FavoriteColor = "atomic tangerine",
+                                    CreditCardNumber = "1234567898765432",
+                                };
+
+                                SigningCore.Json.Encrypt(user, null);
+                                rowResult = "Encrypted";
+                            }
+                            else
+                            {
+                                rowResult = "Decrypted";
+                            }
+                        }
+                        rowColor = Color.LightGreen;
+                    }
+                    catch (Exception ex)
+                    {
+                        rowResult = ex.Message;
+                    }
+                    ListViewItem row = ToolBoxHelper.GetListViewItemByName(this.inputFileListview, inputFile);
+                    row.SubItems[2].Text = rowResult;
+                    row.BackColor = rowColor;
+                    row.ToolTipText = rowResult;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        private void passwordAesTextbox_DoubleClick(object sender, EventArgs e)
+        {
         }
     }
 }

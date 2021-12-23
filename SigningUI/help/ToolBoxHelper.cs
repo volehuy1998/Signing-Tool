@@ -139,19 +139,25 @@ namespace SigningUI.help
             return null;
         }
 
-        public static string GetOutputFile(string outputFolder, string inputFile, Mode mode)
+        public static string GetOutputFile(string outputFolder, string inputFile, Mode mode, bool isEncrypt = true)
         {
             string outputFile = string.Empty;
 
             string fileNameWithoutExten = Path.GetFileNameWithoutExtension(inputFile);
-
+            string fileExten = Path.GetExtension(inputFile);
             if (mode == Mode.SIGN)
             {
-                fileNameWithoutExten += ".sig";
+                if (isEncrypt)
+                {
+                    fileNameWithoutExten += fileExten + ".sig";
+                }
             }
             else
             {
-                fileNameWithoutExten += ".enc";
+                if (isEncrypt)
+                {
+                    fileNameWithoutExten += fileExten + ".enc";
+                }
             }
 
             outputFile = Path.Combine(outputFolder, fileNameWithoutExten);

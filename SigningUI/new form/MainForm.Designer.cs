@@ -30,67 +30,6 @@ namespace SigningUI.new_form
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
-            this.tabControl = new System.Windows.Forms.TabControl();
-            this.cmsSignPage = new System.Windows.Forms.TabPage();
-            this.cmsSignButton = new System.Windows.Forms.Button();
-            this.pfxSignatureAlgoLabel = new System.Windows.Forms.Label();
-            this.pfxThumbprintLabel = new System.Windows.Forms.Label();
-            this.pfxSerialNumberLabel = new System.Windows.Forms.Label();
-            this.pfxExpireLabel = new System.Windows.Forms.Label();
-            this.pfxValidFromLabel = new System.Windows.Forms.Label();
-            this.pfxIssuerLabel = new System.Windows.Forms.Label();
-            this.pfxVersionLabel = new System.Windows.Forms.Label();
-            this.openOutputFolderButton = new System.Windows.Forms.Button();
-            this.outputFolderTextbox = new System.Windows.Forms.TextBox();
-            this.outputFolderLabel = new System.Windows.Forms.Label();
-            this.pfxPasswordTextbox = new System.Windows.Forms.TextBox();
-            this.pfxButton = new System.Windows.Forms.Button();
-            this.pfxFileTextbox = new System.Windows.Forms.TextBox();
-            this.pfxPasswordLabel = new System.Windows.Forms.Label();
-            this.pfxFileLabel = new System.Windows.Forms.Label();
-            this.cmsVerifyPage = new System.Windows.Forms.TabPage();
-            this.cmsEncryptPage = new System.Windows.Forms.TabPage();
-            this.cmsDecryptPage = new System.Windows.Forms.TabPage();
-            this.xmlSignPage = new System.Windows.Forms.TabPage();
-            this.xmlSignButton = new System.Windows.Forms.Button();
-            this.xmlPfxSignatureAlgoLabel = new System.Windows.Forms.Label();
-            this.xmlPfxThumbprintLabel = new System.Windows.Forms.Label();
-            this.xmlPfxSerialNumberLabel = new System.Windows.Forms.Label();
-            this.xmlPfxExpireLabel = new System.Windows.Forms.Label();
-            this.xmlPfxValidFromLabel = new System.Windows.Forms.Label();
-            this.xmlPfxIssuerLabel = new System.Windows.Forms.Label();
-            this.xmlPfxVersionLabel = new System.Windows.Forms.Label();
-            this.xmlOpenOutputFolderButton = new System.Windows.Forms.Button();
-            this.xmlOutputFolderTextbox = new System.Windows.Forms.TextBox();
-            this.xmlOutputFolderLabel = new System.Windows.Forms.Label();
-            this.xmlPfxPasswordTextbox = new System.Windows.Forms.TextBox();
-            this.xmlPfxButton = new System.Windows.Forms.Button();
-            this.xmlPfxFileTextbox = new System.Windows.Forms.TextBox();
-            this.XmlPfxPasswordLabel = new System.Windows.Forms.Label();
-            this.xmlPfxFileLabel = new System.Windows.Forms.Label();
-            this.xmlVerifyPage = new System.Windows.Forms.TabPage();
-            this.xmlEncryptPage = new System.Windows.Forms.TabPage();
-            this.xmlDecryptPage = new System.Windows.Forms.TabPage();
-            this.jsonSignPage = new System.Windows.Forms.TabPage();
-            this.jsonSignButton = new System.Windows.Forms.Button();
-            this.jsonPfxSignatureAlgoLabel = new System.Windows.Forms.Label();
-            this.jsonPfxThumbprintLabel = new System.Windows.Forms.Label();
-            this.jsonPfxSerialNumberLabel = new System.Windows.Forms.Label();
-            this.jsonPfxExpireLabel = new System.Windows.Forms.Label();
-            this.jsonPfxValidFromLabel = new System.Windows.Forms.Label();
-            this.jsonPfxIssuerLabel = new System.Windows.Forms.Label();
-            this.jsonPfxVersionLabel = new System.Windows.Forms.Label();
-            this.jsonOpenOutputFolderButton = new System.Windows.Forms.Button();
-            this.jsonOutputFolderTextbox = new System.Windows.Forms.TextBox();
-            this.jsonOutputFolderLabel = new System.Windows.Forms.Label();
-            this.jsonPfxPasswordTextbox = new System.Windows.Forms.TextBox();
-            this.jsonPfxFileBrowserButton = new System.Windows.Forms.Button();
-            this.jsonPfxFileTextbox = new System.Windows.Forms.TextBox();
-            this.jsonPfxPasswordLabel = new System.Windows.Forms.Label();
-            this.jsonPfxFileLabel = new System.Windows.Forms.Label();
-            this.jsonVerifyPage = new System.Windows.Forms.TabPage();
-            this.jsonEncryptPage = new System.Windows.Forms.TabPage();
-            this.jsonDecryptPage = new System.Windows.Forms.TabPage();
             this.inputFileListview = new System.Windows.Forms.ListView();
             this.IdColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.FileColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -101,9 +40,24 @@ namespace SigningUI.new_form
             this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveAsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.closeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.modeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.cMSToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.xMLToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.jSONToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.cryptPage = new System.Windows.Forms.TabPage();
+            this.decryptButton = new System.Windows.Forms.Button();
+            this.encryptOutputButton = new System.Windows.Forms.Button();
+            this.cryptOutputTextbox = new System.Windows.Forms.TextBox();
+            this.encryptOutputLabel = new System.Windows.Forms.Label();
+            this.encryptButton = new System.Windows.Forms.Button();
+            this.keySizeComboBox = new System.Windows.Forms.ComboBox();
+            this.label2 = new System.Windows.Forms.Label();
+            this.passwordAesTextbox = new System.Windows.Forms.TextBox();
+            this.passwordAesLabel = new System.Windows.Forms.Label();
+            this.verifyPage = new System.Windows.Forms.TabPage();
             this.cmsVerifyButton = new System.Windows.Forms.Button();
             this.cmsVerifyPfxSignatureAlgoLabel = new System.Windows.Forms.Label();
             this.cmsVerifyPfxThumbprintLabel = new System.Windows.Forms.Label();
@@ -113,61 +67,430 @@ namespace SigningUI.new_form
             this.cmsVerifyPfxIssuerLabel = new System.Windows.Forms.Label();
             this.cmsVerifyPfxVersionLabel = new System.Windows.Forms.Label();
             this.cmsMicrosoftCertSelectButton = new System.Windows.Forms.Button();
-            this.cmsVerifyMicrosoftCertThumbprintTextbox = new System.Windows.Forms.TextBox();
+            this.verifyMicrosoftCertThumbprintTextbox = new System.Windows.Forms.TextBox();
             this.label10 = new System.Windows.Forms.Label();
-            this.tabControl.SuspendLayout();
-            this.cmsSignPage.SuspendLayout();
-            this.cmsVerifyPage.SuspendLayout();
-            this.xmlSignPage.SuspendLayout();
-            this.jsonSignPage.SuspendLayout();
+            this.signPage = new System.Windows.Forms.TabPage();
+            this.cmsSignButton = new System.Windows.Forms.Button();
+            this.pfxSignatureAlgoLabel = new System.Windows.Forms.Label();
+            this.pfxThumbprintLabel = new System.Windows.Forms.Label();
+            this.pfxSerialNumberLabel = new System.Windows.Forms.Label();
+            this.pfxExpireLabel = new System.Windows.Forms.Label();
+            this.pfxValidFromLabel = new System.Windows.Forms.Label();
+            this.pfxIssuerLabel = new System.Windows.Forms.Label();
+            this.pfxVersionLabel = new System.Windows.Forms.Label();
+            this.openOutputFolderButton = new System.Windows.Forms.Button();
+            this.outputFolderTextbox = new System.Windows.Forms.TextBox();
+            this.pfxFileTextbox = new System.Windows.Forms.TextBox();
+            this.outputFolderLabel = new System.Windows.Forms.Label();
+            this.pfxPasswordTextbox = new System.Windows.Forms.TextBox();
+            this.pfxButton = new System.Windows.Forms.Button();
+            this.pfxPasswordLabel = new System.Windows.Forms.Label();
+            this.pfxFileLabel = new System.Windows.Forms.Label();
+            this.tabControl = new System.Windows.Forms.TabControl();
             this.menuStrip.SuspendLayout();
+            this.cryptPage.SuspendLayout();
+            this.verifyPage.SuspendLayout();
+            this.signPage.SuspendLayout();
+            this.tabControl.SuspendLayout();
             this.SuspendLayout();
             // 
-            // tabControl
+            // inputFileListview
             // 
-            this.tabControl.Controls.Add(this.cmsSignPage);
-            this.tabControl.Controls.Add(this.cmsVerifyPage);
-            this.tabControl.Controls.Add(this.cmsEncryptPage);
-            this.tabControl.Controls.Add(this.cmsDecryptPage);
-            this.tabControl.Controls.Add(this.xmlSignPage);
-            this.tabControl.Controls.Add(this.xmlVerifyPage);
-            this.tabControl.Controls.Add(this.xmlEncryptPage);
-            this.tabControl.Controls.Add(this.xmlDecryptPage);
-            this.tabControl.Controls.Add(this.jsonSignPage);
-            this.tabControl.Controls.Add(this.jsonVerifyPage);
-            this.tabControl.Controls.Add(this.jsonEncryptPage);
-            this.tabControl.Controls.Add(this.jsonDecryptPage);
-            this.tabControl.Location = new System.Drawing.Point(13, 222);
-            this.tabControl.Name = "tabControl";
-            this.tabControl.SelectedIndex = 0;
-            this.tabControl.Size = new System.Drawing.Size(838, 441);
-            this.tabControl.TabIndex = 0;
+            this.inputFileListview.Alignment = System.Windows.Forms.ListViewAlignment.Left;
+            this.inputFileListview.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.inputFileListview.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.IdColumn,
+            this.FileColumn,
+            this.ResultColumn});
+            this.inputFileListview.FullRowSelect = true;
+            this.inputFileListview.HideSelection = false;
+            this.inputFileListview.Location = new System.Drawing.Point(13, 27);
+            this.inputFileListview.Name = "inputFileListview";
+            this.inputFileListview.ShowItemToolTips = true;
+            this.inputFileListview.Size = new System.Drawing.Size(838, 189);
+            this.inputFileListview.TabIndex = 21;
+            this.inputFileListview.UseCompatibleStateImageBehavior = false;
+            this.inputFileListview.View = System.Windows.Forms.View.Details;
+            this.inputFileListview.DoubleClick += new System.EventHandler(this.inputFileListview_DoubleClick);
             // 
-            // cmsSignPage
+            // IdColumn
             // 
-            this.cmsSignPage.Controls.Add(this.cmsSignButton);
-            this.cmsSignPage.Controls.Add(this.pfxSignatureAlgoLabel);
-            this.cmsSignPage.Controls.Add(this.pfxThumbprintLabel);
-            this.cmsSignPage.Controls.Add(this.pfxSerialNumberLabel);
-            this.cmsSignPage.Controls.Add(this.pfxExpireLabel);
-            this.cmsSignPage.Controls.Add(this.pfxValidFromLabel);
-            this.cmsSignPage.Controls.Add(this.pfxIssuerLabel);
-            this.cmsSignPage.Controls.Add(this.pfxVersionLabel);
-            this.cmsSignPage.Controls.Add(this.openOutputFolderButton);
-            this.cmsSignPage.Controls.Add(this.outputFolderTextbox);
-            this.cmsSignPage.Controls.Add(this.outputFolderLabel);
-            this.cmsSignPage.Controls.Add(this.pfxPasswordTextbox);
-            this.cmsSignPage.Controls.Add(this.pfxButton);
-            this.cmsSignPage.Controls.Add(this.pfxFileTextbox);
-            this.cmsSignPage.Controls.Add(this.pfxPasswordLabel);
-            this.cmsSignPage.Controls.Add(this.pfxFileLabel);
-            this.cmsSignPage.Location = new System.Drawing.Point(4, 22);
-            this.cmsSignPage.Name = "cmsSignPage";
-            this.cmsSignPage.Padding = new System.Windows.Forms.Padding(3);
-            this.cmsSignPage.Size = new System.Drawing.Size(830, 415);
-            this.cmsSignPage.TabIndex = 0;
-            this.cmsSignPage.Text = "CMS Sign";
-            this.cmsSignPage.UseVisualStyleBackColor = true;
+            this.IdColumn.Text = "ID";
+            this.IdColumn.Width = 39;
+            // 
+            // FileColumn
+            // 
+            this.FileColumn.Text = "File";
+            this.FileColumn.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.FileColumn.Width = 734;
+            // 
+            // ResultColumn
+            // 
+            this.ResultColumn.Text = "Result";
+            this.ResultColumn.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.ResultColumn.Width = 58;
+            // 
+            // menuStrip
+            // 
+            this.menuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.fileToolStripMenuItem,
+            this.modeToolStripMenuItem,
+            this.helpToolStripMenuItem});
+            this.menuStrip.Location = new System.Drawing.Point(0, 0);
+            this.menuStrip.Name = "menuStrip";
+            this.menuStrip.Size = new System.Drawing.Size(863, 24);
+            this.menuStrip.TabIndex = 22;
+            this.menuStrip.Text = "menuStrip";
+            // 
+            // fileToolStripMenuItem
+            // 
+            this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.openToolStripMenuItem,
+            this.saveToolStripMenuItem,
+            this.saveAsToolStripMenuItem,
+            this.closeToolStripMenuItem});
+            this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
+            this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
+            this.fileToolStripMenuItem.Text = "File";
+            // 
+            // openToolStripMenuItem
+            // 
+            this.openToolStripMenuItem.Name = "openToolStripMenuItem";
+            this.openToolStripMenuItem.Size = new System.Drawing.Size(124, 22);
+            this.openToolStripMenuItem.Text = "Open";
+            this.openToolStripMenuItem.Click += new System.EventHandler(this.openToolStripMenuItem_Click);
+            // 
+            // saveToolStripMenuItem
+            // 
+            this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
+            this.saveToolStripMenuItem.Size = new System.Drawing.Size(124, 22);
+            this.saveToolStripMenuItem.Text = "Save";
+            // 
+            // saveAsToolStripMenuItem
+            // 
+            this.saveAsToolStripMenuItem.Name = "saveAsToolStripMenuItem";
+            this.saveAsToolStripMenuItem.Size = new System.Drawing.Size(124, 22);
+            this.saveAsToolStripMenuItem.Text = "Save as ...";
+            // 
+            // closeToolStripMenuItem
+            // 
+            this.closeToolStripMenuItem.Name = "closeToolStripMenuItem";
+            this.closeToolStripMenuItem.Size = new System.Drawing.Size(124, 22);
+            this.closeToolStripMenuItem.Text = "Close";
+            this.closeToolStripMenuItem.Click += new System.EventHandler(this.closeToolStripMenuItem_Click_1);
+            // 
+            // modeToolStripMenuItem
+            // 
+            this.modeToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.cMSToolStripMenuItem,
+            this.xMLToolStripMenuItem,
+            this.jSONToolStripMenuItem});
+            this.modeToolStripMenuItem.Name = "modeToolStripMenuItem";
+            this.modeToolStripMenuItem.Size = new System.Drawing.Size(50, 20);
+            this.modeToolStripMenuItem.Text = "Mode";
+            // 
+            // cMSToolStripMenuItem
+            // 
+            this.cMSToolStripMenuItem.Checked = true;
+            this.cMSToolStripMenuItem.CheckOnClick = true;
+            this.cMSToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.cMSToolStripMenuItem.Name = "cMSToolStripMenuItem";
+            this.cMSToolStripMenuItem.Size = new System.Drawing.Size(102, 22);
+            this.cMSToolStripMenuItem.Text = "CMS";
+            this.cMSToolStripMenuItem.Click += new System.EventHandler(this.cMSToolStripMenuItem_Click);
+            // 
+            // xMLToolStripMenuItem
+            // 
+            this.xMLToolStripMenuItem.CheckOnClick = true;
+            this.xMLToolStripMenuItem.Name = "xMLToolStripMenuItem";
+            this.xMLToolStripMenuItem.Size = new System.Drawing.Size(102, 22);
+            this.xMLToolStripMenuItem.Text = "XML";
+            this.xMLToolStripMenuItem.Click += new System.EventHandler(this.xMLToolStripMenuItem_Click);
+            // 
+            // jSONToolStripMenuItem
+            // 
+            this.jSONToolStripMenuItem.CheckOnClick = true;
+            this.jSONToolStripMenuItem.Name = "jSONToolStripMenuItem";
+            this.jSONToolStripMenuItem.Size = new System.Drawing.Size(102, 22);
+            this.jSONToolStripMenuItem.Text = "JSON";
+            this.jSONToolStripMenuItem.Click += new System.EventHandler(this.jSONToolStripMenuItem_Click);
+            // 
+            // helpToolStripMenuItem
+            // 
+            this.helpToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.helpToolStripMenuItem1,
+            this.aboutToolStripMenuItem});
+            this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
+            this.helpToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
+            this.helpToolStripMenuItem.Text = "Help";
+            // 
+            // helpToolStripMenuItem1
+            // 
+            this.helpToolStripMenuItem1.Name = "helpToolStripMenuItem1";
+            this.helpToolStripMenuItem1.Size = new System.Drawing.Size(107, 22);
+            this.helpToolStripMenuItem1.Text = "Help";
+            // 
+            // aboutToolStripMenuItem
+            // 
+            this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
+            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
+            this.aboutToolStripMenuItem.Text = "About";
+            this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
+            // 
+            // cryptPage
+            // 
+            this.cryptPage.Controls.Add(this.decryptButton);
+            this.cryptPage.Controls.Add(this.encryptOutputButton);
+            this.cryptPage.Controls.Add(this.cryptOutputTextbox);
+            this.cryptPage.Controls.Add(this.encryptOutputLabel);
+            this.cryptPage.Controls.Add(this.encryptButton);
+            this.cryptPage.Controls.Add(this.keySizeComboBox);
+            this.cryptPage.Controls.Add(this.label2);
+            this.cryptPage.Controls.Add(this.passwordAesTextbox);
+            this.cryptPage.Controls.Add(this.passwordAesLabel);
+            this.cryptPage.Location = new System.Drawing.Point(4, 22);
+            this.cryptPage.Name = "cryptPage";
+            this.cryptPage.Padding = new System.Windows.Forms.Padding(3);
+            this.cryptPage.Size = new System.Drawing.Size(830, 415);
+            this.cryptPage.TabIndex = 2;
+            this.cryptPage.Text = "Crypt";
+            this.cryptPage.UseVisualStyleBackColor = true;
+            // 
+            // decryptButton
+            // 
+            this.decryptButton.Location = new System.Drawing.Point(459, 196);
+            this.decryptButton.Name = "decryptButton";
+            this.decryptButton.Size = new System.Drawing.Size(75, 23);
+            this.decryptButton.TabIndex = 49;
+            this.decryptButton.Text = "Decrypt";
+            this.decryptButton.UseVisualStyleBackColor = true;
+            this.decryptButton.Click += new System.EventHandler(this.decryptButton_Click);
+            // 
+            // encryptOutputButton
+            // 
+            this.encryptOutputButton.Location = new System.Drawing.Point(740, 103);
+            this.encryptOutputButton.Name = "encryptOutputButton";
+            this.encryptOutputButton.Size = new System.Drawing.Size(75, 23);
+            this.encryptOutputButton.TabIndex = 48;
+            this.encryptOutputButton.Text = "Open folder";
+            this.encryptOutputButton.UseVisualStyleBackColor = true;
+            this.encryptOutputButton.Click += new System.EventHandler(this.cryptOutputButton_Click);
+            // 
+            // cryptOutputTextbox
+            // 
+            this.cryptOutputTextbox.Location = new System.Drawing.Point(138, 104);
+            this.cryptOutputTextbox.Name = "cryptOutputTextbox";
+            this.cryptOutputTextbox.Size = new System.Drawing.Size(596, 20);
+            this.cryptOutputTextbox.TabIndex = 47;
+            this.cryptOutputTextbox.Text = "C:\\Users\\voleh\\Desktop";
+            this.cryptOutputTextbox.DoubleClick += new System.EventHandler(this.cryptOutputTextbox_DoubleClick);
+            // 
+            // encryptOutputLabel
+            // 
+            this.encryptOutputLabel.AutoSize = true;
+            this.encryptOutputLabel.Location = new System.Drawing.Point(51, 108);
+            this.encryptOutputLabel.Name = "encryptOutputLabel";
+            this.encryptOutputLabel.Size = new System.Drawing.Size(71, 13);
+            this.encryptOutputLabel.TabIndex = 46;
+            this.encryptOutputLabel.Text = "Output folder:";
+            // 
+            // encryptButton
+            // 
+            this.encryptButton.Location = new System.Drawing.Point(378, 196);
+            this.encryptButton.Name = "encryptButton";
+            this.encryptButton.Size = new System.Drawing.Size(75, 23);
+            this.encryptButton.TabIndex = 45;
+            this.encryptButton.Text = "Encrypt";
+            this.encryptButton.UseVisualStyleBackColor = true;
+            this.encryptButton.Click += new System.EventHandler(this.encryptButton_Click);
+            // 
+            // keySizeComboBox
+            // 
+            this.keySizeComboBox.FormattingEnabled = true;
+            this.keySizeComboBox.Items.AddRange(new object[] {
+            "128",
+            "256"});
+            this.keySizeComboBox.Location = new System.Drawing.Point(138, 52);
+            this.keySizeComboBox.Name = "keySizeComboBox";
+            this.keySizeComboBox.Size = new System.Drawing.Size(121, 21);
+            this.keySizeComboBox.TabIndex = 44;
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(47, 56);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(72, 13);
+            this.label2.TabIndex = 43;
+            this.label2.Text = "AES key size:";
+            // 
+            // passwordAesTextbox
+            // 
+            this.passwordAesTextbox.Location = new System.Drawing.Point(138, 6);
+            this.passwordAesTextbox.Name = "passwordAesTextbox";
+            this.passwordAesTextbox.Size = new System.Drawing.Size(351, 20);
+            this.passwordAesTextbox.TabIndex = 42;
+            this.passwordAesTextbox.Text = "~Default password~";
+            this.passwordAesTextbox.DoubleClick += new System.EventHandler(this.passwordAesTextbox_DoubleClick);
+            // 
+            // passwordAesLabel
+            // 
+            this.passwordAesLabel.AutoSize = true;
+            this.passwordAesLabel.Location = new System.Drawing.Point(63, 10);
+            this.passwordAesLabel.Name = "passwordAesLabel";
+            this.passwordAesLabel.Size = new System.Drawing.Size(56, 13);
+            this.passwordAesLabel.TabIndex = 41;
+            this.passwordAesLabel.Text = "Password:";
+            // 
+            // verifyPage
+            // 
+            this.verifyPage.Controls.Add(this.cmsVerifyButton);
+            this.verifyPage.Controls.Add(this.cmsVerifyPfxSignatureAlgoLabel);
+            this.verifyPage.Controls.Add(this.cmsVerifyPfxThumbprintLabel);
+            this.verifyPage.Controls.Add(this.cmsVerifyPfxSerialNumberLabel);
+            this.verifyPage.Controls.Add(this.cmsVerifyPfxExpireLabel);
+            this.verifyPage.Controls.Add(this.cmsVerifyPfxValidFromLabel);
+            this.verifyPage.Controls.Add(this.cmsVerifyPfxIssuerLabel);
+            this.verifyPage.Controls.Add(this.cmsVerifyPfxVersionLabel);
+            this.verifyPage.Controls.Add(this.cmsMicrosoftCertSelectButton);
+            this.verifyPage.Controls.Add(this.verifyMicrosoftCertThumbprintTextbox);
+            this.verifyPage.Controls.Add(this.label10);
+            this.verifyPage.Location = new System.Drawing.Point(4, 22);
+            this.verifyPage.Name = "verifyPage";
+            this.verifyPage.Padding = new System.Windows.Forms.Padding(3);
+            this.verifyPage.Size = new System.Drawing.Size(830, 415);
+            this.verifyPage.TabIndex = 1;
+            this.verifyPage.Text = "Verify";
+            this.verifyPage.UseVisualStyleBackColor = true;
+            // 
+            // cmsVerifyButton
+            // 
+            this.cmsVerifyButton.Location = new System.Drawing.Point(405, 386);
+            this.cmsVerifyButton.Name = "cmsVerifyButton";
+            this.cmsVerifyButton.Size = new System.Drawing.Size(75, 23);
+            this.cmsVerifyButton.TabIndex = 42;
+            this.cmsVerifyButton.Text = "Verify";
+            this.cmsVerifyButton.UseVisualStyleBackColor = true;
+            this.cmsVerifyButton.Click += new System.EventHandler(this.verifyButton_Click);
+            // 
+            // cmsVerifyPfxSignatureAlgoLabel
+            // 
+            this.cmsVerifyPfxSignatureAlgoLabel.AutoSize = true;
+            this.cmsVerifyPfxSignatureAlgoLabel.Location = new System.Drawing.Point(19, 195);
+            this.cmsVerifyPfxSignatureAlgoLabel.Name = "cmsVerifyPfxSignatureAlgoLabel";
+            this.cmsVerifyPfxSignatureAlgoLabel.Size = new System.Drawing.Size(164, 13);
+            this.cmsVerifyPfxSignatureAlgoLabel.TabIndex = 41;
+            this.cmsVerifyPfxSignatureAlgoLabel.Text = "Signature algorithm:      Unknown";
+            // 
+            // cmsVerifyPfxThumbprintLabel
+            // 
+            this.cmsVerifyPfxThumbprintLabel.AutoSize = true;
+            this.cmsVerifyPfxThumbprintLabel.Location = new System.Drawing.Point(56, 158);
+            this.cmsVerifyPfxThumbprintLabel.Name = "cmsVerifyPfxThumbprintLabel";
+            this.cmsVerifyPfxThumbprintLabel.Size = new System.Drawing.Size(127, 13);
+            this.cmsVerifyPfxThumbprintLabel.TabIndex = 40;
+            this.cmsVerifyPfxThumbprintLabel.Text = "Thumbprint:      Unknown";
+            // 
+            // cmsVerifyPfxSerialNumberLabel
+            // 
+            this.cmsVerifyPfxSerialNumberLabel.AutoSize = true;
+            this.cmsVerifyPfxSerialNumberLabel.Location = new System.Drawing.Point(45, 121);
+            this.cmsVerifyPfxSerialNumberLabel.Name = "cmsVerifyPfxSerialNumberLabel";
+            this.cmsVerifyPfxSerialNumberLabel.Size = new System.Drawing.Size(138, 13);
+            this.cmsVerifyPfxSerialNumberLabel.TabIndex = 39;
+            this.cmsVerifyPfxSerialNumberLabel.Text = "Serial number:      Unknown";
+            // 
+            // cmsVerifyPfxExpireLabel
+            // 
+            this.cmsVerifyPfxExpireLabel.AutoSize = true;
+            this.cmsVerifyPfxExpireLabel.Location = new System.Drawing.Point(67, 269);
+            this.cmsVerifyPfxExpireLabel.Name = "cmsVerifyPfxExpireLabel";
+            this.cmsVerifyPfxExpireLabel.Size = new System.Drawing.Size(115, 13);
+            this.cmsVerifyPfxExpireLabel.TabIndex = 38;
+            this.cmsVerifyPfxExpireLabel.Text = "Expire to:      Unknown";
+            // 
+            // cmsVerifyPfxValidFromLabel
+            // 
+            this.cmsVerifyPfxValidFromLabel.AutoSize = true;
+            this.cmsVerifyPfxValidFromLabel.Location = new System.Drawing.Point(63, 232);
+            this.cmsVerifyPfxValidFromLabel.Name = "cmsVerifyPfxValidFromLabel";
+            this.cmsVerifyPfxValidFromLabel.Size = new System.Drawing.Size(120, 13);
+            this.cmsVerifyPfxValidFromLabel.TabIndex = 37;
+            this.cmsVerifyPfxValidFromLabel.Text = "Valid from:      Unknown";
+            // 
+            // cmsVerifyPfxIssuerLabel
+            // 
+            this.cmsVerifyPfxIssuerLabel.AutoSize = true;
+            this.cmsVerifyPfxIssuerLabel.Location = new System.Drawing.Point(81, 84);
+            this.cmsVerifyPfxIssuerLabel.Name = "cmsVerifyPfxIssuerLabel";
+            this.cmsVerifyPfxIssuerLabel.Size = new System.Drawing.Size(102, 13);
+            this.cmsVerifyPfxIssuerLabel.TabIndex = 36;
+            this.cmsVerifyPfxIssuerLabel.Text = "Issuer:      Unknown";
+            // 
+            // cmsVerifyPfxVersionLabel
+            // 
+            this.cmsVerifyPfxVersionLabel.AutoSize = true;
+            this.cmsVerifyPfxVersionLabel.Location = new System.Drawing.Point(74, 47);
+            this.cmsVerifyPfxVersionLabel.Name = "cmsVerifyPfxVersionLabel";
+            this.cmsVerifyPfxVersionLabel.Size = new System.Drawing.Size(109, 13);
+            this.cmsVerifyPfxVersionLabel.TabIndex = 35;
+            this.cmsVerifyPfxVersionLabel.Text = "Version:      Unknown";
+            // 
+            // cmsMicrosoftCertSelectButton
+            // 
+            this.cmsMicrosoftCertSelectButton.Location = new System.Drawing.Point(737, 4);
+            this.cmsMicrosoftCertSelectButton.Name = "cmsMicrosoftCertSelectButton";
+            this.cmsMicrosoftCertSelectButton.Size = new System.Drawing.Size(75, 23);
+            this.cmsMicrosoftCertSelectButton.TabIndex = 30;
+            this.cmsMicrosoftCertSelectButton.Text = "Select ...";
+            this.cmsMicrosoftCertSelectButton.UseVisualStyleBackColor = true;
+            this.cmsMicrosoftCertSelectButton.Click += new System.EventHandler(this.cmsMicrosoftCertSelectButton_Click);
+            // 
+            // verifyMicrosoftCertThumbprintTextbox
+            // 
+            this.verifyMicrosoftCertThumbprintTextbox.Location = new System.Drawing.Point(135, 6);
+            this.verifyMicrosoftCertThumbprintTextbox.Name = "verifyMicrosoftCertThumbprintTextbox";
+            this.verifyMicrosoftCertThumbprintTextbox.Size = new System.Drawing.Size(596, 20);
+            this.verifyMicrosoftCertThumbprintTextbox.TabIndex = 28;
+            this.verifyMicrosoftCertThumbprintTextbox.DoubleClick += new System.EventHandler(this.cmsMicrosoftCertThumbprintTextbox_DoubleClick);
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(65, 10);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(54, 13);
+            this.label10.TabIndex = 27;
+            this.label10.Text = "Key store:";
+            // 
+            // signPage
+            // 
+            this.signPage.Controls.Add(this.cmsSignButton);
+            this.signPage.Controls.Add(this.pfxSignatureAlgoLabel);
+            this.signPage.Controls.Add(this.pfxThumbprintLabel);
+            this.signPage.Controls.Add(this.pfxSerialNumberLabel);
+            this.signPage.Controls.Add(this.pfxExpireLabel);
+            this.signPage.Controls.Add(this.pfxValidFromLabel);
+            this.signPage.Controls.Add(this.pfxIssuerLabel);
+            this.signPage.Controls.Add(this.pfxVersionLabel);
+            this.signPage.Controls.Add(this.openOutputFolderButton);
+            this.signPage.Controls.Add(this.outputFolderTextbox);
+            this.signPage.Controls.Add(this.pfxFileTextbox);
+            this.signPage.Controls.Add(this.outputFolderLabel);
+            this.signPage.Controls.Add(this.pfxPasswordTextbox);
+            this.signPage.Controls.Add(this.pfxButton);
+            this.signPage.Controls.Add(this.pfxPasswordLabel);
+            this.signPage.Controls.Add(this.pfxFileLabel);
+            this.signPage.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.signPage.Location = new System.Drawing.Point(4, 22);
+            this.signPage.Name = "signPage";
+            this.signPage.Padding = new System.Windows.Forms.Padding(3);
+            this.signPage.Size = new System.Drawing.Size(830, 415);
+            this.signPage.TabIndex = 0;
+            this.signPage.Text = "Sign";
+            this.signPage.ToolTipText = "Sign page (CMS, XML, JSON)";
+            this.signPage.UseVisualStyleBackColor = true;
             // 
             // cmsSignButton
             // 
@@ -177,7 +500,7 @@ namespace SigningUI.new_form
             this.cmsSignButton.TabIndex = 26;
             this.cmsSignButton.Text = "Sign";
             this.cmsSignButton.UseVisualStyleBackColor = true;
-            this.cmsSignButton.Click += new System.EventHandler(this.cmsSignButton_Click);
+            this.cmsSignButton.Click += new System.EventHandler(this.signButton_Click);
             // 
             // pfxSignatureAlgoLabel
             // 
@@ -263,6 +586,16 @@ namespace SigningUI.new_form
             this.outputFolderTextbox.MouseLeave += new System.EventHandler(this.outputFolderTextbox_MouseLeave);
             this.outputFolderTextbox.MouseHover += new System.EventHandler(this.outputFolderTextbox_MouseHover);
             // 
+            // pfxFileTextbox
+            // 
+            this.pfxFileTextbox.Location = new System.Drawing.Point(135, 6);
+            this.pfxFileTextbox.Name = "pfxFileTextbox";
+            this.pfxFileTextbox.Size = new System.Drawing.Size(596, 20);
+            this.pfxFileTextbox.TabIndex = 12;
+            this.pfxFileTextbox.DoubleClick += new System.EventHandler(this.pfxFileTextbox_DoubleClick);
+            this.pfxFileTextbox.MouseLeave += new System.EventHandler(this.pfxFileTextbox_MouseLeave);
+            this.pfxFileTextbox.MouseHover += new System.EventHandler(this.pfxFileTextbox_MouseHover);
+            // 
             // outputFolderLabel
             // 
             this.outputFolderLabel.AutoSize = true;
@@ -297,16 +630,6 @@ namespace SigningUI.new_form
             this.pfxButton.UseVisualStyleBackColor = true;
             this.pfxButton.Click += new System.EventHandler(this.pfxFileButton_Click);
             // 
-            // pfxFileTextbox
-            // 
-            this.pfxFileTextbox.Location = new System.Drawing.Point(135, 6);
-            this.pfxFileTextbox.Name = "pfxFileTextbox";
-            this.pfxFileTextbox.Size = new System.Drawing.Size(596, 20);
-            this.pfxFileTextbox.TabIndex = 12;
-            this.pfxFileTextbox.DoubleClick += new System.EventHandler(this.pfxFileTextbox_DoubleClick);
-            this.pfxFileTextbox.MouseLeave += new System.EventHandler(this.pfxFileTextbox_MouseLeave);
-            this.pfxFileTextbox.MouseHover += new System.EventHandler(this.pfxFileTextbox_MouseHover);
-            // 
             // pfxPasswordLabel
             // 
             this.pfxPasswordLabel.AutoSize = true;
@@ -331,687 +654,19 @@ namespace SigningUI.new_form
             this.pfxFileLabel.MouseLeave += new System.EventHandler(this.pfxFileLabel_MouseLeave);
             this.pfxFileLabel.MouseHover += new System.EventHandler(this.pfxFileLabel_MouseHover);
             // 
-            // cmsVerifyPage
-            // 
-            this.cmsVerifyPage.Controls.Add(this.cmsVerifyButton);
-            this.cmsVerifyPage.Controls.Add(this.cmsVerifyPfxSignatureAlgoLabel);
-            this.cmsVerifyPage.Controls.Add(this.cmsVerifyPfxThumbprintLabel);
-            this.cmsVerifyPage.Controls.Add(this.cmsVerifyPfxSerialNumberLabel);
-            this.cmsVerifyPage.Controls.Add(this.cmsVerifyPfxExpireLabel);
-            this.cmsVerifyPage.Controls.Add(this.cmsVerifyPfxValidFromLabel);
-            this.cmsVerifyPage.Controls.Add(this.cmsVerifyPfxIssuerLabel);
-            this.cmsVerifyPage.Controls.Add(this.cmsVerifyPfxVersionLabel);
-            this.cmsVerifyPage.Controls.Add(this.cmsMicrosoftCertSelectButton);
-            this.cmsVerifyPage.Controls.Add(this.cmsVerifyMicrosoftCertThumbprintTextbox);
-            this.cmsVerifyPage.Controls.Add(this.label10);
-            this.cmsVerifyPage.Location = new System.Drawing.Point(4, 22);
-            this.cmsVerifyPage.Name = "cmsVerifyPage";
-            this.cmsVerifyPage.Padding = new System.Windows.Forms.Padding(3);
-            this.cmsVerifyPage.Size = new System.Drawing.Size(830, 415);
-            this.cmsVerifyPage.TabIndex = 1;
-            this.cmsVerifyPage.Text = "CMS Verify";
-            this.cmsVerifyPage.UseVisualStyleBackColor = true;
-            // 
-            // cmsEncryptPage
-            // 
-            this.cmsEncryptPage.Location = new System.Drawing.Point(4, 22);
-            this.cmsEncryptPage.Name = "cmsEncryptPage";
-            this.cmsEncryptPage.Padding = new System.Windows.Forms.Padding(3);
-            this.cmsEncryptPage.Size = new System.Drawing.Size(830, 415);
-            this.cmsEncryptPage.TabIndex = 2;
-            this.cmsEncryptPage.Text = "CMS Encrypt";
-            this.cmsEncryptPage.UseVisualStyleBackColor = true;
-            // 
-            // cmsDecryptPage
-            // 
-            this.cmsDecryptPage.Location = new System.Drawing.Point(4, 22);
-            this.cmsDecryptPage.Name = "cmsDecryptPage";
-            this.cmsDecryptPage.Padding = new System.Windows.Forms.Padding(3);
-            this.cmsDecryptPage.Size = new System.Drawing.Size(830, 415);
-            this.cmsDecryptPage.TabIndex = 3;
-            this.cmsDecryptPage.Text = "CMS Decrypt";
-            this.cmsDecryptPage.UseVisualStyleBackColor = true;
-            // 
-            // xmlSignPage
-            // 
-            this.xmlSignPage.Controls.Add(this.xmlSignButton);
-            this.xmlSignPage.Controls.Add(this.xmlPfxSignatureAlgoLabel);
-            this.xmlSignPage.Controls.Add(this.xmlPfxThumbprintLabel);
-            this.xmlSignPage.Controls.Add(this.xmlPfxSerialNumberLabel);
-            this.xmlSignPage.Controls.Add(this.xmlPfxExpireLabel);
-            this.xmlSignPage.Controls.Add(this.xmlPfxValidFromLabel);
-            this.xmlSignPage.Controls.Add(this.xmlPfxIssuerLabel);
-            this.xmlSignPage.Controls.Add(this.xmlPfxVersionLabel);
-            this.xmlSignPage.Controls.Add(this.xmlOpenOutputFolderButton);
-            this.xmlSignPage.Controls.Add(this.xmlOutputFolderTextbox);
-            this.xmlSignPage.Controls.Add(this.xmlOutputFolderLabel);
-            this.xmlSignPage.Controls.Add(this.xmlPfxPasswordTextbox);
-            this.xmlSignPage.Controls.Add(this.xmlPfxButton);
-            this.xmlSignPage.Controls.Add(this.xmlPfxFileTextbox);
-            this.xmlSignPage.Controls.Add(this.XmlPfxPasswordLabel);
-            this.xmlSignPage.Controls.Add(this.xmlPfxFileLabel);
-            this.xmlSignPage.Location = new System.Drawing.Point(4, 22);
-            this.xmlSignPage.Name = "xmlSignPage";
-            this.xmlSignPage.Padding = new System.Windows.Forms.Padding(3);
-            this.xmlSignPage.Size = new System.Drawing.Size(830, 415);
-            this.xmlSignPage.TabIndex = 4;
-            this.xmlSignPage.Text = "XMl Sign";
-            this.xmlSignPage.UseVisualStyleBackColor = true;
-            // 
-            // xmlSignButton
-            // 
-            this.xmlSignButton.Location = new System.Drawing.Point(405, 386);
-            this.xmlSignButton.Name = "xmlSignButton";
-            this.xmlSignButton.Size = new System.Drawing.Size(75, 23);
-            this.xmlSignButton.TabIndex = 42;
-            this.xmlSignButton.Text = "Sign";
-            this.xmlSignButton.UseVisualStyleBackColor = true;
-            this.xmlSignButton.Click += new System.EventHandler(this.xmlSignButton_Click);
-            // 
-            // xmlPfxSignatureAlgoLabel
-            // 
-            this.xmlPfxSignatureAlgoLabel.AutoSize = true;
-            this.xmlPfxSignatureAlgoLabel.Location = new System.Drawing.Point(19, 269);
-            this.xmlPfxSignatureAlgoLabel.Name = "xmlPfxSignatureAlgoLabel";
-            this.xmlPfxSignatureAlgoLabel.Size = new System.Drawing.Size(164, 13);
-            this.xmlPfxSignatureAlgoLabel.TabIndex = 41;
-            this.xmlPfxSignatureAlgoLabel.Text = "Signature algorithm:      Unknown";
-            // 
-            // xmlPfxThumbprintLabel
-            // 
-            this.xmlPfxThumbprintLabel.AutoSize = true;
-            this.xmlPfxThumbprintLabel.Location = new System.Drawing.Point(56, 232);
-            this.xmlPfxThumbprintLabel.Name = "xmlPfxThumbprintLabel";
-            this.xmlPfxThumbprintLabel.Size = new System.Drawing.Size(127, 13);
-            this.xmlPfxThumbprintLabel.TabIndex = 40;
-            this.xmlPfxThumbprintLabel.Text = "Thumbprint:      Unknown";
-            // 
-            // xmlPfxSerialNumberLabel
-            // 
-            this.xmlPfxSerialNumberLabel.AutoSize = true;
-            this.xmlPfxSerialNumberLabel.Location = new System.Drawing.Point(45, 195);
-            this.xmlPfxSerialNumberLabel.Name = "xmlPfxSerialNumberLabel";
-            this.xmlPfxSerialNumberLabel.Size = new System.Drawing.Size(138, 13);
-            this.xmlPfxSerialNumberLabel.TabIndex = 39;
-            this.xmlPfxSerialNumberLabel.Text = "Serial number:      Unknown";
-            // 
-            // xmlPfxExpireLabel
-            // 
-            this.xmlPfxExpireLabel.AutoSize = true;
-            this.xmlPfxExpireLabel.Location = new System.Drawing.Point(65, 343);
-            this.xmlPfxExpireLabel.Name = "xmlPfxExpireLabel";
-            this.xmlPfxExpireLabel.Size = new System.Drawing.Size(115, 13);
-            this.xmlPfxExpireLabel.TabIndex = 38;
-            this.xmlPfxExpireLabel.Text = "Expire to:      Unknown";
-            // 
-            // xmlPfxValidFromLabel
-            // 
-            this.xmlPfxValidFromLabel.AutoSize = true;
-            this.xmlPfxValidFromLabel.Location = new System.Drawing.Point(63, 306);
-            this.xmlPfxValidFromLabel.Name = "xmlPfxValidFromLabel";
-            this.xmlPfxValidFromLabel.Size = new System.Drawing.Size(120, 13);
-            this.xmlPfxValidFromLabel.TabIndex = 37;
-            this.xmlPfxValidFromLabel.Text = "Valid from:      Unknown";
-            // 
-            // xmlPfxIssuerLabel
-            // 
-            this.xmlPfxIssuerLabel.AutoSize = true;
-            this.xmlPfxIssuerLabel.Location = new System.Drawing.Point(81, 158);
-            this.xmlPfxIssuerLabel.Name = "xmlPfxIssuerLabel";
-            this.xmlPfxIssuerLabel.Size = new System.Drawing.Size(102, 13);
-            this.xmlPfxIssuerLabel.TabIndex = 36;
-            this.xmlPfxIssuerLabel.Text = "Issuer:      Unknown";
-            // 
-            // xmlPfxVersionLabel
-            // 
-            this.xmlPfxVersionLabel.AutoSize = true;
-            this.xmlPfxVersionLabel.Location = new System.Drawing.Point(74, 121);
-            this.xmlPfxVersionLabel.Name = "xmlPfxVersionLabel";
-            this.xmlPfxVersionLabel.Size = new System.Drawing.Size(109, 13);
-            this.xmlPfxVersionLabel.TabIndex = 35;
-            this.xmlPfxVersionLabel.Text = "Version:      Unknown";
-            // 
-            // xmlOpenOutputFolderButton
-            // 
-            this.xmlOpenOutputFolderButton.Location = new System.Drawing.Point(737, 79);
-            this.xmlOpenOutputFolderButton.Name = "xmlOpenOutputFolderButton";
-            this.xmlOpenOutputFolderButton.Size = new System.Drawing.Size(75, 23);
-            this.xmlOpenOutputFolderButton.TabIndex = 34;
-            this.xmlOpenOutputFolderButton.Text = "Open folder";
-            this.xmlOpenOutputFolderButton.UseVisualStyleBackColor = true;
-            this.xmlOpenOutputFolderButton.Click += new System.EventHandler(this.xmlOpenOutputFolderButton_Click);
-            // 
-            // xmlOutputFolderTextbox
-            // 
-            this.xmlOutputFolderTextbox.Location = new System.Drawing.Point(135, 80);
-            this.xmlOutputFolderTextbox.Name = "xmlOutputFolderTextbox";
-            this.xmlOutputFolderTextbox.Size = new System.Drawing.Size(596, 20);
-            this.xmlOutputFolderTextbox.TabIndex = 33;
-            this.xmlOutputFolderTextbox.Text = "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\Common7\\IDE";
-            this.xmlOutputFolderTextbox.DoubleClick += new System.EventHandler(this.xmlOutputFolderTextbox_DoubleClick);
-            this.xmlOutputFolderTextbox.MouseLeave += new System.EventHandler(this.xmlOutputFolderTextbox_MouseLeave);
-            this.xmlOutputFolderTextbox.MouseHover += new System.EventHandler(this.xmlOutputFolderTextbox_MouseHover);
-            // 
-            // xmlOutputFolderLabel
-            // 
-            this.xmlOutputFolderLabel.AutoSize = true;
-            this.xmlOutputFolderLabel.Location = new System.Drawing.Point(48, 84);
-            this.xmlOutputFolderLabel.Name = "xmlOutputFolderLabel";
-            this.xmlOutputFolderLabel.Size = new System.Drawing.Size(71, 13);
-            this.xmlOutputFolderLabel.TabIndex = 32;
-            this.xmlOutputFolderLabel.Text = "Output folder:";
-            this.xmlOutputFolderLabel.Click += new System.EventHandler(this.xmlOutputFolderLabel_Click);
-            this.xmlOutputFolderLabel.MouseLeave += new System.EventHandler(this.xmlOutputFolderLabel_MouseLeave);
-            this.xmlOutputFolderLabel.MouseHover += new System.EventHandler(this.xmlOutputFolderLabel_MouseHover);
-            // 
-            // xmlPfxPasswordTextbox
-            // 
-            this.xmlPfxPasswordTextbox.Location = new System.Drawing.Point(135, 43);
-            this.xmlPfxPasswordTextbox.Name = "xmlPfxPasswordTextbox";
-            this.xmlPfxPasswordTextbox.ReadOnly = true;
-            this.xmlPfxPasswordTextbox.Size = new System.Drawing.Size(100, 20);
-            this.xmlPfxPasswordTextbox.TabIndex = 31;
-            this.xmlPfxPasswordTextbox.UseSystemPasswordChar = true;
-            this.xmlPfxPasswordTextbox.DoubleClick += new System.EventHandler(this.jsonPfxPwdTextbox_Click);
-            this.xmlPfxPasswordTextbox.MouseLeave += new System.EventHandler(this.xmlPfxPasswordTextbox_MouseLeave);
-            this.xmlPfxPasswordTextbox.MouseHover += new System.EventHandler(this.xmlPfxPasswordTextbox_MouseHover);
-            // 
-            // xmlPfxButton
-            // 
-            this.xmlPfxButton.Location = new System.Drawing.Point(737, 4);
-            this.xmlPfxButton.Name = "xmlPfxButton";
-            this.xmlPfxButton.Size = new System.Drawing.Size(75, 23);
-            this.xmlPfxButton.TabIndex = 30;
-            this.xmlPfxButton.Text = "Browse ...";
-            this.xmlPfxButton.UseVisualStyleBackColor = true;
-            this.xmlPfxButton.Click += new System.EventHandler(this.xmlPfxButton_Click);
-            // 
-            // xmlPfxFileTextbox
-            // 
-            this.xmlPfxFileTextbox.Location = new System.Drawing.Point(135, 6);
-            this.xmlPfxFileTextbox.Name = "xmlPfxFileTextbox";
-            this.xmlPfxFileTextbox.Size = new System.Drawing.Size(596, 20);
-            this.xmlPfxFileTextbox.TabIndex = 28;
-            this.xmlPfxFileTextbox.DoubleClick += new System.EventHandler(this.xmlPfxFileTextbox_DoubleClick);
-            this.xmlPfxFileTextbox.MouseLeave += new System.EventHandler(this.xmlPfxFileTextbox_MouseLeave);
-            this.xmlPfxFileTextbox.MouseHover += new System.EventHandler(this.xmlPfxFileTextbox_MouseHover);
-            // 
-            // XmlPfxPasswordLabel
-            // 
-            this.XmlPfxPasswordLabel.AutoSize = true;
-            this.XmlPfxPasswordLabel.Location = new System.Drawing.Point(63, 47);
-            this.XmlPfxPasswordLabel.Name = "XmlPfxPasswordLabel";
-            this.XmlPfxPasswordLabel.Size = new System.Drawing.Size(56, 13);
-            this.XmlPfxPasswordLabel.TabIndex = 29;
-            this.XmlPfxPasswordLabel.Text = "Password:";
-            this.XmlPfxPasswordLabel.Click += new System.EventHandler(this.XmlPfxPasswordLabel_Click);
-            this.XmlPfxPasswordLabel.MouseLeave += new System.EventHandler(this.XmlPfxPasswordLabel_MouseLeave);
-            this.XmlPfxPasswordLabel.MouseHover += new System.EventHandler(this.XmlPfxPasswordLabel_MouseHover);
-            // 
-            // xmlPfxFileLabel
-            // 
-            this.xmlPfxFileLabel.AutoSize = true;
-            this.xmlPfxFileLabel.Location = new System.Drawing.Point(46, 10);
-            this.xmlPfxFileLabel.Name = "xmlPfxFileLabel";
-            this.xmlPfxFileLabel.Size = new System.Drawing.Size(73, 13);
-            this.xmlPfxFileLabel.TabIndex = 27;
-            this.xmlPfxFileLabel.Text = "PKCS#12 file:";
-            this.xmlPfxFileLabel.Click += new System.EventHandler(this.xmlPfxFileLabel_Click);
-            this.xmlPfxFileLabel.MouseLeave += new System.EventHandler(this.xmlPfxFileLabel_MouseLeave);
-            this.xmlPfxFileLabel.MouseHover += new System.EventHandler(this.xmlPfxFileLabel_MouseHover);
-            // 
-            // xmlVerifyPage
-            // 
-            this.xmlVerifyPage.Location = new System.Drawing.Point(4, 22);
-            this.xmlVerifyPage.Name = "xmlVerifyPage";
-            this.xmlVerifyPage.Padding = new System.Windows.Forms.Padding(3);
-            this.xmlVerifyPage.Size = new System.Drawing.Size(830, 415);
-            this.xmlVerifyPage.TabIndex = 5;
-            this.xmlVerifyPage.Text = "XML Verify";
-            this.xmlVerifyPage.UseVisualStyleBackColor = true;
-            // 
-            // xmlEncryptPage
-            // 
-            this.xmlEncryptPage.Location = new System.Drawing.Point(4, 22);
-            this.xmlEncryptPage.Name = "xmlEncryptPage";
-            this.xmlEncryptPage.Padding = new System.Windows.Forms.Padding(3);
-            this.xmlEncryptPage.Size = new System.Drawing.Size(830, 415);
-            this.xmlEncryptPage.TabIndex = 6;
-            this.xmlEncryptPage.Text = "XML Encrypt";
-            this.xmlEncryptPage.UseVisualStyleBackColor = true;
-            // 
-            // xmlDecryptPage
-            // 
-            this.xmlDecryptPage.Location = new System.Drawing.Point(4, 22);
-            this.xmlDecryptPage.Name = "xmlDecryptPage";
-            this.xmlDecryptPage.Padding = new System.Windows.Forms.Padding(3);
-            this.xmlDecryptPage.Size = new System.Drawing.Size(830, 415);
-            this.xmlDecryptPage.TabIndex = 7;
-            this.xmlDecryptPage.Text = "XML Decrypt";
-            this.xmlDecryptPage.UseVisualStyleBackColor = true;
-            // 
-            // jsonSignPage
-            // 
-            this.jsonSignPage.Controls.Add(this.jsonSignButton);
-            this.jsonSignPage.Controls.Add(this.jsonPfxSignatureAlgoLabel);
-            this.jsonSignPage.Controls.Add(this.jsonPfxThumbprintLabel);
-            this.jsonSignPage.Controls.Add(this.jsonPfxSerialNumberLabel);
-            this.jsonSignPage.Controls.Add(this.jsonPfxExpireLabel);
-            this.jsonSignPage.Controls.Add(this.jsonPfxValidFromLabel);
-            this.jsonSignPage.Controls.Add(this.jsonPfxIssuerLabel);
-            this.jsonSignPage.Controls.Add(this.jsonPfxVersionLabel);
-            this.jsonSignPage.Controls.Add(this.jsonOpenOutputFolderButton);
-            this.jsonSignPage.Controls.Add(this.jsonOutputFolderTextbox);
-            this.jsonSignPage.Controls.Add(this.jsonOutputFolderLabel);
-            this.jsonSignPage.Controls.Add(this.jsonPfxPasswordTextbox);
-            this.jsonSignPage.Controls.Add(this.jsonPfxFileBrowserButton);
-            this.jsonSignPage.Controls.Add(this.jsonPfxFileTextbox);
-            this.jsonSignPage.Controls.Add(this.jsonPfxPasswordLabel);
-            this.jsonSignPage.Controls.Add(this.jsonPfxFileLabel);
-            this.jsonSignPage.Location = new System.Drawing.Point(4, 22);
-            this.jsonSignPage.Name = "jsonSignPage";
-            this.jsonSignPage.Padding = new System.Windows.Forms.Padding(3);
-            this.jsonSignPage.Size = new System.Drawing.Size(830, 415);
-            this.jsonSignPage.TabIndex = 8;
-            this.jsonSignPage.Text = "JSON Sign";
-            this.jsonSignPage.UseVisualStyleBackColor = true;
-            // 
-            // jsonSignButton
-            // 
-            this.jsonSignButton.Location = new System.Drawing.Point(405, 386);
-            this.jsonSignButton.Name = "jsonSignButton";
-            this.jsonSignButton.Size = new System.Drawing.Size(75, 23);
-            this.jsonSignButton.TabIndex = 42;
-            this.jsonSignButton.Text = "Sign";
-            this.jsonSignButton.UseVisualStyleBackColor = true;
-            this.jsonSignButton.Click += new System.EventHandler(this.jsonSignButton_Click);
-            // 
-            // jsonPfxSignatureAlgoLabel
-            // 
-            this.jsonPfxSignatureAlgoLabel.AutoSize = true;
-            this.jsonPfxSignatureAlgoLabel.Location = new System.Drawing.Point(19, 269);
-            this.jsonPfxSignatureAlgoLabel.Name = "jsonPfxSignatureAlgoLabel";
-            this.jsonPfxSignatureAlgoLabel.Size = new System.Drawing.Size(164, 13);
-            this.jsonPfxSignatureAlgoLabel.TabIndex = 41;
-            this.jsonPfxSignatureAlgoLabel.Text = "Signature algorithm:      Unknown";
-            // 
-            // jsonPfxThumbprintLabel
-            // 
-            this.jsonPfxThumbprintLabel.AutoSize = true;
-            this.jsonPfxThumbprintLabel.Location = new System.Drawing.Point(56, 232);
-            this.jsonPfxThumbprintLabel.Name = "jsonPfxThumbprintLabel";
-            this.jsonPfxThumbprintLabel.Size = new System.Drawing.Size(127, 13);
-            this.jsonPfxThumbprintLabel.TabIndex = 40;
-            this.jsonPfxThumbprintLabel.Text = "Thumbprint:      Unknown";
-            // 
-            // jsonPfxSerialNumberLabel
-            // 
-            this.jsonPfxSerialNumberLabel.AutoSize = true;
-            this.jsonPfxSerialNumberLabel.Location = new System.Drawing.Point(45, 195);
-            this.jsonPfxSerialNumberLabel.Name = "jsonPfxSerialNumberLabel";
-            this.jsonPfxSerialNumberLabel.Size = new System.Drawing.Size(138, 13);
-            this.jsonPfxSerialNumberLabel.TabIndex = 39;
-            this.jsonPfxSerialNumberLabel.Text = "Serial number:      Unknown";
-            // 
-            // jsonPfxExpireLabel
-            // 
-            this.jsonPfxExpireLabel.AutoSize = true;
-            this.jsonPfxExpireLabel.Location = new System.Drawing.Point(65, 343);
-            this.jsonPfxExpireLabel.Name = "jsonPfxExpireLabel";
-            this.jsonPfxExpireLabel.Size = new System.Drawing.Size(115, 13);
-            this.jsonPfxExpireLabel.TabIndex = 38;
-            this.jsonPfxExpireLabel.Text = "Expire to:      Unknown";
-            // 
-            // jsonPfxValidFromLabel
-            // 
-            this.jsonPfxValidFromLabel.AutoSize = true;
-            this.jsonPfxValidFromLabel.Location = new System.Drawing.Point(63, 306);
-            this.jsonPfxValidFromLabel.Name = "jsonPfxValidFromLabel";
-            this.jsonPfxValidFromLabel.Size = new System.Drawing.Size(120, 13);
-            this.jsonPfxValidFromLabel.TabIndex = 37;
-            this.jsonPfxValidFromLabel.Text = "Valid from:      Unknown";
-            // 
-            // jsonPfxIssuerLabel
-            // 
-            this.jsonPfxIssuerLabel.AutoSize = true;
-            this.jsonPfxIssuerLabel.Location = new System.Drawing.Point(81, 158);
-            this.jsonPfxIssuerLabel.Name = "jsonPfxIssuerLabel";
-            this.jsonPfxIssuerLabel.Size = new System.Drawing.Size(102, 13);
-            this.jsonPfxIssuerLabel.TabIndex = 36;
-            this.jsonPfxIssuerLabel.Text = "Issuer:      Unknown";
-            // 
-            // jsonPfxVersionLabel
-            // 
-            this.jsonPfxVersionLabel.AutoSize = true;
-            this.jsonPfxVersionLabel.Location = new System.Drawing.Point(74, 121);
-            this.jsonPfxVersionLabel.Name = "jsonPfxVersionLabel";
-            this.jsonPfxVersionLabel.Size = new System.Drawing.Size(109, 13);
-            this.jsonPfxVersionLabel.TabIndex = 35;
-            this.jsonPfxVersionLabel.Text = "Version:      Unknown";
-            // 
-            // jsonOpenOutputFolderButton
-            // 
-            this.jsonOpenOutputFolderButton.Location = new System.Drawing.Point(737, 79);
-            this.jsonOpenOutputFolderButton.Name = "jsonOpenOutputFolderButton";
-            this.jsonOpenOutputFolderButton.Size = new System.Drawing.Size(75, 23);
-            this.jsonOpenOutputFolderButton.TabIndex = 34;
-            this.jsonOpenOutputFolderButton.Text = "Open folder";
-            this.jsonOpenOutputFolderButton.UseVisualStyleBackColor = true;
-            this.jsonOpenOutputFolderButton.Click += new System.EventHandler(this.jsonOpenOutputFolderButton_Click);
-            // 
-            // jsonOutputFolderTextbox
-            // 
-            this.jsonOutputFolderTextbox.Location = new System.Drawing.Point(135, 80);
-            this.jsonOutputFolderTextbox.Name = "jsonOutputFolderTextbox";
-            this.jsonOutputFolderTextbox.Size = new System.Drawing.Size(596, 20);
-            this.jsonOutputFolderTextbox.TabIndex = 33;
-            this.jsonOutputFolderTextbox.Text = "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\Common7\\IDE";
-            this.jsonOutputFolderTextbox.DoubleClick += new System.EventHandler(this.jsonOutputFolderTextbox_DoubleClick);
-            this.jsonOutputFolderTextbox.MouseLeave += new System.EventHandler(this.jsonOutputFolderTextbox_MouseLeave);
-            this.jsonOutputFolderTextbox.MouseHover += new System.EventHandler(this.jsonOutputFolderTextbox_MouseHover);
-            // 
-            // jsonOutputFolderLabel
-            // 
-            this.jsonOutputFolderLabel.AutoSize = true;
-            this.jsonOutputFolderLabel.Location = new System.Drawing.Point(48, 84);
-            this.jsonOutputFolderLabel.Name = "jsonOutputFolderLabel";
-            this.jsonOutputFolderLabel.Size = new System.Drawing.Size(71, 13);
-            this.jsonOutputFolderLabel.TabIndex = 32;
-            this.jsonOutputFolderLabel.Text = "Output folder:";
-            this.jsonOutputFolderLabel.Click += new System.EventHandler(this.jsonOutputFolderLabel_Click);
-            this.jsonOutputFolderLabel.MouseLeave += new System.EventHandler(this.jsonOutputFolderLabel_MouseLeave);
-            this.jsonOutputFolderLabel.MouseHover += new System.EventHandler(this.jsonOutputFolderLabel_MouseHover);
-            // 
-            // jsonPfxPasswordTextbox
-            // 
-            this.jsonPfxPasswordTextbox.Location = new System.Drawing.Point(135, 43);
-            this.jsonPfxPasswordTextbox.Name = "jsonPfxPasswordTextbox";
-            this.jsonPfxPasswordTextbox.ReadOnly = true;
-            this.jsonPfxPasswordTextbox.Size = new System.Drawing.Size(100, 20);
-            this.jsonPfxPasswordTextbox.TabIndex = 31;
-            this.jsonPfxPasswordTextbox.UseSystemPasswordChar = true;
-            this.jsonPfxPasswordTextbox.Click += new System.EventHandler(this.jsonPfxPwdTextbox_Click);
-            this.jsonPfxPasswordTextbox.MouseLeave += new System.EventHandler(this.jsonPfxPwdTextbox_MouseLeave);
-            this.jsonPfxPasswordTextbox.MouseHover += new System.EventHandler(this.jsonPfxPwdTextbox_MouseHover);
-            // 
-            // jsonPfxFileBrowserButton
-            // 
-            this.jsonPfxFileBrowserButton.Location = new System.Drawing.Point(737, 4);
-            this.jsonPfxFileBrowserButton.Name = "jsonPfxFileBrowserButton";
-            this.jsonPfxFileBrowserButton.Size = new System.Drawing.Size(75, 23);
-            this.jsonPfxFileBrowserButton.TabIndex = 30;
-            this.jsonPfxFileBrowserButton.Text = "Browse ...";
-            this.jsonPfxFileBrowserButton.UseVisualStyleBackColor = true;
-            this.jsonPfxFileBrowserButton.Click += new System.EventHandler(this.jsonPfxFileBrowserButton_Click);
-            // 
-            // jsonPfxFileTextbox
-            // 
-            this.jsonPfxFileTextbox.Location = new System.Drawing.Point(135, 6);
-            this.jsonPfxFileTextbox.Name = "jsonPfxFileTextbox";
-            this.jsonPfxFileTextbox.Size = new System.Drawing.Size(596, 20);
-            this.jsonPfxFileTextbox.TabIndex = 28;
-            this.jsonPfxFileTextbox.DoubleClick += new System.EventHandler(this.jsonPfxFileTextbox_DoubleClick);
-            this.jsonPfxFileTextbox.MouseLeave += new System.EventHandler(this.jsonPfxFileTextbox_MouseLeave);
-            this.jsonPfxFileTextbox.MouseHover += new System.EventHandler(this.jsonPfxFileTextbox_MouseHover);
-            // 
-            // jsonPfxPasswordLabel
-            // 
-            this.jsonPfxPasswordLabel.AutoSize = true;
-            this.jsonPfxPasswordLabel.Location = new System.Drawing.Point(63, 47);
-            this.jsonPfxPasswordLabel.Name = "jsonPfxPasswordLabel";
-            this.jsonPfxPasswordLabel.Size = new System.Drawing.Size(56, 13);
-            this.jsonPfxPasswordLabel.TabIndex = 29;
-            this.jsonPfxPasswordLabel.Text = "Password:";
-            this.jsonPfxPasswordLabel.Click += new System.EventHandler(this.jsonPfxPwdLabel_Click);
-            this.jsonPfxPasswordLabel.MouseLeave += new System.EventHandler(this.jsonPfxPwdLabel_MouseLeave);
-            this.jsonPfxPasswordLabel.MouseHover += new System.EventHandler(this.jsonPfxPwdLabel_MouseHover);
-            // 
-            // jsonPfxFileLabel
-            // 
-            this.jsonPfxFileLabel.AutoSize = true;
-            this.jsonPfxFileLabel.Location = new System.Drawing.Point(46, 10);
-            this.jsonPfxFileLabel.Name = "jsonPfxFileLabel";
-            this.jsonPfxFileLabel.Size = new System.Drawing.Size(73, 13);
-            this.jsonPfxFileLabel.TabIndex = 27;
-            this.jsonPfxFileLabel.Text = "PKCS#12 file:";
-            this.jsonPfxFileLabel.Click += new System.EventHandler(this.jsonPfxFileLabel_Click);
-            this.jsonPfxFileLabel.MouseLeave += new System.EventHandler(this.jsonPfxFileLabel_MouseLeave);
-            this.jsonPfxFileLabel.MouseHover += new System.EventHandler(this.jsonPfxFileLabel_MouseHover);
-            // 
-            // jsonVerifyPage
-            // 
-            this.jsonVerifyPage.Location = new System.Drawing.Point(4, 22);
-            this.jsonVerifyPage.Name = "jsonVerifyPage";
-            this.jsonVerifyPage.Padding = new System.Windows.Forms.Padding(3);
-            this.jsonVerifyPage.Size = new System.Drawing.Size(830, 415);
-            this.jsonVerifyPage.TabIndex = 9;
-            this.jsonVerifyPage.Text = "JSON Verify";
-            this.jsonVerifyPage.UseVisualStyleBackColor = true;
-            // 
-            // jsonEncryptPage
-            // 
-            this.jsonEncryptPage.Location = new System.Drawing.Point(4, 22);
-            this.jsonEncryptPage.Name = "jsonEncryptPage";
-            this.jsonEncryptPage.Padding = new System.Windows.Forms.Padding(3);
-            this.jsonEncryptPage.Size = new System.Drawing.Size(830, 415);
-            this.jsonEncryptPage.TabIndex = 10;
-            this.jsonEncryptPage.Text = "JSON Encrypt";
-            this.jsonEncryptPage.UseVisualStyleBackColor = true;
-            // 
-            // jsonDecryptPage
-            // 
-            this.jsonDecryptPage.Location = new System.Drawing.Point(4, 22);
-            this.jsonDecryptPage.Name = "jsonDecryptPage";
-            this.jsonDecryptPage.Padding = new System.Windows.Forms.Padding(3);
-            this.jsonDecryptPage.Size = new System.Drawing.Size(830, 415);
-            this.jsonDecryptPage.TabIndex = 11;
-            this.jsonDecryptPage.Text = "JSON Decrypt";
-            this.jsonDecryptPage.UseVisualStyleBackColor = true;
-            // 
-            // inputFileListview
-            // 
-            this.inputFileListview.Alignment = System.Windows.Forms.ListViewAlignment.Left;
-            this.inputFileListview.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.IdColumn,
-            this.FileColumn,
-            this.ResultColumn});
-            this.inputFileListview.FullRowSelect = true;
-            this.inputFileListview.HideSelection = false;
-            this.inputFileListview.Location = new System.Drawing.Point(13, 27);
-            this.inputFileListview.Name = "inputFileListview";
-            this.inputFileListview.ShowItemToolTips = true;
-            this.inputFileListview.Size = new System.Drawing.Size(838, 189);
-            this.inputFileListview.TabIndex = 21;
-            this.inputFileListview.UseCompatibleStateImageBehavior = false;
-            this.inputFileListview.View = System.Windows.Forms.View.Details;
-            this.inputFileListview.DoubleClick += new System.EventHandler(this.inputFileListview_DoubleClick);
-            // 
-            // IdColumn
-            // 
-            this.IdColumn.Text = "ID";
-            this.IdColumn.Width = 39;
-            // 
-            // FileColumn
-            // 
-            this.FileColumn.Text = "File";
-            this.FileColumn.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.FileColumn.Width = 734;
-            // 
-            // ResultColumn
-            // 
-            this.ResultColumn.Text = "Result";
-            this.ResultColumn.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.ResultColumn.Width = 58;
-            // 
-            // menuStrip
-            // 
-            this.menuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.fileToolStripMenuItem,
-            this.helpToolStripMenuItem});
-            this.menuStrip.Location = new System.Drawing.Point(0, 0);
-            this.menuStrip.Name = "menuStrip";
-            this.menuStrip.Size = new System.Drawing.Size(863, 24);
-            this.menuStrip.TabIndex = 22;
-            this.menuStrip.Text = "menuStrip";
-            // 
-            // fileToolStripMenuItem
-            // 
-            this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.openToolStripMenuItem,
-            this.saveToolStripMenuItem,
-            this.saveAsToolStripMenuItem,
-            this.closeToolStripMenuItem});
-            this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
-            this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
-            this.fileToolStripMenuItem.Text = "File";
-            // 
-            // openToolStripMenuItem
-            // 
-            this.openToolStripMenuItem.Name = "openToolStripMenuItem";
-            this.openToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.openToolStripMenuItem.Text = "Open";
-            this.openToolStripMenuItem.Click += new System.EventHandler(this.openToolStripMenuItem_Click);
-            // 
-            // saveToolStripMenuItem
-            // 
-            this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
-            this.saveToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.saveToolStripMenuItem.Text = "Save";
-            // 
-            // saveAsToolStripMenuItem
-            // 
-            this.saveAsToolStripMenuItem.Name = "saveAsToolStripMenuItem";
-            this.saveAsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.saveAsToolStripMenuItem.Text = "Save as ...";
-            // 
-            // closeToolStripMenuItem
-            // 
-            this.closeToolStripMenuItem.Name = "closeToolStripMenuItem";
-            this.closeToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.closeToolStripMenuItem.Text = "Close";
-            this.closeToolStripMenuItem.Click += new System.EventHandler(this.closeToolStripMenuItem_Click_1);
-            // 
-            // helpToolStripMenuItem
-            // 
-            this.helpToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.helpToolStripMenuItem1,
-            this.aboutToolStripMenuItem});
-            this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
-            this.helpToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
-            this.helpToolStripMenuItem.Text = "Help";
-            // 
-            // helpToolStripMenuItem1
-            // 
-            this.helpToolStripMenuItem1.Name = "helpToolStripMenuItem1";
-            this.helpToolStripMenuItem1.Size = new System.Drawing.Size(107, 22);
-            this.helpToolStripMenuItem1.Text = "Help";
-            // 
-            // aboutToolStripMenuItem
-            // 
-            this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
-            this.aboutToolStripMenuItem.Text = "About";
-            this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
-            // 
-            // cmsVerifyButton
-            // 
-            this.cmsVerifyButton.Location = new System.Drawing.Point(405, 386);
-            this.cmsVerifyButton.Name = "cmsVerifyButton";
-            this.cmsVerifyButton.Size = new System.Drawing.Size(75, 23);
-            this.cmsVerifyButton.TabIndex = 42;
-            this.cmsVerifyButton.Text = "Sign";
-            this.cmsVerifyButton.UseVisualStyleBackColor = true;
-            this.cmsVerifyButton.Click += new System.EventHandler(this.cmsVerifyButton_Click);
-            // 
-            // cmsVerifyPfxSignatureAlgoLabel
-            // 
-            this.cmsVerifyPfxSignatureAlgoLabel.AutoSize = true;
-            this.cmsVerifyPfxSignatureAlgoLabel.Location = new System.Drawing.Point(19, 195);
-            this.cmsVerifyPfxSignatureAlgoLabel.Name = "cmsVerifyPfxSignatureAlgoLabel";
-            this.cmsVerifyPfxSignatureAlgoLabel.Size = new System.Drawing.Size(164, 13);
-            this.cmsVerifyPfxSignatureAlgoLabel.TabIndex = 41;
-            this.cmsVerifyPfxSignatureAlgoLabel.Text = "Signature algorithm:      Unknown";
-            // 
-            // cmsVerifyPfxThumbprintLabel
-            // 
-            this.cmsVerifyPfxThumbprintLabel.AutoSize = true;
-            this.cmsVerifyPfxThumbprintLabel.Location = new System.Drawing.Point(56, 158);
-            this.cmsVerifyPfxThumbprintLabel.Name = "cmsVerifyPfxThumbprintLabel";
-            this.cmsVerifyPfxThumbprintLabel.Size = new System.Drawing.Size(127, 13);
-            this.cmsVerifyPfxThumbprintLabel.TabIndex = 40;
-            this.cmsVerifyPfxThumbprintLabel.Text = "Thumbprint:      Unknown";
-            // 
-            // cmsVerifyPfxSerialNumberLabel
-            // 
-            this.cmsVerifyPfxSerialNumberLabel.AutoSize = true;
-            this.cmsVerifyPfxSerialNumberLabel.Location = new System.Drawing.Point(45, 121);
-            this.cmsVerifyPfxSerialNumberLabel.Name = "cmsVerifyPfxSerialNumberLabel";
-            this.cmsVerifyPfxSerialNumberLabel.Size = new System.Drawing.Size(138, 13);
-            this.cmsVerifyPfxSerialNumberLabel.TabIndex = 39;
-            this.cmsVerifyPfxSerialNumberLabel.Text = "Serial number:      Unknown";
-            // 
-            // cmsVerifyPfxExpireLabel
-            // 
-            this.cmsVerifyPfxExpireLabel.AutoSize = true;
-            this.cmsVerifyPfxExpireLabel.Location = new System.Drawing.Point(67, 269);
-            this.cmsVerifyPfxExpireLabel.Name = "cmsVerifyPfxExpireLabel";
-            this.cmsVerifyPfxExpireLabel.Size = new System.Drawing.Size(115, 13);
-            this.cmsVerifyPfxExpireLabel.TabIndex = 38;
-            this.cmsVerifyPfxExpireLabel.Text = "Expire to:      Unknown";
-            // 
-            // cmsVerifyPfxValidFromLabel
-            // 
-            this.cmsVerifyPfxValidFromLabel.AutoSize = true;
-            this.cmsVerifyPfxValidFromLabel.Location = new System.Drawing.Point(63, 232);
-            this.cmsVerifyPfxValidFromLabel.Name = "cmsVerifyPfxValidFromLabel";
-            this.cmsVerifyPfxValidFromLabel.Size = new System.Drawing.Size(120, 13);
-            this.cmsVerifyPfxValidFromLabel.TabIndex = 37;
-            this.cmsVerifyPfxValidFromLabel.Text = "Valid from:      Unknown";
-            // 
-            // cmsVerifyPfxIssuerLabel
-            // 
-            this.cmsVerifyPfxIssuerLabel.AutoSize = true;
-            this.cmsVerifyPfxIssuerLabel.Location = new System.Drawing.Point(81, 84);
-            this.cmsVerifyPfxIssuerLabel.Name = "cmsVerifyPfxIssuerLabel";
-            this.cmsVerifyPfxIssuerLabel.Size = new System.Drawing.Size(102, 13);
-            this.cmsVerifyPfxIssuerLabel.TabIndex = 36;
-            this.cmsVerifyPfxIssuerLabel.Text = "Issuer:      Unknown";
-            // 
-            // cmsVerifyPfxVersionLabel
-            // 
-            this.cmsVerifyPfxVersionLabel.AutoSize = true;
-            this.cmsVerifyPfxVersionLabel.Location = new System.Drawing.Point(74, 47);
-            this.cmsVerifyPfxVersionLabel.Name = "cmsVerifyPfxVersionLabel";
-            this.cmsVerifyPfxVersionLabel.Size = new System.Drawing.Size(109, 13);
-            this.cmsVerifyPfxVersionLabel.TabIndex = 35;
-            this.cmsVerifyPfxVersionLabel.Text = "Version:      Unknown";
-            // 
-            // cmsMicrosoftCertSelectButton
-            // 
-            this.cmsMicrosoftCertSelectButton.Location = new System.Drawing.Point(737, 4);
-            this.cmsMicrosoftCertSelectButton.Name = "cmsMicrosoftCertSelectButton";
-            this.cmsMicrosoftCertSelectButton.Size = new System.Drawing.Size(75, 23);
-            this.cmsMicrosoftCertSelectButton.TabIndex = 30;
-            this.cmsMicrosoftCertSelectButton.Text = "Select ...";
-            this.cmsMicrosoftCertSelectButton.UseVisualStyleBackColor = true;
-            this.cmsMicrosoftCertSelectButton.Click += new System.EventHandler(this.cmsMicrosoftCertSelectButton_Click);
-            // 
-            // cmsVerifyMicrosoftCertThumbprintTextbox
-            // 
-            this.cmsVerifyMicrosoftCertThumbprintTextbox.Location = new System.Drawing.Point(135, 6);
-            this.cmsVerifyMicrosoftCertThumbprintTextbox.Name = "cmsVerifyMicrosoftCertThumbprintTextbox";
-            this.cmsVerifyMicrosoftCertThumbprintTextbox.Size = new System.Drawing.Size(596, 20);
-            this.cmsVerifyMicrosoftCertThumbprintTextbox.TabIndex = 28;
-            this.cmsVerifyMicrosoftCertThumbprintTextbox.DoubleClick += new System.EventHandler(this.cmsMicrosoftCertThumbprintTextbox_DoubleClick);
-            // 
-            // label10
-            // 
-            this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(65, 10);
-            this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(54, 13);
-            this.label10.TabIndex = 27;
-            this.label10.Text = "Key store:";
+            // tabControl
+            // 
+            this.tabControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tabControl.Controls.Add(this.signPage);
+            this.tabControl.Controls.Add(this.verifyPage);
+            this.tabControl.Controls.Add(this.cryptPage);
+            this.tabControl.Location = new System.Drawing.Point(13, 222);
+            this.tabControl.Name = "tabControl";
+            this.tabControl.SelectedIndex = 0;
+            this.tabControl.Size = new System.Drawing.Size(838, 441);
+            this.tabControl.TabIndex = 0;
             // 
             // MainForm
             // 
@@ -1025,37 +680,21 @@ namespace SigningUI.new_form
             this.MaximizeBox = false;
             this.Name = "MainForm";
             this.Text = "Chương trình ký số";
-            this.tabControl.ResumeLayout(false);
-            this.cmsSignPage.ResumeLayout(false);
-            this.cmsSignPage.PerformLayout();
-            this.cmsVerifyPage.ResumeLayout(false);
-            this.cmsVerifyPage.PerformLayout();
-            this.xmlSignPage.ResumeLayout(false);
-            this.xmlSignPage.PerformLayout();
-            this.jsonSignPage.ResumeLayout(false);
-            this.jsonSignPage.PerformLayout();
             this.menuStrip.ResumeLayout(false);
             this.menuStrip.PerformLayout();
+            this.cryptPage.ResumeLayout(false);
+            this.cryptPage.PerformLayout();
+            this.verifyPage.ResumeLayout(false);
+            this.verifyPage.PerformLayout();
+            this.signPage.ResumeLayout(false);
+            this.signPage.PerformLayout();
+            this.tabControl.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
         }
 
         #endregion
-
-        private System.Windows.Forms.TabControl tabControl;
-        private System.Windows.Forms.TabPage cmsSignPage;
-        private System.Windows.Forms.TabPage cmsVerifyPage;
-        private System.Windows.Forms.TabPage cmsEncryptPage;
-        private System.Windows.Forms.TabPage cmsDecryptPage;
-        private System.Windows.Forms.TabPage xmlSignPage;
-        private System.Windows.Forms.TabPage xmlVerifyPage;
-        private System.Windows.Forms.TabPage xmlEncryptPage;
-        private System.Windows.Forms.TabPage xmlDecryptPage;
-        private System.Windows.Forms.TabPage jsonSignPage;
-        private System.Windows.Forms.TabPage jsonVerifyPage;
-        private System.Windows.Forms.TabPage jsonEncryptPage;
-        private System.Windows.Forms.TabPage jsonDecryptPage;
         private System.Windows.Forms.ListView inputFileListview;
         private System.Windows.Forms.ColumnHeader IdColumn;
         private System.Windows.Forms.ColumnHeader FileColumn;
@@ -1069,54 +708,12 @@ namespace SigningUI.new_form
         private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
-        private System.Windows.Forms.Button openOutputFolderButton;
-        private System.Windows.Forms.TextBox outputFolderTextbox;
-        private System.Windows.Forms.Label outputFolderLabel;
-        private System.Windows.Forms.TextBox pfxPasswordTextbox;
-        private System.Windows.Forms.Button pfxButton;
-        private System.Windows.Forms.TextBox pfxFileTextbox;
-        private System.Windows.Forms.Label pfxPasswordLabel;
-        private System.Windows.Forms.Label pfxFileLabel;
-        private System.Windows.Forms.Label pfxSignatureAlgoLabel;
-        private System.Windows.Forms.Label pfxThumbprintLabel;
-        private System.Windows.Forms.Label pfxSerialNumberLabel;
-        private System.Windows.Forms.Label pfxExpireLabel;
-        private System.Windows.Forms.Label pfxValidFromLabel;
-        private System.Windows.Forms.Label pfxIssuerLabel;
-        private System.Windows.Forms.Label pfxVersionLabel;
-        private System.Windows.Forms.Button cmsSignButton;
-        private System.Windows.Forms.Button jsonSignButton;
-        private System.Windows.Forms.Label jsonPfxSignatureAlgoLabel;
-        private System.Windows.Forms.Label jsonPfxThumbprintLabel;
-        private System.Windows.Forms.Label jsonPfxSerialNumberLabel;
-        private System.Windows.Forms.Label jsonPfxExpireLabel;
-        private System.Windows.Forms.Label jsonPfxValidFromLabel;
-        private System.Windows.Forms.Label jsonPfxIssuerLabel;
-        private System.Windows.Forms.Label jsonPfxVersionLabel;
-        private System.Windows.Forms.Button jsonOpenOutputFolderButton;
-        private System.Windows.Forms.TextBox jsonOutputFolderTextbox;
-        private System.Windows.Forms.Label jsonOutputFolderLabel;
-        private System.Windows.Forms.TextBox jsonPfxPasswordTextbox;
-        private System.Windows.Forms.Button jsonPfxFileBrowserButton;
-        private System.Windows.Forms.TextBox jsonPfxFileTextbox;
-        private System.Windows.Forms.Label jsonPfxPasswordLabel;
-        private System.Windows.Forms.Label jsonPfxFileLabel;
-        private System.Windows.Forms.Button xmlSignButton;
-        private System.Windows.Forms.Label xmlPfxSignatureAlgoLabel;
-        private System.Windows.Forms.Label xmlPfxThumbprintLabel;
-        private System.Windows.Forms.Label xmlPfxSerialNumberLabel;
-        private System.Windows.Forms.Label xmlPfxExpireLabel;
-        private System.Windows.Forms.Label xmlPfxValidFromLabel;
-        private System.Windows.Forms.Label xmlPfxIssuerLabel;
-        private System.Windows.Forms.Label xmlPfxVersionLabel;
-        private System.Windows.Forms.Button xmlOpenOutputFolderButton;
-        private System.Windows.Forms.TextBox xmlOutputFolderTextbox;
-        private System.Windows.Forms.Label xmlOutputFolderLabel;
-        private System.Windows.Forms.TextBox xmlPfxPasswordTextbox;
-        private System.Windows.Forms.Button xmlPfxButton;
-        private System.Windows.Forms.TextBox xmlPfxFileTextbox;
-        private System.Windows.Forms.Label XmlPfxPasswordLabel;
-        private System.Windows.Forms.Label xmlPfxFileLabel;
+        private System.Windows.Forms.ToolStripMenuItem modeToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem cMSToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem xMLToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem jSONToolStripMenuItem;
+        private System.Windows.Forms.TabPage cryptPage;
+        private System.Windows.Forms.TabPage verifyPage;
         private System.Windows.Forms.Button cmsVerifyButton;
         private System.Windows.Forms.Label cmsVerifyPfxSignatureAlgoLabel;
         private System.Windows.Forms.Label cmsVerifyPfxThumbprintLabel;
@@ -1126,7 +723,34 @@ namespace SigningUI.new_form
         private System.Windows.Forms.Label cmsVerifyPfxIssuerLabel;
         private System.Windows.Forms.Label cmsVerifyPfxVersionLabel;
         private System.Windows.Forms.Button cmsMicrosoftCertSelectButton;
-        private System.Windows.Forms.TextBox cmsVerifyMicrosoftCertThumbprintTextbox;
+        private System.Windows.Forms.TextBox verifyMicrosoftCertThumbprintTextbox;
         private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.TabPage signPage;
+        private System.Windows.Forms.Button cmsSignButton;
+        private System.Windows.Forms.Label pfxSignatureAlgoLabel;
+        private System.Windows.Forms.Label pfxThumbprintLabel;
+        private System.Windows.Forms.Label pfxSerialNumberLabel;
+        private System.Windows.Forms.Label pfxExpireLabel;
+        private System.Windows.Forms.Label pfxValidFromLabel;
+        private System.Windows.Forms.Label pfxIssuerLabel;
+        private System.Windows.Forms.Label pfxVersionLabel;
+        private System.Windows.Forms.Button openOutputFolderButton;
+        private System.Windows.Forms.TextBox outputFolderTextbox;
+        private System.Windows.Forms.TextBox pfxFileTextbox;
+        private System.Windows.Forms.Label outputFolderLabel;
+        private System.Windows.Forms.TextBox pfxPasswordTextbox;
+        private System.Windows.Forms.Button pfxButton;
+        private System.Windows.Forms.Label pfxPasswordLabel;
+        private System.Windows.Forms.Label pfxFileLabel;
+        private System.Windows.Forms.TabControl tabControl;
+        private System.Windows.Forms.ComboBox keySizeComboBox;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.TextBox passwordAesTextbox;
+        private System.Windows.Forms.Label passwordAesLabel;
+        private System.Windows.Forms.Button encryptButton;
+        private System.Windows.Forms.Button encryptOutputButton;
+        private System.Windows.Forms.TextBox cryptOutputTextbox;
+        private System.Windows.Forms.Label encryptOutputLabel;
+        private System.Windows.Forms.Button decryptButton;
     }
 }

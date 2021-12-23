@@ -131,6 +131,8 @@ namespace SigningCore
             // find node by serial number certificate
             XmlNode serialNumberNode = signedXmlDoc.SelectSingleNode(@"//catalog/SerialNumber");
             XmlNode signatureVerificationNode = signedXmlDoc.SelectSingleNode(@"//catalog/SignatureVerification");
+            if (signatureVerificationNode == null)
+                throw new Exception("This file didn't signed");
             XmlNode useNode = signatureVerificationNode.SelectSingleNode(@"//use");
             XmlNode ktyNode = signatureVerificationNode.SelectSingleNode(@"//kty");
             XmlNode exponentNode = signatureVerificationNode.SelectSingleNode(@"//e");

@@ -75,7 +75,7 @@ namespace SigningCore
             return jwt;
         }
 
-        public static void Sign(string payload, string signedFile, Pkcs12Store pkcs12Store)
+        public static string Sign(string payload, string signedFile, Pkcs12Store pkcs12Store)
         {
             if (Common.CheckString(payload))
                 throw new Exception("Payload to sign null");
@@ -123,7 +123,7 @@ namespace SigningCore
             // generate jwt
             jwt = headerJwt + "." + payloadJwt + "." + signatureJwt;
 
-            File.WriteAllText(signedFile, jwt);
+            return jwt;
         }
 
 
