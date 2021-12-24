@@ -85,6 +85,9 @@ namespace SigningUI.new_form
             this.pfxPasswordLabel = new System.Windows.Forms.Label();
             this.pfxFileLabel = new System.Windows.Forms.Label();
             this.tabControl = new System.Windows.Forms.TabControl();
+            this.textBoxJsonPfx = new System.Windows.Forms.TextBox();
+            this.buttonJsonPfx = new System.Windows.Forms.Button();
+            this.label1 = new System.Windows.Forms.Label();
             this.menuStrip.SuspendLayout();
             this.cryptPage.SuspendLayout();
             this.verifyPage.SuspendLayout();
@@ -121,13 +124,13 @@ namespace SigningUI.new_form
             // 
             this.FileColumn.Text = "File";
             this.FileColumn.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.FileColumn.Width = 734;
+            this.FileColumn.Width = 511;
             // 
             // ResultColumn
             // 
             this.ResultColumn.Text = "Result";
             this.ResultColumn.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.ResultColumn.Width = 58;
+            this.ResultColumn.Width = 278;
             // 
             // menuStrip
             // 
@@ -180,7 +183,7 @@ namespace SigningUI.new_form
             this.cMSToolStripMenuItem.CheckOnClick = true;
             this.cMSToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             this.cMSToolStripMenuItem.Name = "cMSToolStripMenuItem";
-            this.cMSToolStripMenuItem.Size = new System.Drawing.Size(102, 22);
+            this.cMSToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.cMSToolStripMenuItem.Text = "CMS";
             this.cMSToolStripMenuItem.Click += new System.EventHandler(this.cMSToolStripMenuItem_Click);
             // 
@@ -188,7 +191,7 @@ namespace SigningUI.new_form
             // 
             this.xMLToolStripMenuItem.CheckOnClick = true;
             this.xMLToolStripMenuItem.Name = "xMLToolStripMenuItem";
-            this.xMLToolStripMenuItem.Size = new System.Drawing.Size(102, 22);
+            this.xMLToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.xMLToolStripMenuItem.Text = "XML";
             this.xMLToolStripMenuItem.Click += new System.EventHandler(this.xMLToolStripMenuItem_Click);
             // 
@@ -196,7 +199,7 @@ namespace SigningUI.new_form
             // 
             this.jSONToolStripMenuItem.CheckOnClick = true;
             this.jSONToolStripMenuItem.Name = "jSONToolStripMenuItem";
-            this.jSONToolStripMenuItem.Size = new System.Drawing.Size(102, 22);
+            this.jSONToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.jSONToolStripMenuItem.Text = "JSON";
             this.jSONToolStripMenuItem.Click += new System.EventHandler(this.jSONToolStripMenuItem_Click);
             // 
@@ -224,6 +227,9 @@ namespace SigningUI.new_form
             // 
             // cryptPage
             // 
+            this.cryptPage.Controls.Add(this.textBoxJsonPfx);
+            this.cryptPage.Controls.Add(this.buttonJsonPfx);
+            this.cryptPage.Controls.Add(this.label1);
             this.cryptPage.Controls.Add(this.decryptButton);
             this.cryptPage.Controls.Add(this.encryptOutputButton);
             this.cryptPage.Controls.Add(this.cryptOutputTextbox);
@@ -253,7 +259,7 @@ namespace SigningUI.new_form
             // 
             // encryptOutputButton
             // 
-            this.encryptOutputButton.Location = new System.Drawing.Point(740, 103);
+            this.encryptOutputButton.Location = new System.Drawing.Point(740, 147);
             this.encryptOutputButton.Name = "encryptOutputButton";
             this.encryptOutputButton.Size = new System.Drawing.Size(75, 23);
             this.encryptOutputButton.TabIndex = 48;
@@ -263,7 +269,7 @@ namespace SigningUI.new_form
             // 
             // cryptOutputTextbox
             // 
-            this.cryptOutputTextbox.Location = new System.Drawing.Point(138, 104);
+            this.cryptOutputTextbox.Location = new System.Drawing.Point(138, 148);
             this.cryptOutputTextbox.Name = "cryptOutputTextbox";
             this.cryptOutputTextbox.Size = new System.Drawing.Size(596, 20);
             this.cryptOutputTextbox.TabIndex = 47;
@@ -273,7 +279,7 @@ namespace SigningUI.new_form
             // encryptOutputLabel
             // 
             this.encryptOutputLabel.AutoSize = true;
-            this.encryptOutputLabel.Location = new System.Drawing.Point(51, 108);
+            this.encryptOutputLabel.Location = new System.Drawing.Point(51, 152);
             this.encryptOutputLabel.Name = "encryptOutputLabel";
             this.encryptOutputLabel.Size = new System.Drawing.Size(71, 13);
             this.encryptOutputLabel.TabIndex = 46;
@@ -295,7 +301,7 @@ namespace SigningUI.new_form
             this.keySizeComboBox.Items.AddRange(new object[] {
             "128",
             "256"});
-            this.keySizeComboBox.Location = new System.Drawing.Point(138, 52);
+            this.keySizeComboBox.Location = new System.Drawing.Point(138, 96);
             this.keySizeComboBox.Name = "keySizeComboBox";
             this.keySizeComboBox.Size = new System.Drawing.Size(121, 21);
             this.keySizeComboBox.TabIndex = 44;
@@ -303,7 +309,7 @@ namespace SigningUI.new_form
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(47, 56);
+            this.label2.Location = new System.Drawing.Point(47, 100);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(72, 13);
             this.label2.TabIndex = 43;
@@ -652,6 +658,33 @@ namespace SigningUI.new_form
             this.tabControl.Size = new System.Drawing.Size(838, 441);
             this.tabControl.TabIndex = 0;
             // 
+            // textBoxJsonPfx
+            // 
+            this.textBoxJsonPfx.Enabled = false;
+            this.textBoxJsonPfx.Location = new System.Drawing.Point(138, 53);
+            this.textBoxJsonPfx.Name = "textBoxJsonPfx";
+            this.textBoxJsonPfx.Size = new System.Drawing.Size(596, 20);
+            this.textBoxJsonPfx.TabIndex = 51;
+            // 
+            // buttonJsonPfx
+            // 
+            this.buttonJsonPfx.Location = new System.Drawing.Point(740, 51);
+            this.buttonJsonPfx.Name = "buttonJsonPfx";
+            this.buttonJsonPfx.Size = new System.Drawing.Size(75, 23);
+            this.buttonJsonPfx.TabIndex = 52;
+            this.buttonJsonPfx.Text = "Browse ...";
+            this.buttonJsonPfx.UseVisualStyleBackColor = true;
+            this.buttonJsonPfx.Click += new System.EventHandler(this.buttonJsonPfx_Click);
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(46, 57);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(73, 13);
+            this.label1.TabIndex = 50;
+            this.label1.Text = "PKCS#12 file:";
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -734,5 +767,8 @@ namespace SigningUI.new_form
         private System.Windows.Forms.TextBox cryptOutputTextbox;
         private System.Windows.Forms.Label encryptOutputLabel;
         private System.Windows.Forms.Button decryptButton;
+        private System.Windows.Forms.TextBox textBoxJsonPfx;
+        private System.Windows.Forms.Button buttonJsonPfx;
+        private System.Windows.Forms.Label label1;
     }
 }

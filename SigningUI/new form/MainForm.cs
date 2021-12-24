@@ -1,4 +1,6 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using Org.BouncyCastle.Crypto.Parameters;
 using Org.BouncyCastle.Pkcs;
 using Org.BouncyCastle.Security;
 using SigningCore;
@@ -347,6 +349,7 @@ namespace SigningUI.new_form
                     }
                 }
                 this.pfxFileTextbox.Text = pfxFileDialog.FileName;
+                this.textBoxJsonPfx.Text = pfxFileDialog.FileName;
             }
             catch (Exception ex)
             {
@@ -679,6 +682,9 @@ namespace SigningUI.new_form
             ToolBoxHelper.UncheckOtherToolStripMenuItems(sender as ToolStripMenuItem);
             this.verifyMicrosoftCertThumbprintTextbox.Enabled = true;
             this.cmsMicrosoftCertSelectButton.Enabled = true;
+            this.textBoxJsonPfx.Enabled = false;
+            this.passwordAesTextbox.Enabled = true;
+            this.keySizeComboBox.Enabled = true;
         }
 
         private void xMLToolStripMenuItem_Click(object sender, EventArgs e)
@@ -686,6 +692,9 @@ namespace SigningUI.new_form
             ToolBoxHelper.UncheckOtherToolStripMenuItems(sender as ToolStripMenuItem);
             this.verifyMicrosoftCertThumbprintTextbox.Enabled = false;
             this.cmsMicrosoftCertSelectButton.Enabled = false;
+            this.textBoxJsonPfx.Enabled = false;
+            this.passwordAesTextbox.Enabled = true;
+            this.keySizeComboBox.Enabled = true;
         }
 
         private void jSONToolStripMenuItem_Click(object sender, EventArgs e)
@@ -693,6 +702,9 @@ namespace SigningUI.new_form
             ToolBoxHelper.UncheckOtherToolStripMenuItems(sender as ToolStripMenuItem);
             this.verifyMicrosoftCertThumbprintTextbox.Enabled = false;
             this.cmsMicrosoftCertSelectButton.Enabled = false;
+            this.textBoxJsonPfx.Enabled = true;
+            this.passwordAesTextbox.Enabled = false;
+            this.keySizeComboBox.Enabled = false;
         }
 
         private void cryptOutputButton_Click(object sender, EventArgs e)
@@ -726,12 +738,17 @@ namespace SigningUI.new_form
             {
                 if (this.FilePaths == null || this.FilePaths.Count < 1)
                     throw new Exception("Not found any input files");
-                if (keySizeComboBox.SelectedItem == null)
+                if (keySizeComboBox.SelectedItem == null && !this.jSONToolStripMenuItem.Checked)
                     throw new Exception("Please choose key size");
 
-                int keySize = int.Parse(keySizeComboBox.SelectedItem.ToString());
-                byte[] aesKey = Helper.GetAesKeyByPassword(passwordAesTextbox.Text, keySize);
-               
+                int keySize = 0;
+                byte[] aesKey = null;
+                if (!this.jSONToolStripMenuItem.Checked)
+                {
+                    keySize = int.Parse(keySizeComboBox.SelectedItem.ToString());
+                    aesKey = Helper.GetAesKeyByPassword(passwordAesTextbox.Text, keySize);
+                }
+
                 foreach (string inputFile in this.FilePaths)
                 {
                     string rowResult = "NO";
@@ -787,22 +804,46 @@ namespace SigningUI.new_form
                         }
                         else if (jSONToolStripMenuItem.Checked)
                         {
-                            throw new Exception("JSON crypt don't support yet");
+                            //throw new Exception("JSON crypt don't support yet");
+                            UserInfo user = new UserInfo
+                            {
+                                UserName = "jschmoe",
+                                UserPassword = "Hunter2",
+                                FavoriteColor = "atomic tangerine",
+                                CreditCardNumber = "1234567898765432",
+                            };
                             if (isEncrypt)
                             {
-                                UserInfo user = new UserInfo
-                                {
-                                    UserName = "jschmoe",
-                                    UserPassword = "Hunter2",
-                                    FavoriteColor = "atomic tangerine",
-                                    CreditCardNumber = "1234567898765432",
-                                };
-
-                                SigningCore.Json.Encrypt(user, null);
+                                string keyAlias = Helper.GetAliasFromPkcs12Store(pkcs12Store);
+                                var publicKey = pkcs12Store.GetCertificate(keyAlias).Certificate.GetPublicKey() as RsaKeyParameters;
+                                string jwt = SigningCore.Json.Encrypt(user, publicKey);
+                                File.WriteAllText(outputFile, jwt);
                                 rowResult = "Encrypted";
                             }
                             else
                             {
+                                outputFile = ToolBoxHelper.GetOutputFile(cryptOutputTextbox.Text, inputFile, Mode.CRYPT, false);
+                                string keyAlias = Helper.GetAliasFromPkcs12Store(pkcs12Store);
+                                var privateKey = pkcs12Store.GetKey(keyAlias).Key as RsaKeyParameters;
+                                UserInfo decryptedUser = Json.Decrypt<UserInfo>(File.ReadAllText(inputFile), privateKey);
+                                if (!user.UserName.Equals(decryptedUser.UserName))
+                                {
+                                    throw new Exception($"Json decrypt fail with expected username is {user.UserName} but actual is {decryptedUser.UserName}");
+                                }
+                                else if (!user.UserPassword.Equals(decryptedUser.UserPassword))
+                                {
+                                    throw new Exception($"Json decrypt fail with expected pwd is {user.UserPassword} but actual is {decryptedUser.UserPassword}");
+                                }
+                                else if (!user.FavoriteColor.Equals(decryptedUser.FavoriteColor))
+                                {
+                                    throw new Exception($"Json decrypt fail with expected color is {user.FavoriteColor} but actual is {decryptedUser.FavoriteColor}");
+                                }
+                                else if (!user.CreditCardNumber.Equals(decryptedUser.CreditCardNumber))
+                                {
+                                    throw new Exception($"Json decrypt fail with expected credit-card is {user.CreditCardNumber} but actual is {decryptedUser.CreditCardNumber}");
+                                }
+                                string decryptedJson = JsonConvert.SerializeObject(user, Newtonsoft.Json.Formatting.Indented);
+                                File.WriteAllText(outputFile, decryptedJson);
                                 rowResult = "Decrypted";
                             }
                         }
@@ -826,6 +867,11 @@ namespace SigningUI.new_form
 
         private void passwordAesTextbox_DoubleClick(object sender, EventArgs e)
         {
+        }
+
+        private void buttonJsonPfx_Click(object sender, EventArgs e)
+        {
+            this.SetupPfxFile();
         }
     }
 }
