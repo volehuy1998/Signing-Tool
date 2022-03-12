@@ -1,4 +1,4 @@
-# Đồ án tốt nghiệp
+# Đồ án tốt nghiệp đại học
 ## Đề tài: Xây dựng phần mềm ký số, mật mã CMS, XML và JSON
 ### Cán bộ hướng dẫn
 Tiến sĩ Lê Quang Huy</br>
