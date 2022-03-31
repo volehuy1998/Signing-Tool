@@ -258,12 +258,14 @@ namespace SigningCore
             return token;
         }
 
-        public static T Decrypt<T>(string encryptedJson, RsaKeyParameters privateKey)
+        public static object Decrypt(string encryptedJson, RsaKeyParameters privateKey, Type runtimeJsonClass)
         {
             if (Common.CheckString(encryptedJson))
                 throw new Exception("Jwe to decrypt null");
             if (privateKey == null)
                 throw new Exception("Private key to decrypt secret key null");
+            if (runtimeJsonClass == null)
+                throw new Exception("Runtime type null");
 
             IAsymmetricBlockCipher rsaOaep = null;
             //JsonSerializerSettings settings = null;
@@ -306,7 +308,7 @@ namespace SigningCore
                 ContractResolver = new EncryptedStringPropertyResolver(aesKeyBytes, aesIvBytes)
             };
 
-            return JsonConvert.DeserializeObject<T>(encryptedPayload, settings);
+            return JsonConvert.DeserializeObject(encryptedPayload, runtimeJsonClass, settings);
         }
 
     }

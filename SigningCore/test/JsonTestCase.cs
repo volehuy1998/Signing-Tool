@@ -98,7 +98,7 @@ namespace SigningCore.test
 
                 // decrypt
                 privateKey = pkcs12Store.GetKey(keyAlias).Key as RsaKeyParameters;
-                decryptedUser = Json.Decrypt<UserInfo>(jwe, privateKey);
+                //decryptedUser = Json.Decrypt<UserInfo>(jwe, privateKey);
                 if (!user.UserName.Equals(decryptedUser.UserName))
                 {
                     throw new Exception($"Json decrypt fail with expected username is {user.UserName} but actual is {decryptedUser.UserName}");

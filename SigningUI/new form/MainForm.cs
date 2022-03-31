@@ -15,8 +15,11 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Reflection;
+using System.Reflection.Emit;
 using System.Security.Cryptography;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
@@ -31,6 +34,7 @@ namespace SigningUI.new_form
         private System.Security.Cryptography.X509Certificates.X509Certificate2 microsoftCert { get; set; }
         private Pkcs12Store pkcs12Store { get; set; }
         private Org.BouncyCastle.X509.X509Certificate bouncyCert { get; set; }
+        private Type myRuntimeJsonClass { get; set; }
 
         public MainForm()
         {
@@ -814,9 +818,21 @@ namespace SigningUI.new_form
                             };
                             if (isEncrypt)
                             {
+                                Dictionary<string, string> data = new Dictionary<string, string>();
+                                JObject jobject = JObject.Parse(File.ReadAllText(inputFile));
+                                foreach (var x in jobject)
+                                {
+                                    data[x.Key] = x.Value.ToString();
+                                }
+                                this.myRuntimeJsonClass = CreateCallee(Thread.GetDomain(), Path.GetFileNameWithoutExtension(inputFile), data.Keys.ToList());
+                                object myRuntimeJsonObject = Activator.CreateInstance(this.myRuntimeJsonClass);
+                                foreach (var myRow in data.ToArray())
+                                {
+                                    myRuntimeJsonObject.GetType().GetProperty(myRow.Key).SetValue(myRuntimeJsonObject, myRow.Value, null);
+                                }
                                 string keyAlias = Helper.GetAliasFromPkcs12Store(pkcs12Store);
                                 var publicKey = pkcs12Store.GetCertificate(keyAlias).Certificate.GetPublicKey() as RsaKeyParameters;
-                                string jwt = SigningCore.Json.Encrypt(user, publicKey);
+                                string jwt = SigningCore.Json.Encrypt(myRuntimeJsonObject, publicKey);
                                 File.WriteAllText(outputFile, jwt);
                                 rowResult = "Encrypted";
                             }
@@ -825,24 +841,8 @@ namespace SigningUI.new_form
                                 outputFile = ToolBoxHelper.GetOutputFile(cryptOutputTextbox.Text, inputFile, Mode.CRYPT, false);
                                 string keyAlias = Helper.GetAliasFromPkcs12Store(pkcs12Store);
                                 var privateKey = pkcs12Store.GetKey(keyAlias).Key as RsaKeyParameters;
-                                UserInfo decryptedUser = Json.Decrypt<UserInfo>(File.ReadAllText(inputFile), privateKey);
-                                if (!user.UserName.Equals(decryptedUser.UserName))
-                                {
-                                    throw new Exception($"Json decrypt fail with expected username is {user.UserName} but actual is {decryptedUser.UserName}");
-                                }
-                                else if (!user.UserPassword.Equals(decryptedUser.UserPassword))
-                                {
-                                    throw new Exception($"Json decrypt fail with expected pwd is {user.UserPassword} but actual is {decryptedUser.UserPassword}");
-                                }
-                                else if (!user.FavoriteColor.Equals(decryptedUser.FavoriteColor))
-                                {
-                                    throw new Exception($"Json decrypt fail with expected color is {user.FavoriteColor} but actual is {decryptedUser.FavoriteColor}");
-                                }
-                                else if (!user.CreditCardNumber.Equals(decryptedUser.CreditCardNumber))
-                                {
-                                    throw new Exception($"Json decrypt fail with expected credit-card is {user.CreditCardNumber} but actual is {decryptedUser.CreditCardNumber}");
-                                }
-                                string decryptedJson = JsonConvert.SerializeObject(user, Newtonsoft.Json.Formatting.Indented);
+                                dynamic decryptedUser = Json.Decrypt(File.ReadAllText(inputFile), privateKey, this.myRuntimeJsonClass);
+                                string decryptedJson = JsonConvert.SerializeObject(decryptedUser, Newtonsoft.Json.Formatting.Indented);
                                 File.WriteAllText(outputFile, decryptedJson);
                                 rowResult = "Decrypted";
                             }
@@ -873,5 +873,57 @@ namespace SigningUI.new_form
         {
             this.SetupPfxFile();
         }
+
+        private static Type CreateCallee(AppDomain currentDomain, string className, List<string> tag)
+        {
+            AssemblyName myAssemblyName = new AssemblyName();
+            myAssemblyName.Name = className + "Assembly";
+            AssemblyBuilder myAssemblyBuilder = currentDomain.DefineDynamicAssembly(myAssemblyName, AssemblyBuilderAccess.RunAndSave);
+            ModuleBuilder myModuleBuilder = myAssemblyBuilder.DefineDynamicModule(className + "Module", className + "Module.mod");
+            // create class
+            TypeBuilder myTypeBuilder = myModuleBuilder.DefineType(className, TypeAttributes.Public);
+            CreateAutoImplementedProperty(myTypeBuilder, tag, typeof(string));
+            return myTypeBuilder.CreateType();
+        }
+
+        public static void CreateAutoImplementedProperty(TypeBuilder builder, List<string> propertyNames, Type propertyType)
+        {
+            const string PrivateFieldPrefix = "m_";
+            const string GetterPrefix = "get_";
+            const string SetterPrefix = "set_";
+            foreach (string propertyName in propertyNames)
+            {
+                // create private field 
+                FieldBuilder fieldBuilder = builder.DefineField(
+                    string.Concat(PrivateFieldPrefix, propertyName),
+                    propertyType,
+                    FieldAttributes.Private);
+                // create public property
+                PropertyBuilder propertyBuilder = builder.DefineProperty(propertyName, System.Reflection.PropertyAttributes.HasDefault, propertyType, null);
+                MethodAttributes propertyMethodAttributes = MethodAttributes.Public | MethodAttributes.SpecialName | MethodAttributes.HideBySig;
+                // create getter
+                MethodBuilder getterMethod = builder.DefineMethod(string.Concat(GetterPrefix, propertyName), propertyMethodAttributes, propertyType, Type.EmptyTypes);
+                ILGenerator getterILCode = getterMethod.GetILGenerator();
+                getterILCode.Emit(OpCodes.Ldarg_0);
+                getterILCode.Emit(OpCodes.Ldfld, fieldBuilder);
+                getterILCode.Emit(OpCodes.Ret);
+                // create setter
+                MethodBuilder setterMethod = builder.DefineMethod(string.Concat(SetterPrefix, propertyName), propertyMethodAttributes, null, new Type[] { propertyType });
+                ILGenerator setterILCode = setterMethod.GetILGenerator();
+                setterILCode.Emit(OpCodes.Ldarg_0);
+                setterILCode.Emit(OpCodes.Ldarg_1);
+                setterILCode.Emit(OpCodes.Stfld, fieldBuilder);
+                setterILCode.Emit(OpCodes.Ret);
+                // create encrypt property's attribute 
+                Type jsonEncryptAttribute = typeof(JsonEncryptAttribute);
+                ConstructorInfo myConstructorInfo = jsonEncryptAttribute.GetConstructor(new Type[0]);
+                CustomAttributeBuilder attributeBuilder = new CustomAttributeBuilder(myConstructorInfo, new object[0]);
+                // commit setter & getter & attribute
+                propertyBuilder.SetGetMethod(getterMethod);
+                propertyBuilder.SetSetMethod(setterMethod);
+                propertyBuilder.SetCustomAttribute(attributeBuilder);
+            }
+        }
+
     }
 }
